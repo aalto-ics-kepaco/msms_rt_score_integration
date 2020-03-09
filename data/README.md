@@ -1,4 +1,15 @@
-# General Information
+# (MS2, RT)-tuple Database
+
+All data used in our experiments is organized in SQLite DB. The database can be downloaded from 
+[Zenodo](ADD_LINK_HERE) (~12GB), and its layout and as well as content is described here.
+
+## General Information
+
+The database contains
+
+## Database Layout 
+
+![database_layout](/data/db_layout.png)
 
 ### ```use_inchi```
 
