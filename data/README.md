@@ -8,6 +8,19 @@ All data used in our experiments is organized in SQLite DB. The database can be 
 The database was build around the [publicly available MS2 scores](https://sourceforge.net/p/casmi/web/HEAD/tree/web/2016/contest/submissions/) 
 of the various metabolite identification approaches that participated in the 
 [CASMI 2016 challenge](http://www.casmi-contest.org/2016/index.shtml) for a set of 208 MS2 spectra. 
+Later, the MS2 data, used by [Ruttkies et al. 2016](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-016-0115-9)
+for the development of their MS2 + RT score integration framework, was added to the database as well. 
+
+### (MS2, RT)-tuples
+
+The table ```challenges``` contains four entries corresponding to the datasets used in our publication
+(see Section 3.1 and Table 1): CASMI 2016, **positive** and **negative**; Massbank EA, **EA_positive** and **EA_negative**.
+
+To each challenge, a set of (MS2, RT)-tuples is associated and can be found in table ```spectra```. 
+
+TODO: Either add the spectra-files to the repository, or (better), add the (mass, intensity)-tuples directly into
+the DB.
+
 
 
 The RankSVM training retention times are _not_ part of this database, but rather the preference 
