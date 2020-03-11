@@ -1,0 +1,20 @@
+>compound naphthalene-2-sulfonic acid
+>InChI InChI=1S/C10H8O3S/c11-14(12,13)10-6-5-8-3-1-2-4-9(8)7-10/h1-7H,(H,11,12,13)
+>InChIKey KVBGVZZKJNLNJU-UHFFFAOYSA-N
+>smarts C1=CC=C2C=C(C=CC2=C1)S(=O)(=O)O
+>ionization [M-H]-
+>parentmass 207.012100
+#id EAX065302
+#rt 5.200000
+#mf C10H8O3S
+#canonical_smiles C1=CC=C2C=C(C=CC2=C1)S(=O)(=O)O
+#xlogp 0.600000
+#pubchem 8420
+#chemspider 8113
+#exact_mass 208.019400
+
+>ms2
+79.9573667 680.0000000
+115.0554667 144.0000000
+143.0502000 999.0000000
+207.0118917 999.0000000

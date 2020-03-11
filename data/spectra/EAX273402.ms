@@ -1,0 +1,20 @@
+>compound (<I>Z</I>)-2-[2-[6-(2-cyanophenoxy)pyrimidin-4-yl]oxyphenyl]-3-methoxyprop-2-enoic acid
+>InChI InChI=1S/C21H15N3O5/c1-27-12-16(21(25)26)15-7-3-5-9-18(15)29-20-10-19(23-13-24-20)28-17-8-4-2-6-14(17)11-22/h2-10,12-13H,1H3,(H,25,26)/b16-12-
+>InChIKey IKCXDZCEWZARFL-VBKFSLOCSA-N
+>smarts CO/C=C(/C1=CC=CC=C1OC2=NC=NC(=C2)OC3=CC=CC=C3C#N)\C(=O)O
+>ionization [M-H]-
+>parentmass 388.093900
+#id EAX273402
+#rt 8.800000
+#mf C21H15N3O5
+#canonical_smiles COC=C(C1=CC=CC=C1OC2=NC=NC(=C2)OC3=CC=CC=C3C#N)C(=O)O
+#xlogp 3.400000
+#pubchem 21584515
+#chemspider 28184900
+#exact_mass 389.101200
+
+>ms2
+142.0408500 673.0000000
+168.0564750 999.0000000
+212.0464000 999.0000000
+312.0778250 527.0000000

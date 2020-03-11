@@ -1,0 +1,18 @@
+>compound 2<I>H</I>-benzotriazole
+>InChI InChI=1S/C6H5N3/c1-2-4-6-5(3-1)7-9-8-6/h1-4H,(H,7,8,9)
+>InChIKey QRUDEWIWKLJBPS-UHFFFAOYSA-N
+>smarts C1=CC2=NNN=C2C=C1
+>ionization [M-H]-
+>parentmass 118.041100
+#id EAX016602
+#rt 4.400000
+#mf C6H5N3
+#canonical_smiles C1=CC2=NNN=C2C=C1
+#xlogp 1.000000
+#pubchem 7220
+#chemspider 6950
+#exact_mass 119.048300
+
+>ms2
+90.0348700 431.0000000
+118.0411571 999.0000000

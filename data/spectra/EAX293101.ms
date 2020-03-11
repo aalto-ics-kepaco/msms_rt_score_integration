@@ -1,0 +1,22 @@
+>compound <I>N</I>-[(3,5-dichloro-2,4-difluorophenyl)carbamoyl]-2,6-difluorobenzamide
+>InChI InChI=1S/C14H6Cl2F4N2O2/c15-5-4-8(12(20)10(16)11(5)19)21-14(24)22-13(23)9-6(17)2-1-3-7(9)18/h1-4H,(H2,21,22,23,24)
+>InChIKey CJDWRQLODFKPEL-UHFFFAOYSA-N
+>smarts C1=CC(=C(C(=C1)F)C(=O)NC(=O)NC2=CC(=C(C(=C2F)Cl)F)Cl)F
+>ionization [M+H]+
+>parentmass 380.981500
+#id EAX293101
+#rt 16.100000
+#mf C14H6Cl2F4N2O2
+#canonical_smiles C1=CC(=C(C(=C1)F)C(=O)NC(=O)NC2=CC(=C(C(=C2F)Cl)F)Cl)F
+#xlogp 4.900000
+#pubchem 91734
+#chemspider 82833
+#exact_mass 379.974200
+
+>ms2
+141.0144462 999.0000000
+141.0259000 385.0000000
+158.0409900 999.0000000
+195.9619375 146.0000000
+197.9679750 210.0000000
+380.9809500 999.0000000

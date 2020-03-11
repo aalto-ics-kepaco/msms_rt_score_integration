@@ -1,0 +1,22 @@
+>compound <I>N</I>-[4-[(5-methyl-1,2-oxazol-3-yl)sulfamoyl]phenyl]acetamide
+>InChI InChI=1S/C12H13N3O4S/c1-8-7-12(14-19-8)15-20(17,18)11-5-3-10(4-6-11)13-9(2)16/h3-7H,1-2H3,(H,13,16)(H,14,15)
+>InChIKey GXPIUNZCALHVBA-UHFFFAOYSA-N
+>smarts CC1=CC(=NO1)NS(=O)(=O)C2=CC=C(C=C2)NC(=O)C
+>ionization [M-H]-
+>parentmass 294.055400
+#id EAX029902
+#rt 5.500000
+#mf C12H13N3O4S
+#canonical_smiles CC1=CC(=NO1)NS(=O)(=O)C2=CC=C(C=C2)NC(=O)C
+#xlogp 0.700000
+#pubchem 65280
+#chemspider 58771
+#exact_mass 295.062700
+
+>ms2
+92.0505571 999.0000000
+134.0611400 999.0000000
+150.0559000 64.0000000
+198.0246778 999.0000000
+205.0162000 38.0000000
+294.0551750 999.0000000

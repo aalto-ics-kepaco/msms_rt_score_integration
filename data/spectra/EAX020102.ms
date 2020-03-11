@@ -1,0 +1,20 @@
+>compound 2-[2-(2,6-dichloroanilino)phenyl]acetic acid
+>InChI InChI=1S/C14H11Cl2NO2/c15-10-5-3-6-11(16)14(10)17-12-7-2-1-4-9(12)8-13(18)19/h1-7,17H,8H2,(H,18,19)
+>InChIKey DCOPUUMXTXDBNB-UHFFFAOYSA-N
+>smarts C1=CC=C(C(=C1)CC(=O)O)NC2=C(C=CC=C2Cl)Cl
+>ionization [M-H]-
+>parentmass 294.009400
+#id EAX020102
+#rt 12.800000
+#mf C14H11Cl2NO2
+#canonical_smiles C1=CC=C(C(=C1)CC(=O)O)NC2=C(C=CC=C2Cl)Cl
+#xlogp 4.400000
+#pubchem 3033
+#chemspider 2925
+#exact_mass 295.016700
+
+>ms2
+178.0662571 999.0000000
+214.0429833 999.0000000
+250.0197200 999.0000000
+294.0093000 146.0000000

@@ -1,0 +1,21 @@
+>compound 2-[4-[2-[(4-chlorobenzoyl)amino]ethyl]phenoxy]-2-methylpropanoic acid
+>InChI InChI=1S/C19H20ClNO4/c1-19(2,18(23)24)25-16-9-3-13(4-10-16)11-12-21-17(22)14-5-7-15(20)8-6-14/h3-10H,11-12H2,1-2H3,(H,21,22)(H,23,24)
+>InChIKey IIBYAHWJQTYFKB-UHFFFAOYSA-N
+>smarts CC(C)(C(=O)O)OC1=CC=C(C=C1)CCNC(=O)C2=CC=C(C=C2)Cl
+>ionization [M-H]-
+>parentmass 360.100800
+#id EAX020902
+#rt 10.600000
+#mf C19H20ClNO4
+#canonical_smiles CC(C)(C(=O)O)OC1=CC=C(C=C1)CCNC(=O)C2=CC=C(C=C2)Cl
+#xlogp 3.800000
+#pubchem 39042
+#chemspider 35728
+#exact_mass 361.108100
+
+>ms2
+85.0295000 367.0000000
+154.0066222 999.0000000
+274.0638700 999.0000000
+316.1113000 7.0000000
+360.1011000 999.0000000

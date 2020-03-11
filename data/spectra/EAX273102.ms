@@ -1,0 +1,21 @@
+>compound <I>N</I>-ethyl-1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8-heptadecafluorooctane-1-sulfonamide
+>InChI InChI=1S/C10H6F17NO2S/c1-2-28-31(29,30)10(26,27)8(21,22)6(17,18)4(13,14)3(11,12)5(15,16)7(19,20)9(23,24)25/h28H,2H2,1H3
+>InChIKey CCEKAJIANROZEO-UHFFFAOYSA-N
+>smarts CCNS(=O)(=O)C(C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F
+>ionization [M-H]-
+>parentmass 525.977500
+#id EAX273102
+#rt 17.100000
+#mf C10H6F17NO2S
+#canonical_smiles CCNS(=O)(=O)C(C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F
+#xlogp 5.600000
+#pubchem 77797
+#chemspider 70194
+#exact_mass 526.984800
+
+>ms2
+168.9895000 491.0000000
+218.9864000 999.0000000
+268.9828000 260.0000000
+361.9839000 331.0000000
+418.9727000 153.0000000

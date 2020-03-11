@@ -1,0 +1,21 @@
+>compound 2-(4-chloro-2-methylphenoxy)acetic acid
+>InChI InChI=1S/C9H9ClO3/c1-6-4-7(10)2-3-8(6)13-5-9(11)12/h2-4H,5H2,1H3,(H,11,12)
+>InChIKey WHKUVVPPKQRRBV-UHFFFAOYSA-N
+>smarts CC1=C(C=CC(=C1)Cl)OCC(=O)O
+>ionization [M-H]-
+>parentmass 199.016700
+#id EAX026102
+#rt 9.500000
+#mf C9H9ClO3
+#canonical_smiles CC1=C(C=CC(=C1)Cl)OCC(=O)O
+#xlogp 2.600000
+#pubchem 7204
+#chemspider 6935
+#exact_mass 200.024000
+
+>ms2
+105.0344667 44.0000000
+121.0294200 54.0000000
+141.0113286 999.0000000
+155.0270714 110.0000000
+199.0167167 999.0000000

@@ -1,0 +1,21 @@
+>compound 2-(2-chloro-4-methylsulfonylbenzoyl)cyclohexane-1,3-dione
+>InChI InChI=1S/C14H13ClO5S/c1-21(19,20)8-5-6-9(10(15)7-8)14(18)13-11(16)3-2-4-12(13)17/h5-7,13H,2-4H2,1H3
+>InChIKey PQTBTIFWAXVEPB-UHFFFAOYSA-N
+>smarts CS(=O)(=O)C1=CC(=C(C=C1)C(=O)C2C(=O)CCCC2=O)Cl
+>ionization [M-H]-
+>parentmass 327.009900
+#id EAX029002
+#rt 6.800000
+#mf C14H13ClO5S
+#canonical_smiles CS(=O)(=O)C1=CC(=C(C=C1)C(=O)C2C(=O)CCCC2=O)Cl
+#xlogp 1.500000
+#pubchem 91760
+#chemspider 82858
+#exact_mass 328.016700
+
+>ms2
+212.0479200 313.0000000
+215.0346429 999.0000000
+249.0227000 429.0000000
+291.0332600 999.0000000
+327.0093000 181.0000000

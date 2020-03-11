@@ -1,0 +1,20 @@
+>compound cyclohexylsulfamic acid
+>InChI InChI=1S/C6H13NO3S/c8-11(9,10)7-6-4-2-1-3-5-6/h6-7H,1-5H2,(H,8,9,10)
+>InChIKey HCAJEUSONLESMK-UHFFFAOYSA-N
+>smarts C1CCC(CC1)NS(=O)(=O)O
+>ionization [M+H]+
+>parentmass 180.068900
+#id EAX281301
+#rt 3.600000
+#mf C6H13NO3S
+#canonical_smiles C1CCC(CC1)NS(=O)(=O)O
+#xlogp 0.600000
+#pubchem 7533
+#chemspider 7252
+#exact_mass 179.061600
+
+>ms2
+55.0541500 556.0000000
+83.0854889 999.0000000
+89.0595500 66.0000000
+107.0701250 262.0000000

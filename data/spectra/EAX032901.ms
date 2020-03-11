@@ -1,0 +1,19 @@
+>compound 1-[(2-chlorophenyl)-diphenylmethyl]imidazole
+>InChI InChI=1S/C22H17ClN2/c23-21-14-8-7-13-20(21)22(25-16-15-24-17-25,18-9-3-1-4-10-18)19-11-5-2-6-12-19/h1-17H
+>InChIKey VNFPBHJOKIVQEB-UHFFFAOYSA-N
+>smarts C1=CC=C(C=C1)C(C2=CC=CC=C2)(C3=CC=CC=C3Cl)N4C=CN=C4
+>ionization [M+H]+
+>parentmass 345.115300
+#id EAX032901
+#rt 8.800000
+#mf C22H17ClN2
+#canonical_smiles C1=CC=C(C=C1)C(C2=CC=CC=C2)(C3=CC=CC=C3Cl)N4C=CN=C4
+#xlogp 5.000000
+#pubchem 2812
+#chemspider 2710
+#exact_mass 344.108000
+
+>ms2
+165.0698500 999.0000000
+277.0778500 999.0000000
+278.0835000 999.0000000

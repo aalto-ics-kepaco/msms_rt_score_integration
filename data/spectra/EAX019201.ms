@@ -1,0 +1,29 @@
+>compound (3<I>R</I>,4<I>S</I>,5<I>S</I>,6<I>R</I>,7<I>R</I>,9<I>R</I>,10<I>E</I>,11<I>S</I>,12<I>R</I>,13<I>S</I>,14<I>R</I>)-6-[(2<I>S</I>,3<I>R</I>,4<I>S</I>,6<I>R</I>)-4-(dimethylamino)-3-hydroxy-6-methyloxan-2-yl]oxy-14-ethyl-7,12,13-trihydroxy-4-[(2<I>R</I>,4<I>R</I>,5<I>S</I>,6<I>S</I>)-5-hydroxy-4-methoxy-4,6-dimethyloxan-2-yl]oxy-10-(2-methoxyethoxymethoxyimino)-3,5,7,9,11,13-hexamethyl-oxacyclotetradecan-2-one
+>InChI InChI=1S/C41H76N2O15/c1-15-29-41(10,49)34(45)24(4)31(42-53-21-52-17-16-50-13)22(2)19-39(8,48)36(58-38-32(44)28(43(11)12)18-23(3)54-38)25(5)33(26(6)37(47)56-29)57-30-20-40(9,51-14)35(46)27(7)55-30/h22-30,32-36,38,44-46,48-49H,15-21H2,1-14H3/b42-31+/t22-,23-,24+,25+,26-,27+,28+,29-,30+,32-,33+,34-,35+,36-,38+,39-,40-,41-/m1/s1
+>InChIKey RXZBMPWDPOLZGW-XMRMVWPWSA-N
+>smarts CC[C@@H]1[C@@]([C@@H]([C@H](/C(=N/OCOCCOC)/[C@@H](C[C@@]([C@@H]([C@H]([C@@H]([C@H](C(=O)O1)C)O[C@H]2C[C@@]([C@H]([C@@H](O2)C)O)(C)OC)C)O[C@H]3[C@@H]([C@H](C[C@H](O3)C)N(C)C)O)(C)O)C)C)O)(C)O
+>ionization [M+H]+
+>parentmass 837.531800
+#id EAX019201
+#rt 10.100000
+#mf C41H76N2O15
+#canonical_smiles CCC1C(C(C(C(=NOCOCCOC)C(CC(C(C(C(C(C(=O)O1)C)OC2CC(C(C(O2)C)O)(C)OC)C)OC3C(C(CC(O3)C)N(C)C)O)(C)O)C)C)O)(C)O
+#xlogp 3.100000
+#pubchem 6915744
+#chemspider 5291557
+#exact_mass 836.524600
+
+>ms2
+72.0807200 973.0000000
+83.0490600 999.0000000
+88.0754600 142.0000000
+98.0963100 432.0000000
+113.0594667 104.0000000
+116.0704667 364.0000000
+116.1067667 586.0000000
+158.1174000 999.0000000
+430.2675000 62.0000000
+530.2198500 180.0000000
+661.4281500 27.0000000
+679.4363500 999.0000000
+837.5317500 509.0000000

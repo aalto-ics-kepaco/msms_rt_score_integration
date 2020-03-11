@@ -1,0 +1,20 @@
+>compound 2-[2-[4-[(4-chlorophenyl)-phenylmethyl]piperazin-1-yl]ethoxy]acetic acid
+>InChI InChI=1S/C21H25ClN2O3/c22-19-8-6-18(7-9-19)21(17-4-2-1-3-5-17)24-12-10-23(11-13-24)14-15-27-16-20(25)26/h1-9,21H,10-16H2,(H,25,26)
+>InChIKey ZKLPARSLTMPFCP-UHFFFAOYSA-N
+>smarts C1CN(CCN1CCOCC(=O)O)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl
+>ionization [M-H]-
+>parentmass 387.148100
+#id EAX277202
+#rt 9.300000
+#mf C21H25ClN2O3
+#canonical_smiles C1CN(CCN1CCOCC(=O)O)C(C2=CC=CC=C2)C3=CC=C(C=C3)Cl
+#xlogp 1.700000
+#pubchem 2678
+#chemspider 2577
+#exact_mass 388.155400
+
+>ms2
+75.0087000 999.0000000
+185.0934000 999.0000000
+199.0314500 999.0000000
+387.1479000 999.0000000

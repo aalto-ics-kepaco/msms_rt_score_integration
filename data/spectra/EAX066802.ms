@@ -1,0 +1,20 @@
+>compound 2,6-bis(ethylamino)-1H-1,3,5-triazin-4-one
+>InChI InChI=1S/C7H13N5O/c1-3-8-5-10-6(9-4-2)12-7(13)11-5/h3-4H2,1-2H3,(H3,8,9,10,11,12,13)
+>InChIKey YQIXRXMOJFQVBV-UHFFFAOYSA-N
+>smarts CCNC1=NC(=O)N=C(N1)NCC
+>ionization [M-H]-
+>parentmass 182.104700
+#id EAX066802
+#rt 3.500000
+#mf C7H13N5O
+#canonical_smiles CCNC1=NC(=O)N=C(N1)NCC
+#xlogp -0.300000
+#pubchem 17448
+#chemspider 16505
+#exact_mass 183.112000
+
+>ms2
+69.0457818 999.0000000
+111.0676889 999.0000000
+154.0733222 667.0000000
+182.1046111 999.0000000

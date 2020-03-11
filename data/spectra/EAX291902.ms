@@ -1,0 +1,22 @@
+>compound 2-(1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8-heptadecafluorooctylsulfonylamino)acetic acid
+>InChI InChI=1S/C10H4F17NO4S/c11-3(12,5(15,16)7(19,20)9(23,24)25)4(13,14)6(17,18)8(21,22)10(26,27)33(31,32)28-1-2(29)30/h28H,1H2,(H,29,30)
+>InChIKey AYLOUUCBACYHAB-UHFFFAOYSA-N
+>smarts C(C(=O)O)NS(=O)(=O)C(C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F
+>ionization [M-H]-
+>parentmass 555.951700
+#id EAX291902
+#rt 15.900000
+#mf C10H4F17NO4S
+#canonical_smiles C(C(=O)O)NS(=O)(=O)C(C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F
+#xlogp 4.800000
+#pubchem 10507011
+#chemspider 8682412
+#exact_mass 556.959000
+
+>ms2
+77.9653667 999.0000000
+168.9893667 999.0000000
+218.9859500 999.0000000
+418.9733000 552.0000000
+497.9459000 999.0000000
+555.9525750 999.0000000

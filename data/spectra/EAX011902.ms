@@ -1,0 +1,24 @@
+>compound 3-chloro-<I>N</I>-[3-chloro-2,6-dinitro-4-(trifluoromethyl)phenyl]-5-(trifluoromethyl)pyridin-2-amine
+>InChI InChI=1S/C13H4Cl2F6N4O4/c14-6-1-4(12(16,17)18)3-22-11(6)23-9-7(24(26)27)2-5(13(19,20)21)8(15)10(9)25(28)29/h1-3H,(H,22,23)
+>InChIKey UZCGKGPEKUCDTF-UHFFFAOYSA-N
+>smarts C1=C(C=NC(=C1Cl)NC2=C(C=C(C(=C2[N+](=O)[O-])Cl)C(F)(F)F)[N+](=O)[O-])C(F)(F)F
+>ionization [M-H]-
+>parentmass 462.944100
+#id EAX011902
+#rt 15.900000
+#mf C13H4Cl2F6N4O4
+#canonical_smiles C1=C(C=NC(=C1Cl)NC2=C(C=C(C(=C2[N+](=O)[O-])Cl)C(F)(F)F)[N+](=O)[O-])C(F)(F)F
+#xlogp 6.000000
+#pubchem 91731
+#chemspider 82831
+#exact_mass 463.951400
+
+>ms2
+334.9812750 999.0000000
+369.9505500 181.0000000
+385.9453000 151.0000000
+386.9532667 189.0000000
+397.9775429 999.0000000
+404.9506500 2.0000000
+415.9434625 999.0000000
+462.9445000 999.0000000

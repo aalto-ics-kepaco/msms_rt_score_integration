@@ -1,0 +1,25 @@
+>compound (<I>E</I>)-1-<I>N</I>&apos;-[2-[[5-[(dimethylamino)methyl]furan-2-yl]methylsulfanyl]ethyl]-1-<I>N</I>-methyl-2-nitroethene-1,1-diamine
+>InChI InChI=1S/C13H22N4O3S/c1-14-13(9-17(18)19)15-6-7-21-10-12-5-4-11(20-12)8-16(2)3/h4-5,9,14-15H,6-8,10H2,1-3H3/b13-9+
+>InChIKey VMXUWOKSQNHOCA-UKTHLTGXSA-N
+>smarts CN/C(=C\[N+](=O)[O-])/NCCSCC1=CC=C(O1)CN(C)C
+>ionization [M-H]-
+>parentmass 313.134000
+#id EAX019602
+#rt 1.900000
+#mf C13H22N4O3S
+#canonical_smiles CNC(=C[N+](=O)[O-])NCCSCC1=CC=C(O1)CN(C)C
+#xlogp 0.300000
+#pubchem 3001055
+#chemspider 4863
+#exact_mass 314.141300
+
+>ms2
+60.0091429 228.0000000
+111.9988000 999.0000000
+116.0465909 630.0000000
+142.0622500 999.0000000
+170.0644778 999.0000000
+213.1066500 8.0000000
+253.1307500 12.0000000
+279.1461500 6.0000000
+313.1337500 999.0000000

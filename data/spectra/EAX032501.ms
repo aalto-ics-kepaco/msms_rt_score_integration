@@ -1,0 +1,20 @@
+>compound (3-phenoxyphenyl)methanol
+>InChI InChI=1S/C13H12O2/c14-10-11-5-4-8-13(9-11)15-12-6-2-1-3-7-12/h1-9,14H,10H2
+>InChIKey KGANAERDZBAECK-UHFFFAOYSA-N
+>smarts C1=CC=C(C=C1)OC2=CC=CC(=C2)CO
+>ionization [M+H]+
+>parentmass 201.091000
+#id EAX032501
+#rt 9.800000
+#mf C13H12O2
+#canonical_smiles C1=CC=C(C=C1)OC2=CC=CC(=C2)CO
+#xlogp 2.500000
+#pubchem 26295
+#chemspider 24499
+#exact_mass 200.083700
+
+>ms2
+65.0386500 999.0000000
+153.0695000 999.0000000
+171.0803625 999.0000000
+183.0802111 999.0000000

@@ -1,0 +1,21 @@
+>compound 2-(2,4-dichlorophenoxy)propanoic acid
+>InChI InChI=1S/C9H8Cl2O3/c1-5(9(12)13)14-8-3-2-6(10)4-7(8)11/h2-5H,1H3,(H,12,13)
+>InChIKey MZHCENGPTKEIGP-UHFFFAOYSA-N
+>smarts CC(C(=O)O)OC1=C(C=C(C=C1)Cl)Cl
+>ionization [M-H]-
+>parentmass 232.977800
+#id EAX027002
+#rt 10.700000
+#mf C9H8O3Cl2
+#canonical_smiles CC(C(=O)O)OC1=C(C=C(C=C1)Cl)Cl
+#xlogp 3.400000
+#pubchem 8427
+#chemspider 8120
+#exact_mass 233.984500
+
+>ms2
+89.0033200 440.0000000
+124.9798500 906.0000000
+160.9566286 999.0000000
+188.9880000 10.0000000
+232.9775500 106.0000000

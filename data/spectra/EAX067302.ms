@@ -1,0 +1,22 @@
+>compound 4-(trifluoromethyl)phenol
+>InChI InChI=1S/C7H5F3O/c8-7(9,10)5-1-3-6(11)4-2-5/h1-4,11H
+>InChIKey BAYGVMXZJBFEMB-UHFFFAOYSA-N
+>smarts C1=CC(=CC=C1C(F)(F)F)O
+>ionization [M-H]-
+>parentmass 161.022000
+#id EAX067302
+#rt 8.900000
+#mf C7H5F3O
+#canonical_smiles C1=CC(=CC=C1C(F)(F)F)O
+#xlogp 2.800000
+#pubchem 67874
+#chemspider 61191
+#exact_mass 162.029200
+
+>ms2
+73.0083500 216.0000000
+93.0143333 81.0000000
+121.0093571 999.0000000
+139.0200400 55.0000000
+141.0156444 390.0000000
+161.0219750 999.0000000

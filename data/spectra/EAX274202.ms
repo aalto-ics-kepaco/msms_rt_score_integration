@@ -1,0 +1,20 @@
+>compound 5-ethyl-5-pentan-2-yl-2-sulfanylidene-1,3-diazinane-4,6-dione
+>InChI InChI=1S/C11H18N2O2S/c1-4-6-7(3)11(5-2)8(14)12-10(16)13-9(11)15/h7H,4-6H2,1-3H3,(H2,12,13,14,15,16)
+>InChIKey IUJDSEJGGMCXSG-UHFFFAOYSA-N
+>smarts CCCC(C)C1(C(=O)NC(=S)NC1=O)CC
+>ionization [M-H]-
+>parentmass 241.101600
+#id EAX274202
+#rt 9.000000
+#mf C11H18N2O2S
+#canonical_smiles CCCC(C)C1(C(=O)NC(=S)NC1=O)CC
+#xlogp 2.900000
+#pubchem 3000715
+#chemspider 2272258
+#exact_mass 242.108900
+
+>ms2
+57.9757583 999.0000000
+100.9815500 999.0000000
+138.1289500 441.0000000
+241.1014500 999.0000000

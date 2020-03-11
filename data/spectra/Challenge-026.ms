@@ -1,0 +1,11 @@
+>compound 4'-bromacetanilide
+>InChI InChI=1S/C8H8BrNO/c1-6(11)10-8-4-2-7(9)3-5-8/h2-5H,1H3,(H,10,11)
+>InChIKey MSLICLMCQYQNPK-UHFFFAOYSA-N
+>smarts CC(=O)NC1=CC=C(Br)C=C1
+>ionization [M-H]-
+>parentmass 211.971600
+#id Challenge-026
+
+>ms2
+169.9611000 120451.9000000
+211.9717000 337274.3000000

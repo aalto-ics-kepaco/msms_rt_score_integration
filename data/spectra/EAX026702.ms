@@ -1,0 +1,21 @@
+>compound 2-(2,4-dichlorophenoxy)acetic acid
+>InChI InChI=1S/C8H6Cl2O3/c9-5-1-2-7(6(10)3-5)13-4-8(11)12/h1-3H,4H2,(H,11,12)
+>InChIKey OVSKIKFHRZPJSS-UHFFFAOYSA-N
+>smarts C1=CC(=C(C=C1Cl)Cl)OCC(=O)O
+>ionization [M-H]-
+>parentmass 218.962100
+#id EAX026702
+#rt 9.100000
+#mf C8H6Cl2O3
+#canonical_smiles C1=CC(=C(C=C1Cl)Cl)OCC(=O)O
+#xlogp 2.800000
+#pubchem 1486
+#chemspider 1441
+#exact_mass 219.969400
+
+>ms2
+89.0032600 379.0000000
+124.9799125 787.0000000
+160.9568071 999.0000000
+174.9724250 22.0000000
+218.9621000 229.0000000

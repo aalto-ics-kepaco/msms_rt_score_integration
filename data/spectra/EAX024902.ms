@@ -1,0 +1,20 @@
+>compound <I>N</I>-[4-(1,3-thiazol-2-ylsulfamoyl)phenyl]acetamide
+>InChI InChI=1S/C11H11N3O3S2/c1-8(15)13-9-2-4-10(5-3-9)19(16,17)14-11-12-6-7-18-11/h2-7H,1H3,(H,12,14)(H,13,15)
+>InChIKey KXNXWINFSDKMHD-UHFFFAOYSA-N
+>smarts CC(=O)NC1=CC=C(C=C1)S(=O)(=O)NC2=NC=CS2
+>ionization [M-H]-
+>parentmass 296.016900
+#id EAX024902
+#rt 4.100000
+#mf C11H11N3O3S2
+#canonical_smiles CC(=O)NC1=CC=C(C=C1)S(=O)(=O)NC2=NC=CS2
+#xlogp -0.100000
+#pubchem 67183
+#chemspider 60527
+#exact_mass 297.024200
+
+>ms2
+134.0613000 110.0000000
+198.0233667 999.0000000
+205.0441000 336.0000000
+296.0168000 999.0000000

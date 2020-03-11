@@ -1,0 +1,20 @@
+>compound 3-phenoxybenzoic acid
+>InChI InChI=1S/C13H10O3/c14-13(15)10-5-4-8-12(9-10)16-11-6-2-1-3-7-11/h1-9H,(H,14,15)
+>InChIKey NXTDJHZGHOFSQG-UHFFFAOYSA-N
+>smarts C1=CC=C(C=C1)OC2=CC=CC(=C2)C(=O)O
+>ionization [M-H]-
+>parentmass 213.055700
+#id EAX032602
+#rt 11.500000
+#mf C13H10O3
+#canonical_smiles C1=CC=C(C=C1)OC2=CC=CC(=C2)C(=O)O
+#xlogp 3.900000
+#pubchem 19539
+#chemspider 18409
+#exact_mass 214.063000
+
+>ms2
+93.0344571 999.0000000
+167.0498500 5.0000000
+169.0658875 999.0000000
+213.0555857 999.0000000

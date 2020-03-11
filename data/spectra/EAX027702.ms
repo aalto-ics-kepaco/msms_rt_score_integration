@@ -1,0 +1,21 @@
+>compound 2-amino-6-(propan-2-ylamino)-1H-1,3,5-triazin-4-one
+>InChI InChI=1S/C6H11N5O/c1-3(2)8-5-9-4(7)10-6(12)11-5/h3H,1-2H3,(H4,7,8,9,10,11,12)
+>InChIKey GCKLGRUZDXSATG-UHFFFAOYSA-N
+>smarts CC(C)NC1=NC(=O)N=C(N1)N
+>ionization [M-H]-
+>parentmass 168.089100
+#id EAX027702
+#rt 1.400000
+#mf C6H11N5O
+#canonical_smiles CC(C)NC1=NC(=O)N=C(N1)N
+#xlogp -0.600000
+#pubchem 107740
+#chemspider 96906
+#exact_mass 169.096400
+
+>ms2
+83.0365500 309.0000000
+83.0614875 999.0000000
+125.0835222 999.0000000
+126.0421800 198.0000000
+168.0890375 999.0000000

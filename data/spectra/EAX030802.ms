@@ -1,0 +1,22 @@
+>compound 2-(4-chloro-2-methylphenoxy)propanoic acid
+>InChI InChI=1S/C10H11ClO3/c1-6-5-8(11)3-4-9(6)14-7(2)10(12)13/h3-5,7H,1-2H3,(H,12,13)
+>InChIKey WNTGYJSOUMFZEP-UHFFFAOYSA-N
+>smarts CC1=C(C=CC(=C1)Cl)OC(C)C(=O)O
+>ionization [M-H]-
+>parentmass 213.032400
+#id EAX030802
+#rt 10.800000
+#mf C10H11ClO3
+#canonical_smiles CC1=C(C=CC(=C1)Cl)OC(C)C(=O)O
+#xlogp 3.100000
+#pubchem 7153
+#chemspider 6886
+#exact_mass 214.039700
+
+>ms2
+71.0137818 54.0000000
+105.0345500 38.0000000
+121.0294800 53.0000000
+141.0112786 999.0000000
+169.0425600 28.0000000
+213.0321333 549.0000000

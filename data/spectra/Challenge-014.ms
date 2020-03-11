@@ -1,0 +1,12 @@
+>compound 4-fluorobenzoylpropionic acid
+>InChI InChI=1S/C10H9FO3/c11-8-3-1-7(2-4-8)9(12)5-6-10(13)14/h1-4H,5-6H2,(H,13,14)
+>InChIKey WUYWHIAAQYQKPP-UHFFFAOYSA-N
+>smarts OC(=O)CCC(=O)C1=CC=C(F)C=C1
+>ionization [M-H]-
+>parentmass 195.046300
+#id Challenge-014
+
+>ms2
+149.0407000 54730.7000000
+151.0565000 530509.8000000
+195.0465000 4818.2000000

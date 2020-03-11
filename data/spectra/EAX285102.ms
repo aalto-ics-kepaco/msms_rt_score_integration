@@ -1,0 +1,21 @@
+>compound 4-[2-(<I>tert</I>-butylamino)-1-hydroxyethyl]-2-(hydroxymethyl)phenol
+>InChI InChI=1S/C13H21NO3/c1-13(2,3)14-7-12(17)9-4-5-11(16)10(6-9)8-15/h4-6,12,14-17H,7-8H2,1-3H3
+>InChIKey NDAUXUAQIAJITI-UHFFFAOYSA-N
+>smarts CC(C)(C)NCC(C1=CC(=C(C=C1)O)CO)O
+>ionization [M-H]-
+>parentmass 238.144900
+#id EAX285102
+#rt 2.000000
+#mf C13H21NO3
+#canonical_smiles CC(C)(C)NCC(C1=CC(=C(C=C1)O)CO)O
+#xlogp 0.300000
+#pubchem 2083
+#chemspider 1999
+#exact_mass 239.152100
+
+>ms2
+163.0640000 557.0000000
+190.1235333 999.0000000
+218.1189429 999.0000000
+220.1344250 999.0000000
+238.1449750 999.0000000

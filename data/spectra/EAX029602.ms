@@ -1,0 +1,21 @@
+>compound (dimethylsulfamoylamino)benzene
+>InChI InChI=1S/C8H12N2O2S/c1-10(2)13(11,12)9-8-6-4-3-5-7-8/h3-7,9H,1-2H3
+>InChIKey QCDQDISRALTLNQ-UHFFFAOYSA-N
+>smarts CN(C)S(=O)(=O)NC1=CC=CC=C1
+>ionization [M-H]-
+>parentmass 199.054700
+#id EAX029602
+#rt 6.300000
+#mf C8H12N2O2S
+#canonical_smiles CN(C)S(=O)(=O)NC1=CC=CC=C1
+#xlogp 0.900000
+#pubchem 78441
+#chemspider 70809
+#exact_mass 200.061900
+
+>ms2
+79.9573500 373.0000000
+91.0428556 999.0000000
+155.0047000 999.0000000
+156.0127500 40.0000000
+199.0549333 999.0000000

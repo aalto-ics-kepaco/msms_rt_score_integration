@@ -1,0 +1,24 @@
+>compound 3-(diaminomethylidene)-1,1-dimethylguanidine
+>InChI InChI=1S/C4H11N5/c1-9(2)4(7)8-3(5)6/h1-2H3,(H5,5,6,7,8)
+>InChIKey XZWYZXLIPXDOLR-UHFFFAOYSA-N
+>smarts CN(C)C(=N)N=C(N)N
+>ionization [M+H]+
+>parentmass 130.108700
+#id EAX255001
+#rt 0.800000
+#mf C4H11N5
+#canonical_smiles CN(C)C(=N)N=C(N)N
+#xlogp -1.300000
+#pubchem 4091
+#chemspider 3949
+#exact_mass 129.101400
+
+>ms2
+60.0556643 999.0000000
+68.0243444 71.0000000
+71.0603786 999.0000000
+85.0509143 440.0000000
+88.0869643 494.0000000
+96.0555250 7.0000000
+113.0821857 279.0000000
+130.1087500 999.0000000

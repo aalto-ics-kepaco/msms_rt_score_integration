@@ -1,0 +1,21 @@
+>compound (1<I>R</I>,2<I>R</I>)-2-[(dimethylamino)methyl]-1-(3-methoxyphenyl)cyclohexan-1-ol
+>InChI InChI=1S/C16H25NO2/c1-17(2)12-14-7-4-5-10-16(14,18)13-8-6-9-15(11-13)19-3/h6,8-9,11,14,18H,4-5,7,10,12H2,1-3H3/t14-,16+/m1/s1
+>InChIKey TVYLLZQTGLZFBW-ZBFHGGJFSA-N
+>smarts CN(C)C[C@H]1CCCC[C@@]1(C2=CC(=CC=C2)OC)O
+>ionization [M+H]+
+>parentmass 264.195800
+#id EAX256701
+#rt 4.900000
+#mf C16H25NO2
+#canonical_smiles CN(C)CC1CCCCC1(C2=CC(=CC=C2)OC)O
+#xlogp 2.600000
+#pubchem 33741
+#chemspider 31105
+#exact_mass 263.188500
+
+>ms2
+56.0493750 4.0000000
+58.0651250 999.0000000
+121.0647667 10.0000000
+246.1851857 999.0000000
+264.1959600 999.0000000

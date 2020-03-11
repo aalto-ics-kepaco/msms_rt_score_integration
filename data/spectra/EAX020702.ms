@@ -1,0 +1,21 @@
+>compound 2-[1-(4-chlorobenzoyl)-5-methoxy-2-methylindol-3-yl]acetic acid
+>InChI InChI=1S/C19H16ClNO4/c1-11-15(10-18(22)23)16-9-14(25-2)7-8-17(16)21(11)19(24)12-3-5-13(20)6-4-12/h3-9H,10H2,1-2H3,(H,22,23)
+>InChIKey CGIGDMFJXJATDK-UHFFFAOYSA-N
+>smarts CC1=C(C2=C(N1C(=O)C3=CC=C(C=C3)Cl)C=CC(=C2)OC)CC(=O)O
+>ionization [M-H]-
+>parentmass 356.069500
+#id EAX020702
+#rt 12.900000
+#mf C19H16ClNO4
+#canonical_smiles CC1=C(C2=C(N1C(=O)C3=CC=C(C=C3)Cl)C=CC(=C2)OC)CC(=O)O
+#xlogp 4.300000
+#pubchem 3715
+#chemspider 3584
+#exact_mass 357.076800
+
+>ms2
+158.0612000 999.0000000
+270.0683333 147.0000000
+282.0331000 999.0000000
+297.0562750 999.0000000
+312.0789750 999.0000000

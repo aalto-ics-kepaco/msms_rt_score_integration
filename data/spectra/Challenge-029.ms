@@ -1,0 +1,11 @@
+>compound 4-iodphenol
+>InChI InChI=1S/C6H5IO/c7-5-1-3-6(8)4-2-5/h1-4,8H
+>InChIKey VSMDINRNYYEDRN-UHFFFAOYSA-N
+>smarts OC1=CC=C(I)C=C1
+>ionization [M-H]-
+>parentmass 218.931200
+#id Challenge-029
+
+>ms2
+126.9047000 1652754.5000000
+218.9313000 680913.3000000

@@ -1,0 +1,11 @@
+>compound 2-hydroxyanthraquinone
+>InChI InChI=1S/C14H8O3/c15-8-5-6-11-12(7-8)14(17)10-4-2-1-3-9(10)13(11)16/h1-7,15H
+>InChIKey GCDBEYOJCZLKMC-UHFFFAOYSA-N
+>smarts OC1=CC2=C(C=C1)C(=O)C1=CC=CC=C1C2=O
+>ionization [M-H]-
+>parentmass 223.040100
+#id Challenge-043
+
+>ms2
+195.0451000 1755708.4000000
+223.0400000 29465858.0000000

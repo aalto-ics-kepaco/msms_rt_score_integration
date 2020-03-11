@@ -1,0 +1,20 @@
+>compound <I>N</I>-methyl-3-phenyl-3-[4-(trifluoromethyl)phenoxy]propan-1-amine
+>InChI InChI=1S/C17H18F3NO/c1-21-12-11-16(13-5-3-2-4-6-13)22-15-9-7-14(8-10-15)17(18,19)20/h2-10,16,21H,11-12H2,1H3
+>InChIKey RTHCYVBBDHJXIQ-UHFFFAOYSA-N
+>smarts CNCCC(C1=CC=CC=C1)OC2=CC=C(C=C2)C(F)(F)F
+>ionization [M+H]+
+>parentmass 310.141300
+#id EAX033401
+#rt 9.200000
+#mf C17H18F3NO
+#canonical_smiles CNCCC(C1=CC=CC=C1)OC2=CC=C(C=C2)C(F)(F)F
+#xlogp 4.000000
+#pubchem 3386
+#chemspider 3269
+#exact_mass 309.134000
+
+>ms2
+91.0542333 999.0000000
+117.0699000 997.0000000
+148.1120000 999.0000000
+310.1414000 999.0000000
