@@ -1,7 +1,7 @@
 # (MS2, RT)-tuple Database
 
 All data used in our experiments is organized in SQLite DB. The database can be downloaded from 
-[Zenodo](ADD_LINK_HERE) (~12GB), and its layout and as well as content is described here.   
+[Zenodo](ADD_LINK_HERE) (~12GB). Its layout as well as content is described here.   
 
 ## General Information
 
@@ -13,14 +13,12 @@ for the development of their MS2 + RT score integration framework, was added to 
 
 ### (MS2, RT)-tuples
 
-The table ```challenges``` contains four entries corresponding to the datasets used in our publication
+The table ```challenges``` contains entries corresponding to the datasets used in our publication
 (see Section 3.1 and Table 1): CASMI 2016, **positive** and **negative**; Massbank EA, **EA_positive** and **EA_negative**.
 
-To each challenge, a set of (MS2, RT)-tuples is associated and can be found in table ```spectra```. 
-
-TODO: Either add the spectra-files to the repository, or (better), add the (mass, intensity)-tuples directly into
-the DB.
-
+To each challenge the set of spectra can be found in the table ```spectra```. It contains information about the 
+measured molecule, ionization, spectrum-id, retention-time etc. Currently, the peak lists, i.e. the actuall spectra, 
+are not stored in the database, but can be found in the [spectra directory](/data/spectra/). 
 
 
 The RankSVM training retention times are _not_ part of this database, but rather the preference 
