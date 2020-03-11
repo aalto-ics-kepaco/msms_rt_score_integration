@@ -92,3 +92,15 @@ for all molecular structures associated with the CASMI datraset. All descriptors
 where calculated using RDKit.
 
 ### Spectra Scores
+
+In the database we store the MS2 scores with all spectra typically calculated
+with multiple metabolite identification frameworks. Referring to the CASMI
+challenge we call the different frameworks *participants* and an overview can
+be found in the ```participants``` table. For out publication only a subset of
+them is relevant: **MetFrag_2.4.5__*** and **IOKR__696a17f3**, both are described
+in Section 3.3.
+
+#### CASMI 2016
+
+For the CASMI dataset, the database contains the MetFrag scores using only
+the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**). 
