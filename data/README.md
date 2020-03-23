@@ -70,7 +70,7 @@ Two molecular feature representations are provided within the database.
 Molecular fingerprints describe a molecule by a vector indicating the presence
 respectively the count of a set of molecular substructures. The meta description
 of the provided fingerprints can be found in table ```fingerprints_meta```. In
- otal five different fingerprint definitions are in the database (```fingerprints_data```):
+total five different fingerprint definitions are in the database (```fingerprints_data```):
 - **substructure_count**: Counts of 307 FPS calculated using CDK and
   used for the RankSVM order predictions (see Section 3.2)
 - **morgan_***: ECFP and FCFP fingerprints calcualted using RDKit used to study
@@ -103,4 +103,14 @@ in Section 3.3.
 #### CASMI 2016
 
 For the CASMI dataset, the database contains the MetFrag scores using only
-the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**). 
+the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
+(**IOKR__696a17f3**). Furthermore, it countains the ```FragmenterScore``` plus 
+```RetentionTimeScore```features scores using MetFrag for different values of D.
+Check the *description* column in the ```participants``` table for details. 
+
+#### Massbank EA
+
+For the Massbank EA dataset, the database contains the MetFrag scores using only
+the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
+(**IOKR__696a17f3**). The values of MetFrag's ```RetentionTimeScore``` feature are
+currently not in the database, but can be found in ...
