@@ -118,3 +118,15 @@ the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR sco
 (**IOKR__696a17f3**). The values of MetFrag's ```RetentionTimeScore``` feature are
 currently not in the database, but can be found [here](/data/metfrag_RetentionTimeScore_EA)
 for each random sample, 50x negative and 100x positive mode (see Section 3.1).
+
+### Preference Scores
+
+The preference scores are related to the retention order, i.e., the predicted 
+retention orders can be directly extracted by the combination of two preference
+values. To understand this, please read in Section 2.2.3 and specifically Eq. (2). 
+One can see, that the RankSVM model (w) can be used to predict the retention order
+of two molecular structures by calculating: w^T(phi_i - phi_j). This can be also
+expressed as: w^T phi_i - w^T phi_j. Therefore, the order is predicted through 
+the difference of the two preference values w^T phi_i and w^T phi_j. That means,
+it is sufficient to store the preference values, calculated using the RankSVM, 
+for each molecular candidate structure in the database.
