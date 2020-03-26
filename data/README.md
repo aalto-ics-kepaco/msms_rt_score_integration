@@ -116,5 +116,5 @@ for details.
 For the Massbank EA dataset, the database contains the MetFrag scores using only
 the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
 (**IOKR__696a17f3**). The values of MetFrag's ```RetentionTimeScore``` feature are
-currently not in the database, but can be found [here](data/metfrag_RetentionTimeScore_EA)
+currently not in the database, but can be found [here](/data/metfrag_RetentionTimeScore_EA)
 for each random sample, 50x negative and 100x positive mode (see Section 3.1).
