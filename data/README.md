@@ -96,21 +96,25 @@ where calculated using RDKit.
 In the database we store the MS2 scores with all spectra typically calculated
 with multiple metabolite identification frameworks. Referring to the CASMI
 challenge we call the different frameworks *participants* and an overview can
-be found in the ```participants``` table. For out publication only a subset of
-them is relevant: **MetFrag_2.4.5__*** and **IOKR__696a17f3**, both are described
-in Section 3.3.
+be found in the ```participants``` table. For our publication only 
+**MetFrag_2.4.5__*** and **IOKR__696a17f3** are relevant (see Section 3.3).
 
 #### CASMI 2016
 
 For the CASMI dataset, the database contains the MetFrag scores using only
 the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
-(**IOKR__696a17f3**). Furthermore, it countains the ```FragmenterScore``` plus 
-```RetentionTimeScore```features scores using MetFrag for different values of D.
-Check the *description* column in the ```participants``` table for details. 
+(**IOKR__696a17f3**). Furthermore, it countains combined scores:
+
+(1- D) * ```FragmenterScore``` + D *  ```RetentionTimeScore```
+
+for different values of D. The combination has been directly computed using the
+MetFrag software. Check the *description* column in the ```participants``` table 
+for details. 
 
 #### Massbank EA
 
 For the Massbank EA dataset, the database contains the MetFrag scores using only
 the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
 (**IOKR__696a17f3**). The values of MetFrag's ```RetentionTimeScore``` feature are
-currently not in the database, but can be found in ...
+currently not in the database, but can be found [here](data/metfrag_RetentionTimeScore_EA)
+for each random sample, 50x negative and 100x positive mode (see Section 3.1).
