@@ -129,4 +129,34 @@ of two molecular structures by calculating: w^T(phi_i - phi_j). This can be also
 expressed as: w^T phi_i - w^T phi_j. Therefore, the order is predicted through 
 the difference of the two preference values w^T phi_i and w^T phi_j. That means,
 it is sufficient to store the preference values, calculated using the RankSVM, 
-for each molecular candidate structure in the database.
+for each molecular candidate structure in the database. The pairwise order 
+predictions, can subsequently be calculated on demand. 
+
+An description of the RankSVM models used in the paper can be found in the
+```preference_scores_meta``` table. For the CASMI dataset, multiple RankSVM 
+models using different RT datasets (*training_dataset* column) habe been 
+trained. However, only the *MEOH_AND_CASMI* has finally been used. For the 
+Massbank EA dataset, we used the same RT dataset (*MEOH_AND_CASMI_JOINT*
+and *MEOH_AND_CASMI* are essentially the same) for the RankSVM training,
+but we trained different models for each random subsample to make the best
+use of the available RT training data. Section 3.1 and 3.2 of the paper 
+should be read for a better understanding.
+
+The preference scores for all molecular structures are in the ```preference_scores_data```
+table.
+
+## Summary and Potential of the Database
+
+We created the database mainly to easy the data handling and ensure reduce errors
+introduced by merges of different data sources. It provides a unifyed view on the
+data, ensuring that, e.g., the same molecular representation is used througout the
+various framework-steps. 
+
+We hope, that the database might has a value in it self for other researchers,
+who might can use some parts of it in their own work. Many details are probably
+missing from this readme, but please contact us, if you want to use the data,
+but you need to ensure how exactly some data has been processed or calculated. 
+
+The scripts to set up the database from the original data respectively the 
+implementation of the fingerprint and descriptor calculation are not part of this 
+repository, but can be provided on demand.
