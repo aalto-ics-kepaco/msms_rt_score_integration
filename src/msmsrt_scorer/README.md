@@ -23,9 +23,9 @@ To install the package, simply run: ```python setup.py install```.
 Implementation of the functionality needed to load the data from the [local SQLite
 database](data) and provide the needed data structures to our framework.  
 
-- Loading spectra information ([here](data_utils.py#L179) and [here](data_utils.py#281))
-- Loading [candidate information](data_utils.py#L217) 
-- Loading [MS2-scores](data_utils.py#L217) and [RankSVM preferences scores](data_utils.py#L202)
+- Loading spectra information ([here](msmsrt_scorer/data_utils.py#L179) and [here](msmsrt_scorer/data_utils.py#281))
+- Loading [candidate information](msmsrt_scorer/data_utils.py#L217) 
+- Loading [MS2-scores](msmsrt_scorer/data_utils.py#L217) and [RankSVM preferences scores](msmsrt_scorer/data_utils.py#L202)
 - Implementation of the edge-potential-functions
  
 If you want to use our framework without a local SQLite database, you can 
@@ -37,6 +37,6 @@ files simply need to provide the same information.
 Functionality to calculate top-k ranking performance measures used in our paper. Furthermore, 
 implementations needed to run the hyper parameter grid search and best parameter selection.
 
-- [Top-k accuracy calculation](evaluation_tools.py#L270)
-- [Grid search](evaluation_tools.py#L39)
-- [Performance evaluation of grid elements](evaluation_tools.py#L167)
+- [Top-k accuracy calculation](msmsrt_scorer/evaluation_tools.py#L270)
+- [Grid search](msmsrt_scorer/evaluation_tools.py#L39)
+- [Performance evaluation of grid elements](msmsrt_scorer/evaluation_tools.py#L167)

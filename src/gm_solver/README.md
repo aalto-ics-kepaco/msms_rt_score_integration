@@ -1,9 +1,9 @@
 ## Sum- and Max-Product Implementation: ```exact_solvers.py```
 
-Implementation of [Sum-product and Max-product algorithm](../gm_solver/exact_solvers.py#L302) 
+Implementation of [Sum-product and Max-product algorithm](gm_solver/exact_solvers.py#L302) 
 for tree like Markov random field to calculate the candidate marginals. We 
 closely followed the description of [1, p. 334] and [2, p. 383] for the 
-implementation. Also the [random spanning tree sampling](../gm_solver/exact_solvers.py#L738) 
+implementation. Also the [random spanning tree sampling](gm_solver/exact_solvers.py#L738) 
 is implemented in this file. 
 
 # References

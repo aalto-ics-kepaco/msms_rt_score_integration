@@ -5,7 +5,7 @@ setup(
     description="Utility functions for the MS2 + RT score integration method.",
     version="0.1",
 
-    packages=find_packages(where="msmsrt_scorer", exclude=["tests"]),
+    packages=find_packages(where="msmsrt_scorer", exclude=["*tests"]),
 
     # Minimum requirements the package was tested with
     install_requirements=[
@@ -14,4 +14,6 @@ setup(
         "sklearn>=0.22",
         "pandas>=0.25.3"
     ]
+
+
 )

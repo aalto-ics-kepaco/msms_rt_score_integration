@@ -1046,8 +1046,8 @@ class ChainFactorGraph(FactorGraph):
 
 
 if __name__ == "__main__":
-    from src.msmsrt_scorer.data_utils import sigmoid, prepare_candidate_set_IOKR, load_dataset_CASMI, hinge_sigmoid
-    from src.msmsrt_scorer.evaluation_tools import get_topk_performance_casmi2016
+    from src.msmsrt_scorer.msmsrt_scorer.data_utils import sigmoid, prepare_candidate_set_IOKR, load_dataset_CASMI, hinge_sigmoid
+    from src.msmsrt_scorer.msmsrt_scorer.evaluation_tools import get_topk_performance_casmi2016
 
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("--database_fn", type=str,
