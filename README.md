@@ -1,6 +1,13 @@
-## Requirements
 
-The code has been developed for Python >= 3.6 and the following packages are required in the specified minimum version:
+## Installation
+
+All code was developed and tested in a Linux environment. Windows or MacOS are currently not officially supported. 
+However, most of the code and installation procedure probably just works fine for those operating systems as well. 
+
+### Requirements Packages
+
+The code has been developed for **Python >= 3.6** and the following packages are required in their specified minimum 
+version:
 
 * numpy >= 1.17
 * scipy >= 1.3
@@ -16,8 +23,12 @@ The code has been developed for Python >= 3.6 and the following packages are req
 * networkx >= 2.4
 * setuptools >= 46.1
 
-## Install
+### Install into a Virtual Environment
 
-```virtualenv venv && source venv/bin/activate && python setup.py install```
+First create a virtual Python environment and activate it:
 
-To install the package, simply run: ```python setup.py install```.
+```virtualenv venv && source venv/bin/activate```
+
+Subsequently you can run the setup. All required packages will be fetched as well:
+
+```python setup.py install```
