@@ -30,27 +30,8 @@ import itertools as it
 
 from collections import OrderedDict
 
-from gm_solver.exact_solvers import ChainFactorGraph, RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
-
-
-def sigmoid(x, k=1., x_0=0., T=1.):
-    """
-    Sigmoid function defined as in [1]:
-
-        f(x) = T / (1 + exp(-k * (x - x_0)))
-
-    Paper section 2.2.3
-
-    :param x: scalar or array-like with shape=(n, m), values to transform using the logistic function.
-    :param k: scalar, The logistic growth rate or steepness of the curve.
-    :param x_0: scalar, The x-value of the sigmoid's midpoint
-    :param T: scalar, The curve's maximum value
-    :return: scalar or array-like with shape=(n, m), transformed input values
-
-    Reference:
-        [1] https://en.wikipedia.org/wiki/Logistic_function
-    """
-    return T / (1 + np.exp(-k * (x - x_0)))
+from msmsrt_scorer.exact_solvers import ChainFactorGraph, RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
+from msmsrt_scorer.data_utils import sigmoid
 
 
 def generate_random_example(random_seed=None, n_spec=None):

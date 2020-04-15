@@ -25,8 +25,8 @@
 
 from numpy import array
 import numpy as np
-from msmsrt_scorer.measure_utilities import UndefinedPerformance
-from msmsrt_scorer.array_tools import as_2d_array
+from msmsrt_scorer.lib.measure_utilities import UndefinedPerformance
+from msmsrt_scorer.lib.array_tools import as_2d_array
 
 def cindex_singletask(Y, P):
     correct = Y.astype(np.float64)

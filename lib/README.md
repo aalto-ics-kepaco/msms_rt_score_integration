@@ -1,21 +1,7 @@
-# Utility Functions 
+# Backend of our Framework
 
 Implementation utility functions used to run the experiments with our MS2 + RT score integration
-framework.
-
-## Requirements
-
-The following packages are required in the specified minimum version:
-
-* numpy >= 1.17
-* scipy >= 1.3
-* sklearn >= 0.22
-* pandas >= 0.25.3
-* [gm_solver](src/gm_solver) (shipped with this repository)
-
-## Install
-
-To install the package, simply run: ```python setup.py install```.
+framework. 
 
 ## Functions
 
@@ -41,3 +27,16 @@ implementations needed to run the hyper parameter grid search and best parameter
 - [Top-k accuracy calculation](msmsrt_scorer/evaluation_tools.py#L270)
 - [Grid search](msmsrt_scorer/evaluation_tools.py#L39)
 - [Performance evaluation of grid elements](msmsrt_scorer/evaluation_tools.py#L167)
+
+### Sum- and Max-Product Implementation 
+
+Implementation of [Sum-product and Max-product algorithm](gm_solver/exact_solvers.py#L302) 
+for tree like Markov random field to calculate the candidate marginals. We 
+closely followed the description of [1, p. 334] and [2, p. 383] for the 
+implementation. Also the [random spanning tree sampling](gm_solver/exact_solvers.py#L738) 
+is implemented in this file. 
+
+## References
+
+* [1]: [MacKay, D. J., "Information theory, inference and learning algorithms", Cambridge university press (2005)](http://www.inference.org.uk/mackay/itila/)
+* [2]: [Bishop, C., "Pattern Recognition and Machine Learning", Springer New York (2006)](https://www.microsoft.com/en-us/research/people/cmbishop/prml-book/)

@@ -163,7 +163,7 @@ if __name__ == "__main__":
                                  "i.e. finding the best (D, k)-tuple based on the training set and subsequently "
                                  "evaluating the score integration on the test set.")
 
-    arg_parser.add_argument("--base_odir", type=str, default="results__ms2score_fix",
+    arg_parser.add_argument("--base_odir", type=str, default="results__TFG",
                             help="Base directory to store the results and output files.")
 
     # Optional parameters evaluation

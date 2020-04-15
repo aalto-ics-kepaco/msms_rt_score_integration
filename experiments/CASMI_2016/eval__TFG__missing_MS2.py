@@ -37,13 +37,11 @@ import pandas as pd
 from joblib import Parallel, delayed
 from sklearn.model_selection import ShuffleSplit, ParameterGrid
 
-from msmsrt_scorer.data_utils import prepare_candidate_set_MetFrag, prepare_candidate_set_IOKR
-from msmsrt_scorer.evaluation_tools import get_topk_performance_from_scores, evaluate_parameter_grid, get_marginals
-from msmsrt_scorer.evaluation_tools import run_parameter_grid
+from msmsrt_scorer.lib.data_utils import prepare_candidate_set_MetFrag, prepare_candidate_set_IOKR
+from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores, evaluate_parameter_grid, get_marginals
+from msmsrt_scorer.lib.evaluation_tools import run_parameter_grid
 
-# Load some wrapper functions from the other eval script
-sys.path.append(os.path.dirname(__file__))
-from eval__TFG import load_platt_k, load_data
+from msmsrt_scorer.experiments.CASMI_2016 import load_data, load_platt_k
 
 
 if __name__ == "__main__":
@@ -140,10 +138,10 @@ if __name__ == "__main__":
     arg_parser.add_argument("--mode", type=str, default="debug_missing_ms2",
                             choices=["missing_ms2", "debug_missing_ms2"])
 
-    arg_parser.add_argument("--base_odir", type=str, default="results__ms2score_fix",
+    arg_parser.add_argument("--base_odir", type=str, default="results__TFG",
                             help="Base directory to store the results and output files.")
 
-    arg_parser.add_argument("--opt_param_dir", type=str, default="results__ms2score_fix",
+    arg_parser.add_argument("--opt_param_dir", type=str, default="results__TFG",
                             help="Base directory to store the results and output files.")
 
     args = arg_parser.parse_args()

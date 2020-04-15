@@ -32,8 +32,8 @@ from joblib import Parallel, delayed
 from scipy.stats import rankdata
 from sklearn.metrics import ndcg_score
 
-from msmsrt_scorer.data_utils import sigmoid, hinge_sigmoid, step_fun
-from gm_solver.exact_solvers import RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
+from msmsrt_scorer.lib.data_utils import sigmoid, hinge_sigmoid, step_fun
+from msmsrt_scorer.lib.exact_solvers import RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
 
 
 def run_parameter_grid(candidates, h_param_grid, tree_method, n_trees, n_jobs, make_order_prob, norm_order_scores,

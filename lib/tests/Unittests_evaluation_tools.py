@@ -27,7 +27,7 @@
 import numpy as np
 import unittest
 
-from msmsrt_scorer.evaluation_tools import get_topk_performance_csifingerid
+from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_csifingerid
 
 
 class TestTopKPerformanceCSIFingerID(unittest.TestCase):
