@@ -28,7 +28,7 @@ implementations needed to run the hyper parameter grid search and best parameter
 - [Grid search](msmsrt_scorer/evaluation_tools.py#L39)
 - [Performance evaluation of grid elements](msmsrt_scorer/evaluation_tools.py#L167)
 
-### Sum- and Max-Product Implementation 
+### Sum- and Max-Product Implementation: ```exact_solvers.py```
 
 Implementation of [Sum-product and Max-product algorithm](gm_solver/exact_solvers.py#L302) 
 for tree like Markov random field to calculate the candidate marginals. We 
