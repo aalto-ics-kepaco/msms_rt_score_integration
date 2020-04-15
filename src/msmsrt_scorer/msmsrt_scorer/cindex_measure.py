@@ -25,8 +25,8 @@
 
 from numpy import array
 import numpy as np
-from .measure_utilities import UndefinedPerformance
-from .array_tools import as_2d_array
+from msmsrt_scorer.measure_utilities import UndefinedPerformance
+from msmsrt_scorer.array_tools import as_2d_array
 
 def cindex_singletask(Y, P):
     correct = Y.astype(np.float64)
@@ -73,12 +73,8 @@ def cindex_singletask_SLOW(Y, P):
         disagreement /= decisions
     return 1. - disagreement
 
-try:
-    from rlscore.utilities import swapped
-except Exception as e:
-    print(e)
-    print('Warning: could not import the fast cython implementation of the concordance index measure. Using a slow python-based one instead.')
-    cindex_singletask = cindex_singletask_SLOW
+# Modification to not require cython
+cindex_singletask = cindex_singletask_SLOW
 
 def cindex_multitask(Y, P):
     perfs = []

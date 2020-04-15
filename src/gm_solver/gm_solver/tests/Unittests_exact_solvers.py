@@ -29,8 +29,28 @@ import numpy as np
 import itertools as it
 
 from collections import OrderedDict
-from data_utils import sigmoid
-from exact_solvers import ChainFactorGraph, RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
+
+from gm_solver.exact_solvers import ChainFactorGraph, RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
+
+
+def sigmoid(x, k=1., x_0=0., T=1.):
+    """
+    Sigmoid function defined as in [1]:
+
+        f(x) = T / (1 + exp(-k * (x - x_0)))
+
+    Paper section 2.2.3
+
+    :param x: scalar or array-like with shape=(n, m), values to transform using the logistic function.
+    :param k: scalar, The logistic growth rate or steepness of the curve.
+    :param x_0: scalar, The x-value of the sigmoid's midpoint
+    :param T: scalar, The curve's maximum value
+    :return: scalar or array-like with shape=(n, m), transformed input values
+
+    Reference:
+        [1] https://en.wikipedia.org/wiki/Logistic_function
+    """
+    return T / (1 + np.exp(-k * (x - x_0)))
 
 
 def generate_random_example(random_seed=None, n_spec=None):
@@ -224,8 +244,10 @@ class TestChainFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        marg_unrm = ChainFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(False)
-        marg_norm = ChainFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(True)
+        marg_unrm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                     order_probs=mckay.prefscores).sum_product().get_marginals(False)
+        marg_norm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                     order_probs=mckay.prefscores).sum_product().get_marginals(True)
         for i in range(3):
             np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
             np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
@@ -239,8 +261,10 @@ class TestChainFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        marg_unrm = ChainFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(False)
-        marg_norm = ChainFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(True)
+        marg_unrm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                     order_probs=mckay.prefscores).sum_product().get_marginals(False)
+        marg_norm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                     order_probs=mckay.prefscores).sum_product().get_marginals(True)
         for i in range(3):
             np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
             np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
@@ -255,7 +279,8 @@ class TestChainFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        Z_max, p_max = ChainFactorGraph(mckay.candidates, order_probs=mckay.prefscores).max_product().MAP()
+        Z_max, p_max = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                        order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
         np.testing.assert_equal(Z_max, Z_max_ref)
         np.testing.assert_equal(np.exp(p_max), p_max_ref)
@@ -269,7 +294,8 @@ class TestChainFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        Z_max, p_max = ChainFactorGraph(mckay.candidates, order_probs=mckay.prefscores).max_product().MAP()
+        Z_max, p_max = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                        order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
         np.testing.assert_equal(Z_max, Z_max_ref)
         np.testing.assert_equal(np.exp(p_max), p_max_ref)
@@ -301,8 +327,10 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        marg_unrm = RetentionTimeTreeFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(False)
-        marg_norm = RetentionTimeTreeFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(True)
+        marg_unrm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                                 order_probs=mckay.prefscores).sum_product().get_marginals(False)
+        marg_norm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                                 order_probs=mckay.prefscores).sum_product().get_marginals(True)
         for i in range(3):
             np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
             np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
@@ -316,8 +344,10 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        marg_unrm = RetentionTimeTreeFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(False)
-        marg_norm = RetentionTimeTreeFactorGraph(mckay.candidates, order_probs=mckay.prefscores).sum_product().get_marginals(True)
+        marg_unrm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                                 order_probs=mckay.prefscores).sum_product().get_marginals(False)
+        marg_norm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                                 order_probs=mckay.prefscores).sum_product().get_marginals(True)
         for i in range(3):
             np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
             np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
@@ -332,7 +362,8 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        Z_max, p_max = RetentionTimeTreeFactorGraph(mckay.candidates, order_probs=mckay.prefscores).max_product().MAP()
+        Z_max, p_max = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                                    order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
         np.testing.assert_equal(Z_max, Z_max_ref)
         np.testing.assert_equal(np.exp(p_max), p_max_ref)
@@ -346,7 +377,8 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
 
         # Sum-product
         mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
-        Z_max, p_max = RetentionTimeTreeFactorGraph(mckay.candidates, order_probs=mckay.prefscores).max_product().MAP()
+        Z_max, p_max = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
+                                                    order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
         np.testing.assert_equal(Z_max, Z_max_ref)
         np.testing.assert_equal(np.exp(p_max), p_max_ref)

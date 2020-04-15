@@ -32,7 +32,7 @@ from copy import deepcopy
 from scipy import stats
 from sklearn.utils.random import check_random_state
 
-from .cindex_measure import cindex
+from msmsrt_scorer.cindex_measure import cindex
 
 
 def minmax_kernel(X, Y=None):

@@ -27,14 +27,10 @@
 import numpy as np
 import networkx as nx
 import itertools as it
-import sqlite3
-import argparse
-import scipy.stats
 
 from collections import OrderedDict
 from scipy.special import logsumexp
 from sklearn.utils import check_random_state
-from sklearn.model_selection import ShuffleSplit
 from sklearn.preprocessing import normalize
 
 import logging
@@ -297,7 +293,7 @@ class FactorGraph(object):
 
 
 class TreeFactorGraph(FactorGraph):
-    def __init__(self, candidates, var_conn_graph, make_order_probs=sigmoid, order_probs=None, use_log_space=True,
+    def __init__(self, candidates, var_conn_graph, make_order_probs, order_probs=None, use_log_space=True,
                  D=0.5, norm_order_scores=False):
         """
         Class to perform inference on tree like a Markov random field (MRF). The sum- and max-marginals can be returned
@@ -651,7 +647,7 @@ class TreeFactorGraph(FactorGraph):
 
 
 class RetentionTimeTreeFactorGraph(TreeFactorGraph):
-    def __init__(self, candidates, make_order_probs=sigmoid, order_probs=None, use_log_space=True, min_rt_diff=0.0,
+    def __init__(self, candidates, make_order_probs, order_probs=None, use_log_space=True, min_rt_diff=0.0,
                  D=0.5, norm_order_scores=False):
         """
         Class representing a tree like factor graph derived from the ms-features by using a minimum spanning tree (MST)
@@ -838,7 +834,7 @@ class RandomTreeFactorGraph(TreeFactorGraph):
 # Code not used in the paper
 # ----------------------------------------
 class ChainFactorGraph(FactorGraph):
-    def __init__(self, candidates, make_order_probs=lambda _x, loc: sigmoid(_x), order_probs=None, use_log_space=True, D=0.5):
+    def __init__(self, candidates, make_order_probs, order_probs=None, use_log_space=True, D=0.5):
         """
         :param candidates:
         :param make_order_probs:
@@ -1043,58 +1039,3 @@ class ChainFactorGraph(FactorGraph):
 
     def get_max_marginals(self, normalize=True):
         raise NotImplementedError("Max-get_marginals are not implemented yet.")
-
-
-if __name__ == "__main__":
-    from src.msmsrt_scorer.msmsrt_scorer.data_utils import sigmoid, prepare_candidate_set_IOKR, load_dataset_CASMI, hinge_sigmoid
-    from src.msmsrt_scorer.msmsrt_scorer.evaluation_tools import get_topk_performance_casmi2016
-
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--database_fn", type=str,
-                            default="/home/bach/Documents/doctoral/projects/local_casmi_db/db/use_inchis/DB_LATEST.db")
-    args = arg_parser.parse_args()
-
-    LOGGER.setLevel(level=logging.DEBUG)
-
-    # Path to the CASMI score database
-    DBFN = args.database_fn
-    DBURL = "file:" + DBFN + "?mode=ro"
-
-    # Ionization mode to consider
-    MODE = "positive"
-
-    # Load MS2 scores of specified method
-    METHOD = "MetFrag_2.4.5__8afe4a14"
-
-    # Preference score model
-    PREFMODEL = "c6d6f521"
-
-    with sqlite3.connect(DBURL, uri=True) as db:
-        challenges, candidates = load_dataset_CASMI(db, MODE, METHOD, PREFMODEL, max_n_cand=np.inf,
-                                                    sort_candidates_by_ms2_score=False)
-
-    # Get random candidate set subset
-    _, subs = next(ShuffleSplit(1, test_size=75, random_state=2020).split(candidates))
-
-    candidates = prepare_candidate_set_IOKR(challenges, candidates, subs, random_state=99, n_ms2=75)
-
-    def f1(pref_diff, **kwargs):
-        return scipy.stats.norm.pdf(pref_diff, loc=kwargs["loc"], scale=1)
-
-    def f2(pref_diff, **kwargs):
-        return sigmoid(pref_diff, k=1)
-
-    def f3(pref_diff, **kwargs):
-        return sigmoid(pref_diff, x_0=kwargs["loc"])
-
-    def f4(pref_deff, **kwargs):
-        return hinge_sigmoid(pref_deff)
-
-    TFG = RandomTreeFactorGraph(candidates, make_order_probs=f2, D=0.1, random_state=332).max_product()
-    marg = TFG.get_max_marginals()
-    print(TFG)
-
-    _, acc = get_topk_performance_casmi2016(candidates, None)
-    print(acc[0], acc[4], acc[9], acc[19])
-    _, acc = get_topk_performance_casmi2016(candidates, marg)
-    print(acc[0], acc[4], acc[9], acc[19])
