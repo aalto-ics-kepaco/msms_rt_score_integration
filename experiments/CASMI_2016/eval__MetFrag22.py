@@ -59,9 +59,7 @@ class Arguments(object):
     """
     Class simulating the output of ArgumentParser()
     """
-    def __init__(self, participant, pref_model, ion_mode, max_n_cand,
-                 sort_candidates_by_ms2_score,
-                 database_fn="/home/bach/Documents/doctoral/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"):
+    def __init__(self, participant, pref_model, ion_mode, max_n_cand, sort_candidates_by_ms2_score, database_fn):
         self.database_fn = database_fn
         self.participant = participant
         self.pref_model = pref_model
