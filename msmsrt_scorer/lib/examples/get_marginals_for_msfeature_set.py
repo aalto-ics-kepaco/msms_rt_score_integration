@@ -32,10 +32,10 @@ import numpy as np
 
 from sklearn.model_selection import ShuffleSplit
 
-from gm_solver.exact_solvers import RandomTreeFactorGraph
+from msmsrt_scorer.lib.exact_solvers import RandomTreeFactorGraph
 
-from msmsrt_scorer.data_utils import sigmoid, prepare_candidate_set_IOKR, load_dataset_CASMI, hinge_sigmoid
-from msmsrt_scorer.evaluation_tools import get_topk_performance_casmi2016
+from msmsrt_scorer.lib.data_utils import sigmoid, prepare_candidate_set_IOKR, load_dataset_CASMI, hinge_sigmoid
+from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_casmi2016
 
 import logging
 logging.basicConfig(format='%(name)s: %(message)s', level=logging.WARNING)

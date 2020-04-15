@@ -39,10 +39,10 @@ import pandas as pd
 from joblib import Parallel, delayed
 from sklearn.model_selection import ShuffleSplit, ParameterGrid
 
-from msmsrt_scorer.data_utils import load_dataset_CASMI, prepare_candidate_set_MetFrag
-from msmsrt_scorer.data_utils import prepare_candidate_set_IOKR
-from msmsrt_scorer.evaluation_tools import get_topk_performance_from_scores, evaluate_parameter_grid, get_marginals
-from msmsrt_scorer.evaluation_tools import run_parameter_grid
+from msmsrt_scorer.lib.data_utils import load_dataset_CASMI, prepare_candidate_set_MetFrag
+from msmsrt_scorer.lib.data_utils import prepare_candidate_set_IOKR
+from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores, evaluate_parameter_grid, get_marginals
+from msmsrt_scorer.lib.evaluation_tools import run_parameter_grid
 
 
 def load_data(args):

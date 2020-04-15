@@ -14,7 +14,10 @@ The code has been developed for Python >= 3.6 and the following packages are req
 * matplotlib >= 3.1
 * seaborn >= 0.9
 * networkx >= 2.4
+* setuptools >= 46.1
 
 ## Install
+
+```virtualenv venv && source venv/bin/activate && python setup.py install```
 
 To install the package, simply run: ```python setup.py install```.

@@ -41,7 +41,7 @@ from sklearn.model_selection import ShuffleSplit, ParameterGrid
 from msmsrt_scorer.lib.data_utils import prepare_candidate_set_MetFrag
 from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores, evaluate_parameter_grid
 
-from msmsrt_scorer.experiments.CASMI_2016 import load_data
+from msmsrt_scorer.experiments.CASMI_2016.eval__TFG import load_data
 
 # Participant hash strings encoding the different D values (RT weight) used as parameters for MetFrag 2.2.
 # NOTE: One could have done this similar to the way it was done for EA (Massbank) that we load the
