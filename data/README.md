@@ -1,7 +1,7 @@
 # (MS2, RT)-tuple Database
 
 All data used in our experiments is organized in SQLite DB. The database can be
-downloaded from Zenodo](ADD_LINK_HERE) (~12GB). Its layout as well as content is
+downloaded from [here](https://drive.google.com/file/d/1HKooW9p6huiKFt4k9jhX80k6GsmHI9yE/view?usp=sharing) (~12GB). Its layout as well as content is
 described here.   
 
 ## General Information
@@ -96,21 +96,67 @@ where calculated using RDKit.
 In the database we store the MS2 scores with all spectra typically calculated
 with multiple metabolite identification frameworks. Referring to the CASMI
 challenge we call the different frameworks *participants* and an overview can
-be found in the ```participants``` table. For out publication only a subset of
-them is relevant: **MetFrag_2.4.5__*** and **IOKR__696a17f3**, both are described
-in Section 3.3.
+be found in the ```participants``` table. For our publication only 
+**MetFrag_2.4.5__*** and **IOKR__696a17f3** are relevant (see Section 3.3).
 
 #### CASMI 2016
 
 For the CASMI dataset, the database contains the MetFrag scores using only
 the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
-(**IOKR__696a17f3**). Furthermore, it countains the ```FragmenterScore``` plus 
-```RetentionTimeScore```features scores using MetFrag for different values of D.
-Check the *description* column in the ```participants``` table for details. 
+(**IOKR__696a17f3**). Furthermore, it countains combined scores:
+
+(1- D) * ```FragmenterScore``` + D *  ```RetentionTimeScore```
+
+for different values of D. The combination has been directly computed using the
+MetFrag software. Check the *description* column in the ```participants``` table 
+for details. 
 
 #### Massbank EA
 
 For the Massbank EA dataset, the database contains the MetFrag scores using only
 the ```FragmenterScore``` feature (**MetFrag_2.4.5__8afe4a14**) and the IOKR scores
 (**IOKR__696a17f3**). The values of MetFrag's ```RetentionTimeScore``` feature are
-currently not in the database, but can be found in ...
+currently not in the database, but can be found [here](/data/metfrag_RetentionTimeScore_EA)
+for each random sample, 50x negative and 100x positive mode (see Section 3.1).
+
+### Preference Scores
+
+The preference scores are related to the retention order, i.e., the predicted 
+retention orders can be directly extracted by the combination of two preference
+values. To understand this, please read in Section 2.2.3 and specifically Eq. (2). 
+One can see, that the RankSVM model (w) can be used to predict the retention order
+of two molecular structures by calculating: w^T(phi_i - phi_j). This can be also
+expressed as: w^T phi_i - w^T phi_j. Therefore, the order is predicted through 
+the difference of the two preference values w^T phi_i and w^T phi_j. That means,
+it is sufficient to store the preference values, calculated using the RankSVM, 
+for each molecular candidate structure in the database. The pairwise order 
+predictions, can subsequently be calculated on demand. 
+
+An description of the RankSVM models used in the paper can be found in the
+```preference_scores_meta``` table. For the CASMI dataset, multiple RankSVM 
+models using different RT datasets (*training_dataset* column) habe been 
+trained. However, only the *MEOH_AND_CASMI* has finally been used. For the 
+Massbank EA dataset, we used the same RT dataset (*MEOH_AND_CASMI_JOINT*
+and *MEOH_AND_CASMI* are essentially the same) for the RankSVM training,
+but we trained different models for each random subsample to make the best
+use of the available RT training data. Section 3.1 and 3.2 of the paper 
+should be read for a better understanding.
+
+The preference scores for all molecular structures are in the ```preference_scores_data```
+table.
+
+## Summary and Potential of the Database
+
+We created the database mainly to easy the data handling and ensure reduce errors
+introduced by merges of different data sources. It provides a unifyed view on the
+data, ensuring that, e.g., the same molecular representation is used througout the
+various framework-steps. 
+
+We hope, that the database might has a value in it self for other researchers,
+who might can use some parts of it in their own work. Many details are probably
+missing from this readme, but please contact us, if you want to use the data,
+but you need to ensure how exactly some data has been processed or calculated. 
+
+The scripts to set up the database from the original data respectively the 
+implementation of the fingerprint and descriptor calculation are not part of this 
+repository, but can be provided on demand.
