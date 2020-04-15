@@ -13,12 +13,13 @@ The following packages are required in the specified minimum version:
 * pandas >= 0.25.3
 * [gm_solver](src/gm_solver) (shipped with this repository)
 
-
 ## Install
 
 To install the package, simply run: ```python setup.py install```.
 
-## Data Handling: ```data_utils.py```
+## Functions
+
+### Data Handling: ```data_utils.py```
 
 Implementation of the functionality needed to load the data from the [local SQLite
 database](data) and provide the needed data structures to our framework.  
@@ -32,7 +33,7 @@ If you want to use our framework without a local SQLite database, you can
 start by replacing the SQLite statements by, e.g., accesses to CSV-files. Those
 files simply need to provide the same information. 
 
-## Metabolite Identification Performance Evaluation: ```evaluation_tools.py```
+### Metabolite Identification Performance Evaluation: ```evaluation_tools.py```
 
 Functionality to calculate top-k ranking performance measures used in our paper. Furthermore, 
 implementations needed to run the hyper parameter grid search and best parameter selection.
