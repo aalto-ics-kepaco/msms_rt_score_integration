@@ -16,6 +16,7 @@ setup(
         "matplotlib>=3.1",
         "seaborn>=0.9.0",
         "networkx>=2.4",
+        "setuptools >= 46.1"
     ],
 
     # Metadata
