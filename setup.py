@@ -4,7 +4,7 @@ setup(
     name="msmsrt_scorer",
     version="0.1",
     license="MIT",
-    packages=find_packages(exclude=["results*", "tests", "examples"]),
+    packages=find_packages(exclude=["results*", "tests", "examples", "*.ipynb"]),
 
     # Minimum requirements the package was tested with
     install_requires=[
