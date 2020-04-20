@@ -8,6 +8,8 @@ Furthermore, the IPython Notebooks ("plots_and_tables*.ipynb") allow to reproduc
 
 The directories corresponding to both datasets contain the raw result files for different settings:
 
-:Authors:               asdds
 
-.. contents::
+| --- | --- |
+| bla | blU |
+| bla | blU |
+
