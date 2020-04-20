@@ -12,4 +12,4 @@ Raw result files, as outputed by the run-scripts "eval__*" (see here: [CASMI (20
 
 ## Tables and Figures
 
-The IPython notebooks ("plots_and_tables*.ipynb") allow to reproduce the figures and tables of the paper directly from the raw data. There are notebooks specific for each dataset and to produce aggregated evaluations ("aggregated_plots_and_tables").  
+The IPython notebooks ("plots_and_tables*.ipynb") allow to reproduce the figures and tables of the paper directly from the raw data. There are notebooks specific for each dataset and to produce aggregated evaluations ([aggregated_plots_and_tables](results/aggregated_plots_and_tables)).  
