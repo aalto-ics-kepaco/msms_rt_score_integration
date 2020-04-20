@@ -18,4 +18,6 @@ The IPython notebooks ("plots_and_tables*.ipynb") allow to reproduce the figures
 
 We developped the notebooks using JupyterLab (>= 2.1). You can install JupyterLab as described [here](https://github.com/jupyterlab/jupyterlab). The notebooks, however, should run with earlier versions as well. If you [followed the instructions](https://github.com/aalto-ics-kepaco/msms_rt_score_integration#install-into-a-virtual-environment) to install this package into a virtual environment, you need to add this environment as kernel to JupyterLab, so that you can re-run the notebools: 
 
-- Open a terminal and activate the virtual environment: ```bla```
+1. Open a terminal and activate the virtual environment (assuming your are in the base-directory of this repository): ```source msmsrt_scorer_venv/bin/activate```
+2. Install the "ipykernel" package (only needed for the first time): ```pip install ipykernel```
+3. Run: ```python -m ipykernel install --name=msmsrt_scorer_venv```. The command should print the following: ```Installed kernelspec myenv in /home/USER/.local/share/jupyter/kernels/msmsrt_scorer_venv```
