@@ -20,4 +20,8 @@ We developped the notebooks using JupyterLab (>= 2.1). You can install JupyterLa
 
 1. Open a terminal and activate the virtual environment (assuming your are in the base-directory of this repository): ```source msmsrt_scorer_venv/bin/activate```
 2. Install the "ipykernel" package (only needed for the first time): ```pip install ipykernel```
-3. Run: ```python -m ipykernel install --name=msmsrt_scorer_venv```. The command should print the following: ```Installed kernelspec myenv in /home/USER/.local/share/jupyter/kernels/msmsrt_scorer_venv```
+3. Run: ```python -m ipykernel install --name=msmsrt_scorer_venv```
+ - The command should print the following: ```Installed kernelspec myenv in /home/USER/.local/share/jupyter/kernels/msmsrt_scorer_venv```
+4. When you run the JupyterLab start the desired notebook and select "Change Kernel..." in the "Kernel" drop down menu. 
+
+This description follows the instructions given [here](https://janakiev.com/blog/jupyter-virtual-envs/).
