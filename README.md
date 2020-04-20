@@ -23,7 +23,7 @@ version:
 
 First create a virtual Python environment and activate it:
 
-```virtualenv venv && source venv/bin/activate```
+```virtualenv msmsrt_scorer_venv && source msmsrt_scorer_venv/bin/activate```
 
 Subsequently you can run the setup. All required packages will be fetched as well:
 
