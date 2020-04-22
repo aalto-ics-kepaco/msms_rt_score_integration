@@ -98,3 +98,19 @@ python EA_Massbank/eval__TFG.py \
       --database_fn=!!!_YOUR_SCORE_DB_FN_!!! \
       --base_odir=../../results/YOUR_RESULTS_GO_HERE/EA_Massbank/
 ```
+The results will be stored in: 
+```bash
+../../results/YOUR_RESULTS_GO_HERE/EA_Massbank/
+      └── debug_application
+          └── tree_method=random__n_trees=4__make_order_prob=sigmoid__param_selection_measure=topk_auc__norm_scores=none__mtype=max
+              └── ion_mode=negative__participant=MetFrag_2.4.5__8afe4a14__max_n_cand=inf__sort_candidates_by_ms2_score=0
+                  └── trainset=MEOH_AND_CASMI_JOINT__keep_test=0__est=ranksvm__mol_rep=substructure_count
+```
+You will find: 
+| File | Description | 
+| --- | --- | 
+| measures.csv | Training set [performance measures for each (D, k) grid value](/msmsrt_scorer/lib/evaluation_tools.py#L167) to select the best parameter | 
+| opt_params.csv | Selected (D, k) for each sample | 
+| topk_casmi__max_n_ms2=VALUE__sample_id=VALUE.pkl.gz | Top-k accuracies for the baseline (Only MS) and after the score integration (MS + RT) | 
+
+You can load the results using the [```load_results```](/results/EA_Massbank/plot_and_table_utils.py#L153) function specific for the CASMI and EA datasets (due to slighly different directory structures). To reproduce figures and tables of the paper, please take a look [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/results). 
