@@ -1,10 +1,17 @@
+# Overview
 
-## Installation
+Scripts used to run the experiments presented in the paper:
+
+__"Probabilistic Framework for Integration of Mass Spectrum and Retention Time Information in Metabolite Identification"__,
+
+_Eric Bach, Simon Rogers, John Williamson and Juho Rousu_, 2020
+
+# Installation
 
 All code was developed and tested in a Linux environment. Windows or MacOS are currently not officially supported. 
 However, most of the code and installation procedure probably just works fine for those operating systems as well. 
 
-### Requirements Packages
+## Requirements Packages
 
 The code has been developed for **Python >= 3.6** and the following packages are required in their specified minimum 
 version:
@@ -19,7 +26,7 @@ version:
 * networkx >= 2.4
 * setuptools >= 46.1
 
-### Install into a Virtual Environment
+## Install into a Virtual Environment
 
 First create a virtual Python environment and activate it:
 
@@ -28,3 +35,11 @@ First create a virtual Python environment and activate it:
 Subsequently you can run the setup. All required packages will be fetched as well:
 
 ```python setup.py install```
+
+# Usage
+
+An example how to reproduce the results can be found [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/msmsrt_scorer/experiments). 
+
+# Citation
+
+To refer the original publication please use: *TODO*
