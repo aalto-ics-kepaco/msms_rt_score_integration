@@ -61,7 +61,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("--D_value_grid", nargs="+", type=float,
                             help="Grid-values for the retention order weight. (1 - D) * llh(MS) + D * llh(RT)")
 
-    arg_parser.add_argument("--order_prob_k_grid", nargs="+", type=str,
+    arg_parser.add_argument("--order_prob_k_grid", nargs="+", type=str, default="platt",
                             help="K-parameter grid for the sigmoid used as edge potential function (see Section 2.2.3).")
 
     arg_parser.add_argument("--load_optimal_parameters", action="store_true",
@@ -136,7 +136,12 @@ if __name__ == "__main__":
                             help="Path to the score SQLite DB.")
 
     arg_parser.add_argument("--mode", type=str, default="debug_missing_ms2",
-                            choices=["missing_ms2", "debug_missing_ms2"])
+                            choices=["missing_ms2", "debug_missing_ms2"],
+                            help="In the missing MS2 setting, for a random subset of MS-features the MS2 information "
+                                 "will be removed. Instead of MS2 scores, e.g. from MetFrag or IOKR, only MS1 scores, "
+                                 "derived from the precursor m/z, are used to rank the candidates based on MS "
+                                 "information. The debug mode, can be used for testing. Simply the output directory"
+                                 "will be different.")
 
     arg_parser.add_argument("--base_odir", type=str, default="results__TFG",
                             help="Base directory to store the results and output files.")

@@ -94,7 +94,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("--D_value_grid", nargs="+", type=float,
                             help="Grid-values for the retention order weight. (1 - D) * llh(MS) + D * llh(RT)")
 
-    arg_parser.add_argument("--order_prob_k_grid", nargs="+", type=str,
+    arg_parser.add_argument("--order_prob_k_grid", nargs="+", type=str, default="platt",
                             help="K-parameter grid for the sigmoid used as edge potential function (see Section 2.2.3).")
 
     arg_parser.add_argument("--margin_type", type=str, default="max", choices=["max", "sum"],
@@ -173,7 +173,7 @@ if __name__ == "__main__":
                             help="Path to the score SQLite DB.")
 
     arg_parser.add_argument("--mode", type=str, default="debug_application",
-                            choices=["debug", "development", "application", "debug_application"],
+                            choices=["debug_development", "development", "application", "debug_application"],
                             help="Mode to run this script. The parameter adds a sub-directory to the output with the "
                                  "same name, so that results can be analysed separately. 'debug' and 'development' "
                                  "are both running the (D, k) grid-search over training _and_ test set. They are "
@@ -305,7 +305,7 @@ if __name__ == "__main__":
                           "topk_auc": [np.sum(topk_bsl_test_casmi[0][:20]) / (20 * len(cnds_test))]})],
             sort=True, axis=0)
 
-        if args.mode in ["development", "debug"]:
+        if args.mode in ["development", "debug_development"]:
             # Perform grid-search on test set for debugging and development purposes
             df_test = evaluate_parameter_grid(
                 *run_parameter_grid(cnds_test, h_param_grid, args.tree_method, n_trees, args.n_jobs,
