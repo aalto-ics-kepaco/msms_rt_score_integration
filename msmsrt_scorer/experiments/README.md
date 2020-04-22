@@ -113,4 +113,4 @@ You will find:
 | opt_params.csv | Selected (D, k) for each sample | 
 | topk_casmi__max_n_ms2=VALUE__sample_id=VALUE.pkl.gz | Top-k accuracies for the baseline (Only MS) and after the score integration (MS + RT) | 
 
-You can load the results using the [```load_results```](/results/EA_Massbank/plot_and_table_utils.py#L153) function specific for the CASMI and EA datasets (due to slighly different directory structures). To reproduce figures and tables of the paper, please take a look [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/results). 
+You can load the results using the [```load_results```](/msmsrt_scorer/experiments/EA_Massbank/plot_and_table_utils.py#L153) function specific for the CASMI and EA datasets (due to slighly different directory structures). To reproduce figures and tables of the paper, please take a look [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/results). 
