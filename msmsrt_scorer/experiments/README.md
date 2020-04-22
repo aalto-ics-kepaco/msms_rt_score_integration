@@ -10,9 +10,28 @@ Scripts to produce the raw results that can be used to [create plots and tables]
 | | | Inspect hyper-parameter estimation | Section 4.2.2 | 
 | eval__TGF__missing_MS2 | Our | Evaluation of score integration framework for missing tandem mass spectra (MS2) | Section 4.4 | 
 
-## 
+## Re-run Experiments
 
+Here, we will describe how the experiments can be re-run on the example of [```eval__TFG.py``` (EA Massbank)](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L82). Assuming you have installed the [```nmsmsrt_scorer``` package and, if needed, activated the virtual environment](https://github.com/aalto-ics-kepaco/msms_rt_score_integration#install-into-a-virtual-environment), you can run the evaluation script as follows:
+```bash
+python EA_Massbank/eval__TFG.py \
+      --mode=EVALUATION_MODE \
+      --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
+      --make_order_prob=EDGE_POTENTIAL_FUNCTION \
+      --order_prob_k_grid platt \
+      --margin_type=MARGIN_TYPE \
+      --n_random_trees=NUMBER_OF_RANDOM_TREES_FOR_APPROXIMATION \
+      --n_samples=NUMBER_OF_RANDOM_TEST_TRAINING_SETS \
+      --ion_mode=IONIZATION_MODE \
+      --max_n_ms2=NUMBER_OF_MS2 \
+      --database_fn=SCORE_DB_FN \
+      --base_odir=BASE_OUTPÙT_DIRECTORY \
+```
 
-application ... Results to Evaluate the performance on the test sets in the application setting. 
-development ... Performance evaluation of training _and_ test set for each hyper parameter grid value
-missing_ms2 ... Performance evaluation for the mssing MS2 experiment
+### Details on the Parameters 
+
+| EVALUATION_MODE [[1](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L174), [2](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG__missing_ms2.py#L151)] | Description |
+| --- | --- |
+| application | Results to Evaluate the performance on the test sets in the application setting. |
+| development | Performance evaluation of training _and_ test set for each hyper parameter grid value |
+| missing_ms2 | Performance evaluation for the mssing MS2 experiment |
