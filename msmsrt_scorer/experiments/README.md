@@ -25,7 +25,7 @@ python EA_Massbank/eval__TFG.py \
       --ion_mode=IONIZATION_MODE \
       --max_n_ms2=NUMBER_OF_MS2_FOR_TEST \
       --database_fn=SCORE_DB_FN \
-      --base_odir=BASE_OUTPÙT_DIRECTORY \
+      --base_odir=BASE_OUTPÙT_DIRECTORY
 ```
 
 ### Detailed description of selected parameters 
@@ -74,17 +74,27 @@ Path to the output directory storing the [raw results](/results/EA_Massbank/resu
 
 ### Example: EA (Massbank) positive, Results for Table 3
 
+Running the following command can be used to reproduce the EA (Massbank) positive results in Table 3. Note, to speed up the calculations, this command uses a reduced D-value grid, only 4 random spanning trees and only 3 samples. To get the exact results as in the paper, you need to set:
+| | |
+| --- | --- |
+| ```--mode``` | application | 
+| ```--D_value_grid``` | 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 | 
+| ```--n_random_trees``` | 32 | 
+| ```--n_samples``` | 100 |
+
+However, running the simplified setting can verify for you that the scripts are running in your configuration.
+
 ```bash
 python EA_Massbank/eval__TFG.py \
-      --mode=development_debug \
-      --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
-      --make_order_prob=EDGE_POTENTIAL_FUNCTION \
+      --mode=debug_application \
+      --D_value_grid 0.01 0.1 0.25\
+      --make_order_prob=sigmoid \
       --order_prob_k_grid platt \
-      --margin_type=MARGIN_TYPE \
-      --n_random_trees=NUMBER_OF_RANDOM_TREES_FOR_APPROXIMATION \
-      --n_samples=NUMBER_OF_RANDOM_TEST_TRAINING_SETS \
-      --ion_mode=IONIZATION_MODE \
-      --max_n_ms2=NUMBER_OF_MS2_FOR_TEST \
-      --database_fn=SCORE_DB_FN \
-      --base_odir=BASE_OUTPÙT_DIRECTORY \
+      --margin_type=max \
+      --n_random_trees=4 \
+      --n_samples=3 \
+      --ion_mode=negative \
+      --max_n_ms2=65 \
+      --database_fn=!!!_YOUR_SCORE_DB_FN_!!! \
+      --base_odir=../../results/YOUR_RESULTS_GO_HERE/EA_Massbank/
 ```
