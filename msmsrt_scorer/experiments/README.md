@@ -23,15 +23,42 @@ python EA_Massbank/eval__TFG.py \
       --n_random_trees=NUMBER_OF_RANDOM_TREES_FOR_APPROXIMATION \
       --n_samples=NUMBER_OF_RANDOM_TEST_TRAINING_SETS \
       --ion_mode=IONIZATION_MODE \
-      --max_n_ms2=NUMBER_OF_MS2 \
+      --max_n_ms2=NUMBER_OF_MS2_FOR_TEST \
       --database_fn=SCORE_DB_FN \
       --base_odir=BASE_OUTPÙT_DIRECTORY \
 ```
 
-### Details on the Parameters 
+### Detailed description of selected parameters 
 
-| EVALUATION_MODE [[1](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L174), [2](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG__missing_ms2.py#L151)] | Description |
+A description of all parameters, can be found in the [```__main___```](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L82) of the "eval__" script files. Some selected parameters will be explained here: 
+
+```--mode```
+| EVALUATION_MODE [[1](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L174), [2](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG__missing_MS2.py#L151)] | Description |
 | --- | --- |
 | application | Results to Evaluate the performance on the test sets in the application setting. |
 | development | Performance evaluation of training _and_ test set for each hyper parameter grid value |
 | missing_ms2 | Performance evaluation for the mssing MS2 experiment |
+
+```--ìon_mode``` and ```--max_n_ms2```
+
+These two parameter controll which ionization mode should be evaluation (negative or positive) and how many MS-features are used to calculate the test accuracy. The following settings are available (see Section 3.1):
+
+| Dataset | IONIZATION_MODE | NUMBER_OF_MS2_FOR_TEST | 
+| --- | --- | --- |
+| CASMI (2016) | positive | 75 | 
+| | negative | 50 | 
+| EA (Massbank) | positive | 100 | 
+| | negative | 65 | 
+
+
+```--n_smaples```
+
+Number of (training, test)-set samples. In our experiments we use NUMBER_OF_RANDOM_TEST_TRAINING_SETS=50 (CASMI, EA (negative)) and NUMBER_OF_RANDOM_TEST_TRAINING_SETS=100 (EA (positive))
+
+```--db_fn```
+
+Path to the [SQLite DB](/data/). 
+
+```--base_odir```
+
+Path to the output directory storing the [raw results](/results/EA_Massbank/results__TFG__platt/). The output directory will sub-directories separating the results resulting from different parameter settings. 
