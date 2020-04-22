@@ -222,9 +222,7 @@ if __name__ == "__main__":
                                  "candidates in a random order.")
 
     # Optional parameters data
-    arg_parser.add_argument("--database_fn", type=str,
-                            default="/home/bach/Documents/doctoral/projects/local_casmi_db/db/use_inchis/DB_LATEST.db",
-                            help="Path to the score SQLite DB.")
+    arg_parser.add_argument("--database_fn", type=str, help="Path to the score SQLite DB.")
 
     arg_parser.add_argument("--score_dir", type=str,
                             default="/home/bach/Documents/doctoral/projects/local_casmi_db/data/EA/scores_triton/",

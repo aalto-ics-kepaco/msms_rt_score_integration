@@ -131,9 +131,7 @@ if __name__ == "__main__":
                                  "Section 4.3.2.")
 
     # Optional parameters data
-    arg_parser.add_argument("--database_fn", type=str,
-                            default="/home/bach/Documents/doctoral/projects/local_casmi_db/db/use_inchis/DB_LATEST.db",
-                            help="Path to the score SQLite DB.")
+    arg_parser.add_argument("--database_fn", type=str, help="Path to the score SQLite DB.")
 
     arg_parser.add_argument("--mode", type=str, default="debug_missing_ms2",
                             choices=["missing_ms2", "debug_missing_ms2"],
