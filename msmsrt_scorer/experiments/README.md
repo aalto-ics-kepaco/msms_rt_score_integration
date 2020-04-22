@@ -39,6 +39,14 @@ A description of all parameters, can be found in the [```__main___```](/msmsrt_s
 | development | Performance evaluation of training _and_ test set for each hyper parameter grid value |
 | missing_ms2 | Performance evaluation for the mssing MS2 experiment |
 
+```--D_value_grid```
+
+Grid used to search for the best retention order weight (see Section 2.2.4 and 3.4). We use ```[0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.25, 0.35, 0.5]``` in our experiments.
+
+```--order_prob_k_grid```
+
+Grid used to search for the best sigmoid slope parameter when using EDGE_POTENTIAL_FUNCTION=sigmoid or EDGE_POTENTIAL_FUNCTION=hinge_sigmoid (see Section 2.2.3 and 3.4). As grid we use ```[0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 7.0, 10.0``` for the Hinge-Sigmoid. Our experiments shows that for Sigmoid we can use Platt's ("platt") method to determine the optimal value for k (see Section 4.2.2).
+
 ```--ìon_mode``` and ```--max_n_ms2```
 
 These two parameter controll which ionization mode should be evaluation (negative or positive) and how many MS-features are used to calculate the test accuracy. The following settings are available (see Section 3.1):
@@ -62,3 +70,21 @@ Path to the [SQLite DB](/data/).
 ```--base_odir```
 
 Path to the output directory storing the [raw results](/results/EA_Massbank/results__TFG__platt/). The output directory will sub-directories separating the results resulting from different parameter settings. 
+
+
+### Example: EA (Massbank) positive, Results for Table 3
+
+```bash
+python EA_Massbank/eval__TFG.py \
+      --mode=development_debug \
+      --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
+      --make_order_prob=EDGE_POTENTIAL_FUNCTION \
+      --order_prob_k_grid platt \
+      --margin_type=MARGIN_TYPE \
+      --n_random_trees=NUMBER_OF_RANDOM_TREES_FOR_APPROXIMATION \
+      --n_samples=NUMBER_OF_RANDOM_TEST_TRAINING_SETS \
+      --ion_mode=IONIZATION_MODE \
+      --max_n_ms2=NUMBER_OF_MS2_FOR_TEST \
+      --database_fn=SCORE_DB_FN \
+      --base_odir=BASE_OUTPÙT_DIRECTORY \
+```
