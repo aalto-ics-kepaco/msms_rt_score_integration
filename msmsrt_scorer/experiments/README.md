@@ -33,6 +33,7 @@ python EA_Massbank/eval__TFG.py \
 A description of all parameters, can be found in the [```__main___```](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L82) of the "eval__" script files. Some selected parameters will be explained here: 
 
 ```--mode```
+
 | EVALUATION_MODE [[1](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L174), [2](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG__missing_MS2.py#L151)] | Description |
 | --- | --- |
 | application | Results to Evaluate the performance on the test sets in the application setting. |
@@ -53,10 +54,10 @@ These two parameter controll which ionization mode should be evaluation (negativ
 
 | Dataset | IONIZATION_MODE | NUMBER_OF_MS2_FOR_TEST | 
 | --- | --- | --- |
-| CASMI (2016) | positive | 75 | 
-| | negative | 50 | 
+| CASMI (2016)  | positive | 75 | 
+|               | negative | 50 | 
 | EA (Massbank) | positive | 100 | 
-| | negative | 65 | 
+|               | negative | 65 | 
 
 
 ```--n_smaples```
@@ -75,6 +76,7 @@ Path to the output directory storing the [raw results](/results/EA_Massbank/resu
 ### Example: EA (Massbank) positive, Results for Table 3
 
 Running the following command can be used to reproduce the EA (Massbank) positive results in Table 3. Note, to speed up the calculations, this command uses a reduced D-value grid, only 4 random spanning trees and only 3 samples. To get the exact results as in the paper, you need to set:
+
 | | |
 | --- | --- |
 | ```--mode``` | application | 
@@ -107,6 +109,7 @@ The results will be stored in:
                   └── trainset=MEOH_AND_CASMI_JOINT__keep_test=0__est=ranksvm__mol_rep=substructure_count
 ```
 You will find: 
+
 | File | Description | 
 | --- | --- | 
 | measures.csv | Training set [performance measures for each (D, k) grid value](/msmsrt_scorer/lib/evaluation_tools.py#L167) to select the best parameter | 
