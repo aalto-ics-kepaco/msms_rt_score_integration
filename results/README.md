@@ -32,8 +32,8 @@ This description follows the instructions given [here](https://janakiev.com/blog
 | --- | --- | --- | 
 | plots_and_tables.ipynb | [CASMI (2016)](CASMI_2016/plots_and_tables.ipynb), [EA (Massbank)](EA_Massbank/plots_and_tables.ipynb) | Table 3 |
 | [plots_and_tables__candidate_set.ipynb](CASMI_2016/plots_and_tables__candidate_set.ipynb) | CASMI (2016) | Effect of the candidate sets, Table 6 | 
-| [plots_and_tables__iokr.ipynb](aggregated_plots_and_tables/plots_and_tabes__iokr.ipynb) | both | IOKR values in Table 5 | 
-| [plots_and_tables__missing_ms2.ipynb](aggregated_plots_and_tables/plots_and_tabes__missing_ms2.ipynb) | both | Missing MS2 plots, Figure 4 |
+| [plots_and_tables__iokr.ipynb](aggregated_plots_and_tables/plots_and_tables__iokr.ipynb) | both | IOKR values in Table 5 | 
+| [plots_and_tables__missing_ms2.ipynb](aggregated_plots_and_tables/plots_and_tables__missing_ms2.ipynb) | both | Missing MS2 plots, Figure 4 |
 | [plots_and_tables__number_of_trees.ipynb](aggregated_plots_and_tables/plots_and_tables__number_of_trees.ipynb) | both | Influence of number of spanning trees and margin type, Figure 2 |
 | [plots_and_tables__parameter_selection.ipynb](aggregated_plots_and_tables/plots_and_tables__parameter_selection.ipynb) | both | Hyper-parameter selection, Figure 3 |
 | [plots_and_tables__significance_and_edge_potentials](aggregated_plots_and_tables/plots_and_tables__significance_tests_and_edge_potential_function_comparison.ipynb) | both | Significance tests in Table 4 and comparison of edge potential functions Table S1 | 
