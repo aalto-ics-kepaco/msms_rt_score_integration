@@ -38,7 +38,7 @@ Subsequently you can run the setup. All required packages will be fetched as wel
 
 # Usage
 
-An example how to reproduce the results can be found [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/msmsrt_scorer/experiments). 
+An example how to reproduce the results can be found [here](/msmsrt_scorer/experiments). 
 
 # Citation
 
