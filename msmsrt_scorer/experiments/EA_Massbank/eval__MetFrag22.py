@@ -268,8 +268,7 @@ if __name__ == "__main__":
     h_param_grid = ParameterGrid({"D": args.D_value_grid, "k": [None]})
     print("Number of grid-pairs: %d" % len(h_param_grid))
 
-    measure_df = pd.DataFrame(
-        columns=["set", "D", "k", "p_marg", "p_max", "topk_auc", "top1", "top3", "top5", "top10", "top20", "ndcg"])
+    measure_df = pd.DataFrame()
     opt_param_df = pd.DataFrame(columns=["sample", "D"])
 
     for s in range(args.n_samples):
