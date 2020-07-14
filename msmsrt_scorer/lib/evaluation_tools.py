@@ -39,7 +39,7 @@ from msmsrt_scorer.lib.exact_solvers import RetentionTimeTreeFactorGraph, Random
 def run_parameter_grid(candidates, h_param_grid, tree_method, n_trees, n_jobs, make_order_prob, norm_order_scores,
                        margin_type):
     """
-    Run 'get_marginals' for a grid of (D, k)-tuples and multiple tree approximations in parallel
+    Run 'get_sum_marginals' for a grid of (D, k)-tuples and multiple tree approximations in parallel
 
     :param candidates: dictionary of dicts, containing the candidate set information. 'Keys' are the indices of the
             candidate sets. 'Values' are dictionaries containing the MS-scores, RT, number of candidates, ...
@@ -65,7 +65,7 @@ def run_parameter_grid(candidates, h_param_grid, tree_method, n_trees, n_jobs, m
     :param margin_type: string, which margin type should be used: 'max' or 'sum'. See section 2.3
 
     :return: tuple (
-        res: list of 'get_marginals' outputs
+        res: list of 'get_sum_marginals' outputs
         candidates: pass through
         h_param_grid: pass through
         n_trees: pass through
@@ -156,7 +156,7 @@ def get_marginals(candidates, D, k, tree_method, rep, make_order_prob, normalize
         Z_max, p_max = TFG.MAP()  # Recover the MAP-estimate
     elif margin_type == "sum":
         TFG.sum_product()  # Forward-backward algorithm
-        marg = TFG.get_marginals(normalize=normalize)
+        marg = TFG.get_sum_marginals(normalize=normalize)
         Z_max, p_max = None, -1
     else:
         raise ValueError("Invalid margin-type: '%s'" % margin_type)
