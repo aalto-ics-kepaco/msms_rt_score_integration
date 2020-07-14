@@ -39,7 +39,7 @@ from msmsrt_scorer.lib.exact_solvers import RetentionTimeTreeFactorGraph, Random
 def run_parameter_grid(candidates, h_param_grid, tree_method, n_trees, n_jobs, make_order_prob, norm_order_scores,
                        margin_type):
     """
-    Run 'get_marginals' for a grid of (D, k)-tuples and multiple tree approximations in parallel
+    Run 'get_sum_marginals' for a grid of (D, k)-tuples and multiple tree approximations in parallel
 
     :param candidates: dictionary of dicts, containing the candidate set information. 'Keys' are the indices of the
             candidate sets. 'Values' are dictionaries containing the MS-scores, RT, number of candidates, ...
@@ -65,7 +65,7 @@ def run_parameter_grid(candidates, h_param_grid, tree_method, n_trees, n_jobs, m
     :param margin_type: string, which margin type should be used: 'max' or 'sum'. See section 2.3
 
     :return: tuple (
-        res: list of 'get_marginals' outputs
+        res: list of 'get_sum_marginals' outputs
         candidates: pass through
         h_param_grid: pass through
         n_trees: pass through
@@ -74,11 +74,11 @@ def run_parameter_grid(candidates, h_param_grid, tree_method, n_trees, n_jobs, m
     # Run Forward-Backward algorithm for each spanning tree and parameter tuple (in parallel)
     res = Parallel(n_jobs=n_jobs)(
         delayed(get_marginals)(candidates, D=params["D"], k=params["k"], tree_method=tree_method, rep=rep,
-                               normalize=False, make_order_prob=make_order_prob, norm_order_scores=norm_order_scores,
+                               make_order_prob=make_order_prob, norm_order_scores=norm_order_scores,
                                margin_type=margin_type)
         for params, rep in it.product(h_param_grid, range(n_trees)))
 
-    return res, candidates, h_param_grid, n_trees
+    return res, candidates, h_param_grid, n_trees, margin_type
 
 
 def get_marginals(candidates, D, k, tree_method, rep, make_order_prob, normalize=True, norm_order_scores=False,
@@ -156,7 +156,7 @@ def get_marginals(candidates, D, k, tree_method, rep, make_order_prob, normalize
         Z_max, p_max = TFG.MAP()  # Recover the MAP-estimate
     elif margin_type == "sum":
         TFG.sum_product()  # Forward-backward algorithm
-        marg = TFG.get_marginals(normalize=normalize)
+        marg = TFG.get_sum_marginals(normalize=normalize)
         Z_max, p_max = None, -1
     else:
         raise ValueError("Invalid margin-type: '%s'" % margin_type)
@@ -164,28 +164,19 @@ def get_marginals(candidates, D, k, tree_method, rep, make_order_prob, normalize
     return (D, k), rep, marg, Z_max, p_max
 
 
-def evaluate_parameter_grid(res, candidates, h_param_grid, n_random_trees):
+def evaluate_parameter_grid(res, candidates, h_param_grid, n_random_trees, margin_type):
     """
     Evaluate different performance measures for the (D, k) grid tuples given the output 'run_parameter_grid'.
 
     :return: pandas.DataFrame, shape[0]=n_param_tuples, containing all the performance measures for each hyper parameter
         combinations
     """
-    def _unit_basis_vector(n_cand, r):
-        e = np.zeros(n_cand)
-        e[r] = 1.0
-        return e
-
     # Collect and aggregate "ranking" measures from the spanning tree ensemble for each parameter tuple
     p_marg = []  # Sum of log(p_i), where p_i is the (average) marginal probabilities of the correct candidates
-    un_p_marg = []  # Sum of log(p_i), where p_i is the (average) marginal probabilities of the correct candidates
-    p_max = []  # Maximum a posteriori of the most likely candidate assignment
-    marg = []  # Posterior max-marginals for all candidate sets
-    n_marg = []  # Normalized posterior max-marginals for all candidate sets
+    p_max = []  # Averaged Maximum a posteriori (MAP) estimate of the most likely candidate assignment
+    n_marg = []  # Averaged normalized marginals for all candidate sets (see Section 2.3.3)
     top1, top3, top5, top10, top20 = [], [], [], [], []  # top-k accuracies
     topk_auc = []  # Area-under-the-Top20 curve, Sum of top-1, top-2, ..., top-20 (counts) divided by (20 * n_ms2)
-    un_topk_auc = []  # Area-under-the-Top20 curve, Sum of top-1, top-2, ..., top-20 (counts) divided by (20 * n_ms2)
-    ndcg = []  # Normalized Discounted Cumulative Gain (NDCG) for k=20, a ranking measure
     l_param_D = []
     l_param_k = []
 
@@ -195,74 +186,63 @@ def evaluate_parameter_grid(res, candidates, h_param_grid, n_random_trees):
         l_param_D.append(D)
         l_param_k.append(k)
 
-        p_marg.append(np.zeros(shape=(len(candidates),)))
-        un_p_marg.append(np.zeros(shape=(len(candidates),)))
         p_max.append(0.0)
-        marg.append({k: np.zeros(v["n_cand"]) for k, v in candidates.items()})
+        p_marg.append(np.zeros(shape=(len(candidates),)))
         n_marg.append({k: np.zeros(v["n_cand"]) for k, v in candidates.items()})
-        ndcg.append(0.0)
 
         # Aggregate over the spanning-tree ensemble
         for rep in range(n_random_trees):
             _res = res[idx_param * n_random_trees + rep]  # access results for given parameter tuple and spanning tree
+            # Structure of _res
+            #   _res[0], (D, k): hyper parameters that where used, i.e. retention order weight and sigmoid parameter
+            #   _res[1], rep: index of the tree approximation
+            #   _res[2], marg: OrderedDict, containing the marginals (values) for all ms-features i (keys)
+            #   _res[3], Z_max: if margin_type is 'max' MAP candidate assignment, otherwise None
+            #   _res[4], p_max: if margin_type is 'max' likelihood value of the MAP candidate assignment
+
             assert (_res[0] == (D, k))
             assert (_res[1] == rep)
 
             # Sum up map-probabilities
-            p_max[-1] += _res[4]
+            p_max[idx_param] += _res[4]
 
             for i in candidates:
+                _marg_i = _res[2][i]
+                if margin_type == "max":
+                    assert np.isclose(np.max(_marg_i), 1.0), "Margin is assumed to be normalized already."
+                elif margin_type == "sum":
+                    assert np.isclose(np.sum(_marg_i), 1.0), "Margin is assumed to be normalized already."
+                else:
+                    raise ValueError("Invalid margin type '%s'. Choices are 'sum' and 'max'.")
+
                 # Sum up marginal-probabilities of correct candidates (here we normalize to sum one)
-                p_marg[-1][i] += (_res[2][i][candidates[i]["index_of_correct_structure"]] / np.sum(_res[2][i]))
-                # Sum up marginal-probabilities of correct candidates
-                un_p_marg[-1][i] += _res[2][i][candidates[i]["index_of_correct_structure"]]
-                # Sum up marginal-probabilities
-                marg[-1][i] += _res[2][i]
-                # Sum up normalized marginal-probabilities
-                n_marg[-1][i] += (_res[2][i] / np.sum(_res[2][i]))
+                p_marg[idx_param][i] += _marg_i[candidates[i]["index_of_correct_structure"]]
+                # Sum up the normalized marginal-probabilities for all candidates
+                n_marg[idx_param][i] += _marg_i
 
         # Average map-probabilities
-        p_max[-1] /= n_random_trees
+        p_max[idx_param] /= n_random_trees
 
         # Average marginals
         for i in candidates:
-            marg[-1][i] /= n_random_trees
-            n_marg[-1][i] /= n_random_trees
+            n_marg[idx_param][i] /= n_random_trees
 
         # Sum up log-probabilities of correct candidate across all candidate sets
-        p_marg[-1] = np.sum(np.log(p_marg[-1] / n_random_trees))
-        un_p_marg[-1] = np.sum(np.log(un_p_marg[-1] / n_random_trees))
-
-        # NDCG
-        for i in candidates:
-            if candidates[i]["n_cand"] == 1:
-                ndcg[-1] += 1.0
-            else:
-                _true_relevance = _unit_basis_vector(candidates[i]["n_cand"],
-                                                     candidates[i]["index_of_correct_structure"])
-                _pred_relevance = marg[-1][i]
-                _ndcg = ndcg_score(np.atleast_2d(_true_relevance), np.atleast_2d(_pred_relevance), k=20)
-                ndcg[-1] += _ndcg
-        ndcg[-1] /= len(candidates)
+        p_marg[idx_param] = np.sum(np.log(p_marg[idx_param] / n_random_trees))
 
         # Calculate top-k accuracies
-        _topk = get_topk_performance_from_scores(candidates, n_marg[-1], method="casmi2016")
-        topk_auc.append(np.sum(_topk[0][:20]) / (20 * len(candidates)))
+        _topk = get_topk_performance_from_scores(candidates, n_marg[idx_param], method="casmi2016")
+        topk_auc.append(get_top20AUC(_topk, len(candidates)))  # top20AUC
         top1.append(_topk[1][0])
         top3.append(_topk[1][2])
         top5.append(_topk[1][4])
         top10.append(_topk[1][9])
         top20.append(_topk[1][19])
 
-        _un_topk = get_topk_performance_from_scores(candidates, marg[-1], method="casmi2016")
-        un_topk_auc.append(np.sum(_un_topk[0][:20]) / (20 * len(candidates)))
-
     df = pd.DataFrame(data={
         "D": l_param_D, "k": l_param_k,
-        "p_marg": p_marg, "un_p_marg": un_p_marg, "p_max": p_max,
-        "topk_auc": topk_auc, "un_topk_auc": un_topk_auc,
-        "top1": top1, "top3": top3, "top5": top5, "top10": top10, "top20": top20,
-        "ndcg": ndcg})
+        "p_marg": p_marg, "p_max": p_max, "topk_auc": topk_auc,
+        "top1": top1, "top3": top3, "top5": top5, "top10": top10, "top20": top20})
 
     return df
 
@@ -405,3 +385,20 @@ def _get_rank_and_contribution_of_correct_candidate(scores, index_of_correct_str
         raise ValueError("Invalid ranking method: '%s'" % method)
 
     return r, c
+
+def get_top20AUC(topk_output, N):
+    """
+    Function to calculate the top20AUC value from the output of 'get_topk_performance_from_scores'
+
+    :param topk_output: tuple, the output of 'get_topk_performance_from_scores'
+
+    :param N: scalar, total number of candidate sets / examples i
+
+    :return: scalar, top20AUC value as described in Section 3.4
+    """
+    assert isinstance(topk_output, tuple)
+
+    k = 20
+    top20AUC = np.sum(topk_output[0][:k]) / (k * N)
+
+    return top20AUC

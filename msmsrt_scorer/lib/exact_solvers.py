@@ -263,33 +263,67 @@ class FactorGraph(object):
         return order_probs
 
     @staticmethod
-    def _normalize_marginals_sum_to_one(marginals, normalize):
+    def _get_normalization_constant_Z(marginals, margin_type):
+        """
+        Calculate the normalization constant Z (see Sections 2.3.1 and 2.3.4). The constant is calculated differently
+        depending on the marginal type, i.e. "sum" and "max".
+
+        * "sum": Z_sum = sum r' in {1, ..., n_i} mu_sum(z_i = t' | T)
+        
+        * "max": Z_max = max r' in {1, ..., n_i} mu_max(z_i = t' | T)   
+        
+        Here, we can freely choose the i. That is because the margins (mu) are already aggregated over all i' != i.
+
+        :param marginals: dictionary,
+            keys: variable;
+            values: array-like, shape = (n_i, ), un-normalized marginal value for all assignments
+
+        :param margin_type: string, for which margin type the normalization constant Z should be calculated.
+
+        :return: scalar, constant to normalize the sum (mu_sum) or max (mu_max) marginals
+        """
+        if isinstance(marginals, dict) or isinstance(marginals, OrderedDict):
+            marg_0 = marginals[0]  # we can choose _any_ if the un-normalized marginals to calculate Z
+        elif isinstance(marginals, np.ndarray):
+            marg_0 = marginals
+        else:
+            raise ValueError("Marginal(s) must be of type 'dict', 'OrderedDict' or 'ndarray'.")
+
+        if margin_type == "sum":
+            Z = np.sum(marg_0)
+        elif margin_type == "max":
+            Z = np.max(marg_0)
+        else:
+            raise ValueError("Invalid margin type '%s'. Choices are 'sum' and 'max'")
+
+        return Z
+
+    @staticmethod
+    def _normalize_marginals(marginals, margin_type, normalize):
+        """
+        Normalize the marginals, i.e. mu -> p (see Sections 2.3.1 and 2.3.4)
+
+        :param marginals: dictionary,
+            keys: variable;
+            values: array-like, shape = (n_i, ), un-normalized marginal value for all assignments
+
+        :param margin_type: string, for which margin type the normalization constant Z should be calculated.
+
+        :param normalize: boolean, indicating whether the margin passed to the function should be normalized. If False,
+            the passed margin is not changed.
+
+        :return: normalized marginals: dictionary,
+            keys: variable;
+            values: array-like, shape = (n_i, ), normalized marginal value for all assignments
+        """
         if normalize:
+            Z = FactorGraph._get_normalization_constant_Z(marginals, margin_type)
             for i in marginals:
-                marginals[i] = marginals[i] / np.sum(marginals[i])
+                marginals[i] /= Z
         else:
             pass
-        return marginals
 
-    # @staticmethod
-    # def _get_Z_normalization_constant(marginals, margin_type):
-    #     """
-    #
-    #     :param marginals:
-    #     :param margin_type:
-    #     :return:
-    #     """
-    #     if isinstance(marginals, dict) or isinstance(marginals, OrderedDict):
-    #         marg_0 = marginals[0]  # we can choose _any_ un-normalized marginal to calculate Z
-    #     elif isinstance(marginals, np.ndarray):
-    #         marg_0 = marginals
-    #     else:
-    #         raise Exception("Marginal(s) must be of type 'dict', 'OrderedDict' or 'ndarray'.")
-    #
-    #     if margin_type == "sum":
-    #         Z = np.sum(marg_0)
-    #     elif margin_type == "max":
-    #         Z = np.max(marg_0)
+        return marginals
 
 
 class TreeFactorGraph(FactorGraph):
@@ -321,7 +355,7 @@ class TreeFactorGraph(FactorGraph):
         :param order_probs: dict of dicts, storing all pairwise edge potential matrices of size Z_i x Z_j for all pairs
             (i, j) corresponding to the f_rt factors. The matrices store the edge potential values for each candidate
             structure pair of a pair (i, j) (see Section 2.2.3). This parameter can be used if the matrices are pre-
-            computed. By default, this parameter is None and the 'make_order_probs' function is used to calcualte the
+            computed. By default, this parameter is None and the 'make_order_probs' function is used to calculate the
             matrices directly from the given preference values in 'candidates'
 
         :param use_log_space: boolean, indicating whether the inference should be done in the log-space. That means,
@@ -378,8 +412,9 @@ class TreeFactorGraph(FactorGraph):
         return "Root: %d\n" \
                "Degree stats: min=%d, max=%d, avg=%.2f, med=%.2f\n" \
                "Retention time differences: min=%.3f, max=%.3f, avg=%.3f, med=%.3f" % \
-               (self.root, min(self.var_for_degree), max(self.var_for_degree), np.mean(deg), np.median(deg),
-                min(rt_diffs), max(rt_diffs), np.mean(rt_diffs), np.median(rt_diffs))
+               (self.root, min(self.var_for_degree), max(self.var_for_degree), np.mean(deg).item(),
+                np.median(deg).item(), min(rt_diffs), max(rt_diffs), np.mean(rt_diffs).item(),
+                np.median(rt_diffs).item())
 
     def _forward_pass(self, aggregation_function) -> (np.array, np.array, np.array, nx.Graph):
         """
@@ -573,10 +608,10 @@ class TreeFactorGraph(FactorGraph):
 
     def _marginals(self, R) -> OrderedDict:
         """
-        Calculate (normalized) get_marginals for all variables
+        Calculate (normalized) get_sum_marginals for all variables
 
         :param normalize: boolean indicating, whether the marginal should be normalized (default=True)
-        :return: dictionary, keys: variable; values: array-like, shape=(M(i),), marginal probabilities for all
+        :return: dictionary, keys: variable; values: array-like, shape=(n_i,), marginal probabilities for all
             assignments
         """
         marginals = OrderedDict()
@@ -595,38 +630,40 @@ class TreeFactorGraph(FactorGraph):
                     r_ij += R[(j, i)][i]
                 else:
                     raise Exception("Whoops")
-            r = r_i + r_ij
 
-            # Ensure that the maximum probability is 1.0 (should be numerically also more stable)
-            marg = np.exp(r - np.max(r))
-
-            marginals[i] = marg
+            marginals[i] = np.exp(r_i + r_ij)  # go from log-space to linear-space
 
         return marginals
 
-    def get_marginals(self, normalize=True) -> dict:
+    def get_sum_marginals(self, normalize=True) -> dict:
         """
         Calculate (normalized) sum-marginals for all variables
 
         :param normalize: boolean indicating, whether the marginal should be normalized (default=True)
-        :return: dictionary, keys: variable; values: array-like, shape=(M(i),), marginal probabilities for all assignments
+
+        :return: dictionary,
+            keys: variable;
+            values: array-like, shape = (n_i, ), marginal probabilities for all assignments
         """
         if self.R_sum is None:
             raise RuntimeError("Run 'sum-product' first!")
 
-        return self._normalize_marginals_sum_to_one(self._marginals(self.R_sum), normalize)
+        return self._normalize_marginals(self._marginals(self.R_sum), "sum", normalize)
 
     def get_max_marginals(self, normalize=True) -> dict:
         """
         Calculate (normalized) max-marginals for all variables
 
         :param normalize: boolean indicating, whether the marginal should be normalized (default=True)
-        :return: dictionary, keys: variable; values: array-like, shape=(M(i),), marginal probabilities for all assignments
+
+        :return: dictionary,
+            keys: variable;
+            values: array-like, shape = (n_i, ), marginal probabilities for all assignments
         """
         if self.R_max is None:
             raise RuntimeError("Run 'max-product' first!")
 
-        return self._normalize_marginals_sum_to_one(self._marginals(self.R_max), normalize)
+        return self._normalize_marginals(self._marginals(self.R_max), "max", normalize)
 
     @staticmethod
     def _invert_degree_dict(degs) -> OrderedDict:
@@ -854,7 +891,7 @@ class ChainFactorGraph(FactorGraph):
 
         :param normalize: boolean indicating, whether the marginal should be normalized (default=True)
 
-        :return: dictionary, keys: variable; values: array-like, shape=(M(i),), marginal probabilities for all assignments
+        :return: dictionary, keys: variable; values: array-like, shape=(n_i,), marginal probabilities for all assignments
         """
         R = {node: {} for node in self.fac_ms + self.fac_rt}
         Q = {node: {} for node in self.var}
@@ -1001,12 +1038,12 @@ class ChainFactorGraph(FactorGraph):
 
         return self
 
-    def get_marginals(self, normalize=True):
+    def get_sum_marginals(self, normalize=True):
         """
-        Calculate (normalized) get_marginals for all variables
+        Calculate (normalized) get_sum_marginals for all variables
 
         :param normalize: boolean indicating, whether the marginal should be normalized (default=True)
-        :return: dictionary, keys: variable; values: array-like, shape=(M(i),), marginal probabilities for all assignments
+        :return: dictionary, keys: variable; values: array-like, shape=(n_i,), marginal probabilities for all assignments
         """
         marginals = OrderedDict()
 
@@ -1018,14 +1055,12 @@ class ChainFactorGraph(FactorGraph):
                 r_immi = self.R_sum[(i - 1, i)][i] if (i - 1, i) in self.R_sum else np.zeros_like(r_i)
                 r_iipp = self.R_sum[(i, i + 1)][i] if (i, i + 1) in self.R_sum else np.zeros_like(r_i)
 
-                marg = r_immi + r_iipp + r_i
-                marg = np.exp(marg - np.max(marg))
+                marg = np.exp(r_immi + r_iipp + r_i)
             else:
                 r_immi = self.R_sum[(i - 1, i)][i] if (i - 1, i) in self.R_sum else np.ones_like(r_i)
                 r_iipp = self.R_sum[(i, i + 1)][i] if (i, i + 1) in self.R_sum else np.ones_like(r_i)
 
                 marg = r_immi * r_iipp * r_i
-                marg /= np.max(marg)
 
             if normalize:
                 marg /= np.sum(marg)
@@ -1038,4 +1073,4 @@ class ChainFactorGraph(FactorGraph):
         return self.Z_max, self.p_max
 
     def get_max_marginals(self, normalize=True):
-        raise NotImplementedError("Max-get_marginals are not implemented yet.")
+        raise NotImplementedError("Max-get_sum_marginals are not implemented yet.")

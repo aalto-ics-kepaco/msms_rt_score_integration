@@ -30,8 +30,8 @@ import itertools as it
 
 from collections import OrderedDict
 
-from msmsrt_scorer.exact_solvers import ChainFactorGraph, RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
-from msmsrt_scorer.data_utils import sigmoid
+from msmsrt_scorer.lib.exact_solvers import ChainFactorGraph, RetentionTimeTreeFactorGraph, RandomTreeFactorGraph
+from msmsrt_scorer.lib.data_utils import sigmoid
 
 
 def generate_random_example(random_seed=None, n_spec=None):
@@ -69,7 +69,12 @@ def generate_random_example(random_seed=None, n_spec=None):
     return candidates
 
 
-class McKeyExample(object):
+class MacKayExample(object):
+    """
+    Example is taken from the book by [1].
+
+    [1] MacKay, D. J., "Information theory, inference and learning algorithms", Cambridge university press (2003)
+    """
     def __init__(self, f_0, f_1, f_2, f_01, f_12, D=0.5):
         self.f_0 = f_0
         self.f_1 = f_1
@@ -100,12 +105,11 @@ class McKeyExample(object):
             lhs[z] = self.likelihood(z, log)
         return lhs
 
-    def get_marginals(self, normalize=True):
+    def get_sum_marginals(self, normalize=True):
         marginals = OrderedDict()
 
         for i in range(3):
             marg = np.sum(self.lhs, axis=tuple(j for j in range(3) if j != i))
-            marg /= np.max(marg)
 
             if normalize:
                 marg /= np.sum(marg)
@@ -114,15 +118,14 @@ class McKeyExample(object):
 
         return marginals
 
-    def get_maxmarginals(self, normalize=True):
+    def get_max_marginals(self, normalize=True):
         marginals = OrderedDict()
 
         for i in range(3):
             marg = np.max(self.lhs, axis=tuple(j for j in range(3) if j != i))
-            marg /= np.max(marg)
 
             if normalize:
-                marg /= np.sum(marg)
+                marg /= np.max(marg)
 
             marginals[i] = marg
 
@@ -202,15 +205,15 @@ class TestChainFactorGraph(unittest.TestCase):
                 p[x] = CFG.likelihood(x, log=False)
 
             marg = np.sum(p, axis=tuple(d for d in range(3) if d != i))
-            marg /= np.max(marg)
+            # marg /= np.max(marg)
 
             if normalize:
                 marg /= np.sum(marg)
 
             return marg
 
-        marg_unnorm = CFG.get_marginals(normalize=False)
-        marg_norm = CFG.get_marginals(normalize=True)
+        marg_unnorm = CFG.get_sum_marginals(normalize=False)
+        marg_norm = CFG.get_sum_marginals(normalize=True)
         for i in range(3):
             np.testing.assert_allclose(marg_unnorm[i], marginal(i, False))
             np.testing.assert_allclose(marg_norm[i], marginal(i, True))
@@ -224,14 +227,14 @@ class TestChainFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.9999, 0.0001], [0.0001, 0.9999]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         marg_unrm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                     order_probs=mckay.prefscores).sum_product().get_marginals(False)
+                                     order_probs=mckay.prefscores).sum_product().get_sum_marginals(False)
         marg_norm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                     order_probs=mckay.prefscores).sum_product().get_marginals(True)
+                                     order_probs=mckay.prefscores).sum_product().get_sum_marginals(True)
         for i in range(3):
-            np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
-            np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
+            np.testing.assert_allclose(marg_unrm[i], mckay.get_sum_marginals(False)[i])
+            np.testing.assert_allclose(marg_norm[i], mckay.get_sum_marginals(True)[i])
 
         # -----------------------------------------------
         f_0 = np.array([0.1, 0.9])
@@ -241,14 +244,14 @@ class TestChainFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.0001, 0.9999], [0.9999, 0.0001]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         marg_unrm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                     order_probs=mckay.prefscores).sum_product().get_marginals(False)
+                                     order_probs=mckay.prefscores).sum_product().get_sum_marginals(False)
         marg_norm = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                     order_probs=mckay.prefscores).sum_product().get_marginals(True)
+                                     order_probs=mckay.prefscores).sum_product().get_sum_marginals(True)
         for i in range(3):
-            np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
-            np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
+            np.testing.assert_allclose(marg_unrm[i], mckay.get_sum_marginals(False)[i])
+            np.testing.assert_allclose(marg_norm[i], mckay.get_sum_marginals(True)[i])
 
     def test_MAP__mckay_example(self):
         # EXAMPLE: McKay textbook page 334
@@ -259,7 +262,7 @@ class TestChainFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.9999, 0.0001], [0.0001, 0.9999]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         Z_max, p_max = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
                                         order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
@@ -274,7 +277,7 @@ class TestChainFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.0001, 0.9999], [0.9999, 0.0001]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         Z_max, p_max = ChainFactorGraph(mckay.candidates, make_order_probs=sigmoid,
                                         order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
@@ -299,7 +302,7 @@ class TestTreeFactorGraph(unittest.TestCase):
 
 class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
     def test_marginals__mckay_example(self):
-        # EXAMPLE: McKay textbook page 334
+        # EXAMPLE: MacKay textbook page 334
         f_0 = np.array([0.1, 0.9])
         f_1 = np.array([0.1, 0.9])
         f_2 = np.array([0.1, 0.9])
@@ -307,14 +310,14 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.9999, 0.0001], [0.0001, 0.9999]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         marg_unrm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                                 order_probs=mckay.prefscores).sum_product().get_marginals(False)
+                                                 order_probs=mckay.prefscores).sum_product().get_sum_marginals(False)
         marg_norm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                                 order_probs=mckay.prefscores).sum_product().get_marginals(True)
+                                                 order_probs=mckay.prefscores).sum_product().get_sum_marginals(True)
         for i in range(3):
-            np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
-            np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
+            np.testing.assert_allclose(marg_unrm[i], mckay.get_sum_marginals(False)[i])
+            np.testing.assert_allclose(marg_norm[i], mckay.get_sum_marginals(True)[i])
 
         # -----------------------------------------------
         f_0 = np.array([0.1, 0.9])
@@ -324,14 +327,14 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.0001, 0.9999], [0.9999, 0.0001]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         marg_unrm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                                 order_probs=mckay.prefscores).sum_product().get_marginals(False)
+                                                 order_probs=mckay.prefscores).sum_product().get_sum_marginals(False)
         marg_norm = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
-                                                 order_probs=mckay.prefscores).sum_product().get_marginals(True)
+                                                 order_probs=mckay.prefscores).sum_product().get_sum_marginals(True)
         for i in range(3):
-            np.testing.assert_allclose(marg_unrm[i], mckay.get_marginals(False)[i])
-            np.testing.assert_allclose(marg_norm[i], mckay.get_marginals(True)[i])
+            np.testing.assert_allclose(marg_unrm[i], mckay.get_sum_marginals(False)[i])
+            np.testing.assert_allclose(marg_norm[i], mckay.get_sum_marginals(True)[i])
 
     def test_MAP__mckay_example(self):
         # EXAMPLE: McKay textbook page 334
@@ -342,7 +345,7 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.9999, 0.0001], [0.0001, 0.9999]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         Z_max, p_max = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
                                                     order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
@@ -357,7 +360,7 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
         f_12 = np.array([[0.0001, 0.9999], [0.9999, 0.0001]], dtype=float)
 
         # Sum-product
-        mckay = McKeyExample(f_0, f_1, f_2, f_01, f_12)
+        mckay = MacKayExample(f_0, f_1, f_2, f_01, f_12)
         Z_max, p_max = RetentionTimeTreeFactorGraph(mckay.candidates, make_order_probs=sigmoid,
                                                     order_probs=mckay.prefscores).max_product().MAP()
         Z_max_ref, p_max_ref = mckay.MAP()
@@ -384,7 +387,6 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
     def test_marginals__random_data(self):
         def marginal(P, i, normalize=True):
             marg = np.sum(P, axis=tuple(j for j in candidates if j != i))
-            marg /= np.max(marg)
             if normalize:
                 marg /= np.sum(marg)
             return marg
@@ -401,8 +403,8 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
                 for Z in it.product(*[range(cnd["n_cand"]) for cnd in candidates.values()]):
                     P[Z] = TFG.likelihood(Z, log=False)
 
-                marg_norm = TFG.sum_product().get_marginals(normalize=True)
-                marg_unrm = TFG.sum_product().get_marginals(normalize=False)
+                marg_norm = TFG.sum_product().get_sum_marginals(normalize=True)
+                marg_unrm = TFG.sum_product().get_sum_marginals(normalize=False)
 
                 for i in candidates:
                     np.testing.assert_allclose(marg_norm[i], marginal(P, i, normalize=True))
@@ -411,7 +413,6 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
     def test_marginals__random_data__varying_D(self):
         def marginal(P, i, normalize=True):
             marg = np.sum(P, axis=tuple(j for j in candidates if j != i))
-            marg /= np.max(marg)
             if normalize:
                 marg /= np.sum(marg)
             return marg
@@ -428,19 +429,18 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
                 for Z in it.product(*[range(cnd["n_cand"]) for cnd in candidates.values()]):
                     P[Z] = TFG.likelihood(Z, log=False)
 
-                marg_norm = TFG.sum_product().get_marginals(normalize=True)
-                marg_unrm = TFG.sum_product().get_marginals(normalize=False)
+                marg_norm = TFG.sum_product().get_sum_marginals(normalize=True)
+                marg_unrm = TFG.sum_product().get_sum_marginals(normalize=False)
 
                 for i in candidates:
                     np.testing.assert_allclose(marg_norm[i], marginal(P, i, normalize=True))
                     np.testing.assert_allclose(marg_unrm[i], marginal(P, i, normalize=False))
 
-    def test_maxmarginals__random_data(self):
-        def maxmarginal(P, i, normalize=True):
+    def test_max_marginals__random_data(self):
+        def max_marginal(P, i, normalize=True):
             marg = np.max(P, axis=tuple(j for j in candidates if j != i))
-            marg /= np.max(marg)
             if normalize:
-                marg /= np.sum(marg)
+                marg /= np.max(marg)
             return marg
 
         for rep in range(25):
@@ -459,8 +459,75 @@ class TestRetentionTimeTreeFactorGraph(unittest.TestCase):
                 marg_unrm = TFG.max_product().get_max_marginals(normalize=False)
 
                 for i in candidates:
-                    np.testing.assert_allclose(marg_norm[i], maxmarginal(P, i, normalize=True))
-                    np.testing.assert_allclose(marg_unrm[i], maxmarginal(P, i, normalize=False))
+                    np.testing.assert_allclose(marg_norm[i], max_marginal(P, i, normalize=True))
+                    np.testing.assert_allclose(marg_unrm[i], max_marginal(P, i, normalize=False))
+
+
+class TestRandomTreeFactorGraph(unittest.TestCase):
+    def test_normalization_constant_Z(self):
+        candidates = generate_random_example(1999)
+
+        # Sum-Margin
+        TFG = RandomTreeFactorGraph(candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=1)
+        marg_unrm = TFG.sum_product().get_sum_marginals(normalize=False)
+
+        for i in candidates:
+            np.testing.assert_allclose(np.sum(marg_unrm[0]), np.sum(marg_unrm[i]))
+
+        # Max-Margin
+        TFG = RandomTreeFactorGraph(candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=1)
+        marg_unrm = TFG.max_product().get_max_marginals(normalize=False)
+
+        for i in candidates:
+            np.testing.assert_allclose(np.max(marg_unrm[0]), np.max(marg_unrm[i]))
+
+    def test_sum_marginals__random_data(self):
+        def sum_marginal(P, i, normalize=True):
+            marg = np.sum(P, axis=tuple(j for j in candidates if j != i))
+            if normalize:
+                marg /= np.sum(marg)
+            return marg
+
+        for rep in range(25):
+            candidates = generate_random_example(rep)
+
+            TFG = RandomTreeFactorGraph(candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=rep)
+
+            # Set up probability for all possible Zs
+            P = np.full([cnd["n_cand"] for cnd in candidates.values()], fill_value=np.nan)
+            for Z in it.product(*[range(cnd["n_cand"]) for cnd in candidates.values()]):
+                P[Z] = TFG.likelihood(Z, log=False)
+
+            marg_norm = TFG.sum_product().get_sum_marginals(normalize=True)
+            marg_unrm = TFG.sum_product().get_sum_marginals(normalize=False)
+
+            for i in candidates:
+                np.testing.assert_allclose(marg_norm[i], sum_marginal(P, i, normalize=True))
+                np.testing.assert_allclose(marg_unrm[i], sum_marginal(P, i, normalize=False))
+
+    def test_max_marginals__random_data(self):
+        def max_marginal(P, i, normalize=True):
+            marg = np.max(P, axis=tuple(j for j in candidates if j != i))
+            if normalize:
+                marg /= np.max(marg)
+            return marg
+
+        for rep in range(25):
+            candidates = generate_random_example(rep)
+
+            TFG = RandomTreeFactorGraph(candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=rep)
+
+            # Set up probability for all possible Zs
+            P = np.full([cnd["n_cand"] for cnd in candidates.values()], fill_value=np.nan)
+            for Z in it.product(*[range(cnd["n_cand"]) for cnd in candidates.values()]):
+                P[Z] = TFG.likelihood(Z, log=False)
+
+            marg_norm = TFG.max_product().get_max_marginals(normalize=True)
+            marg_unrm = TFG.max_product().get_max_marginals(normalize=False)
+
+            for i in candidates:
+                np.testing.assert_allclose(marg_norm[i], max_marginal(P, i, normalize=True))
+                np.testing.assert_allclose(marg_unrm[i], max_marginal(P, i, normalize=False))
 
 
 if __name__ == '__main__':

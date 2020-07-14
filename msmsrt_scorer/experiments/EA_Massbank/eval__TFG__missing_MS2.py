@@ -40,7 +40,7 @@ from sklearn.model_selection import ShuffleSplit, ParameterGrid
 
 from msmsrt_scorer.lib.data_utils import prepare_candidate_set_MetFrag, prepare_candidate_set_IOKR
 from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores, get_marginals, run_parameter_grid
-from msmsrt_scorer.lib.evaluation_tools import evaluate_parameter_grid
+from msmsrt_scorer.lib.evaluation_tools import evaluate_parameter_grid, get_top20AUC
 
 # Data loading wrappers specific to the EA (Massbank) dataset
 from msmsrt_scorer.experiments.EA_Massbank.eval__TFG import load_platt_k, load_data
@@ -316,7 +316,7 @@ if __name__ == "__main__":
                               "top10": [topk_bsl_test_casmi[1][9]],
                               "top20": [topk_bsl_test_casmi[1][19]],
                               "D": [0.0], "k": [None],
-                              "topk_auc": [np.sum(topk_bsl_test_casmi[0][:20]) / (20 * len(cnds_test))]})],
+                              "topk_auc": [get_top20AUC(topk_bsl_test_casmi, len(cnds_test))]})],
                 sort=True, axis=0)
 
             # Run Forward-Backward algorithm on the test set

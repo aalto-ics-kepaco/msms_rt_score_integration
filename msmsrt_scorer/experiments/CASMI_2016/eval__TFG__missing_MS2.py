@@ -39,7 +39,7 @@ from sklearn.model_selection import ShuffleSplit, ParameterGrid
 
 from msmsrt_scorer.lib.data_utils import prepare_candidate_set_MetFrag, prepare_candidate_set_IOKR
 from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores, evaluate_parameter_grid, get_marginals
-from msmsrt_scorer.lib.evaluation_tools import run_parameter_grid
+from msmsrt_scorer.lib.evaluation_tools import run_parameter_grid, get_top20AUC
 
 from msmsrt_scorer.experiments.CASMI_2016.eval__TFG import load_data, load_platt_k
 
@@ -208,8 +208,7 @@ if __name__ == "__main__":
     h_param_grid = ParameterGrid({"D": args.D_value_grid, "k": _k})
     print("Number of grid-pairs: %d" % len(h_param_grid))
 
-    measure_df = pd.DataFrame(
-        columns=["set", "D", "k", "p_marg", "p_max", "topk_auc", "top1", "top3", "top5", "top10", "top20", "ndcg"])
+    measure_df = pd.DataFrame()
     opt_param_df = []
 
     for s, (train_set, test_set) in enumerate(ShuffleSplit(n_splits=args.n_samples, test_size=args.max_n_ms2,
@@ -289,7 +288,7 @@ if __name__ == "__main__":
                               "top10": [topk_bsl_test_casmi[1][9]],
                               "top20": [topk_bsl_test_casmi[1][19]],
                               "D": [0.0], "k": [None],
-                              "topk_auc": [np.sum(topk_bsl_test_casmi[0][:20]) / (20 * len(cnds_test))]})],
+                              "topk_auc": [get_top20AUC(topk_bsl_test_casmi, len(cnds_test))]})],
                 sort=True, axis=0)
 
             # Run Forward-Backward algorithm on the test set
