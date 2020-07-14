@@ -186,19 +186,22 @@ def step_fun(x, eps=1e-10):
     return _x
 
 
-def get_measured_mass(precursor_mz, adduct):
+def get_exact_mass(precursor_mz, adduct):
     """
-    Function returning the mass of the precursor ion given its single hydrogen charged precursor mass per charge
-    value (m/z)
+    Calculates the exact mass of the measured molecules given its precursor mass per charge value (m/z)
 
     :param precursor_mz: scalar or array-like, precursor mass per charge value(s)
+
     :param adduct: string, Adduct that was used. Currently only [M+H] and [M-H] supported
+
     :return: scalar or array-like, precursor ion mass
     """
+    mass_of_proton = 1.007276
+
     if adduct == "[M+H]":
-        measured_mass = precursor_mz - 1.007825
+        measured_mass = precursor_mz - mass_of_proton
     elif adduct == "[M-H]":
-        measured_mass = precursor_mz + 1.007825
+        measured_mass = precursor_mz + mass_of_proton
     else:
         raise NotImplementedError("Only '[M+H]' and '[M-H]' adduct supported.")
 
@@ -542,7 +545,7 @@ def load_dataset_EA(db, ion_mode, participant, prefmodel, sample_idx, max_n_cand
         challenges[i]["n_cand"] = candidates[i]["n_cand"]
 
         # Calculate the monoisotopic mass for the unknown compound from the mass-spectrum
-        candidates[i]["unknown_mass"] = get_measured_mass(challenges[i]["precursor_mz"], challenges[i]["adduct"])
+        candidates[i]["unknown_mass"] = get_exact_mass(challenges[i]["precursor_mz"], challenges[i]["adduct"])
 
         assert (len(candidates[i]["score"]) == len(candidates[i]["pref_score"]))
         assert (len(candidates[i]["score"]) == len(candidates[i]["structure"]))
@@ -686,7 +689,7 @@ def load_dataset_CASMI(db, ion_mode, participant, prefmodel, max_n_cand=np.inf, 
         challenges[i]["n_cand"] = candidates[i]["n_cand"]
 
         # Calculate the monoisotopic mass for the unknown compound from the mass-spectrum
-        candidates[i]["unknown_mass"] = get_measured_mass(challenges[i]["precursor_mz"], challenges[i]["adduct"])
+        candidates[i]["unknown_mass"] = get_exact_mass(challenges[i]["precursor_mz"], challenges[i]["adduct"])
 
         assert (len(candidates[i]["score"]) == len(candidates[i]["pref_score"]))
         assert (len(candidates[i]["score"]) == len(candidates[i]["structure"]))
