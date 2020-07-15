@@ -48,7 +48,7 @@ def IDIR(base_dir="results", mode="development", make_order_prob="sigmoid",
          D_value_method="fixed", ion_mode="positive", participant="MetFrag_2.4.5__8afe4a14", pref_model="c6d6f521",
          max_n_cand=np.inf, sort_candidates_by_ms2_score=False, tree_method="random", n_random_trees=16,
          min_min_rt_diff=0.0, max_min_rt_diff=0.0, param_selection_measure=None, norm_order_scores=None,
-         margin_type=None, restrict_candidates_to_correct_mf=None):
+         margin_type=None, restrict_candidates_to_correct_mf=None, use_global_parameter_selection=None):
     
     # Define output directory
     if tree_method == "random":
@@ -72,6 +72,8 @@ def IDIR(base_dir="results", mode="development", make_order_prob="sigmoid",
         _tmp.append("D_value_method=%s" % D_value_method)
     if param_selection_measure is not None:
         _tmp.append("param_selection_measure=%s" % param_selection_measure)
+    if use_global_parameter_selection is not None:
+            _tmp.append("globparam=%d" % use_global_parameter_selection)
     if norm_order_scores is not None:
         _tmp.append("norm_order_scores=%d" % norm_order_scores)
     if margin_type is not None:

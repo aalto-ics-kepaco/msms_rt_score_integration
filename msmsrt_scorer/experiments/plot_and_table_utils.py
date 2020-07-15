@@ -28,6 +28,8 @@ import pandas as pd
 import os
 import pickle
 import gzip
+import numpy as np
+import itertools as it
 
 from typing import Optional, List
 
@@ -55,6 +57,17 @@ def TOPK(order_prob_k: Optional[float], D_value: Optional[float], max_n_ms2: int
                         "D_value=%.4f" % D_value,
                         "max_n_ms2=%03d" % max_n_ms2,
                         "sample_id=%s" % _sample_id]) + ".pkl.gz"
+    return fn
+
+
+def TOPK_MISSING_MS2(n_ms2, max_n_ms2, perc_ms2, sample_id=None, method="casmi"):
+    _sample_id = _get_sample_id_string(sample_id)
+
+    fn = "__".join(["topk_%s" % method,
+                    "perc_ms2=%.1f" % perc_ms2,
+                    "n_ms2=%03d_%03d" % (n_ms2, max_n_ms2),
+                    "sample_id=%s" % _sample_id]) + ".pkl.gz"
+
     return fn
 
 
@@ -87,6 +100,55 @@ def load_results(idir: str, label_ms_rt: str, max_n_ms2: int, k_values_to_consid
     # Load selected parameters
     opt_params = pd.read_csv(os.path.join(idir, "opt_params.csv"))
     # opt_params = opt_params.loc[opt_params["sample"] < n_samples]
+    opt_params["Method"] = label_ms_rt
+
+    # Load parameter goodness measures for all samples
+    param_goodness_measure = pd.read_csv(os.path.join(idir, "measures.csv"))
+    param_goodness_measure["Method"] = label_ms_rt
+
+    return results, opt_params, param_goodness_measure
+
+
+def load_results_missing_ms2(
+        idir, max_n_ms2,
+        n_samples=50, k_values_to_consider: Optional[List] = None, method="casmi", return_percentage=True,
+        load_baseline=True, label_baseline="Only MS",
+        load_ms_rt=True, label_ms_rt="MS + RT",
+        load_random=True, label_random="Random"):
+
+    if k_values_to_consider is None:
+        k_values_to_consider = [1, 3, 5, 10, 20]
+
+    # Load top-k performance
+    results = []
+
+    for s, (n_ms2, perc_ms2) in it.product(range(n_samples),
+                                           zip(np.floor(np.linspace(0, max_n_ms2, 5)).astype("int"), [0, 25, 50, 75, 100])):
+
+        fn = os.path.join(idir, TOPK_MISSING_MS2(n_ms2, max_n_ms2, perc_ms2, sample_id=s, method=method))
+        with gzip.open(fn) as file:
+            _topk = pickle.load(file)
+
+        # Load MS + RT if required
+        if load_ms_rt:
+            results.append([s, label_ms_rt, perc_ms2] +
+                           [_topk["ms_rt"][return_percentage][k - 1] for k in k_values_to_consider])
+
+            # Load Only MS if required
+        if load_baseline:
+            results.append([s, label_baseline, perc_ms2] +
+                           [_topk["baseline"][return_percentage][k - 1] for k in k_values_to_consider])
+
+        # Load Random if required
+        if load_random:
+            results.append([s, label_random, perc_ms2] +
+                           [_topk["random"][return_percentage][k - 1] for k in k_values_to_consider])
+
+    results = pd.DataFrame(results, columns=["sample", "Method", "perc_ms2"] +
+                                            ["Top-%d" % k for k in k_values_to_consider])
+
+    # Load selected parameters
+    opt_params = pd.read_csv(os.path.join(idir, "opt_params.csv"))
     opt_params["Method"] = label_ms_rt
 
     # Load parameter goodness measures for all samples
