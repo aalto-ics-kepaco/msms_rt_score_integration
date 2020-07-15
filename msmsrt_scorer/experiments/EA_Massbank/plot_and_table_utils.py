@@ -191,7 +191,8 @@ def load_results(idir, label, max_n_ms2, k_values_to_consider=[1, 3, 5, 10, 20],
         
         # Load Only MS if required
         if load_baseline:
-            results.append([s, label_only_ms] + [_topk["baseline"][return_percentage][k - 1] for k in k_values_to_consider])
+            results.append(
+                [s, label_only_ms] + [_topk["baseline"][return_percentage][k - 1] for k in k_values_to_consider])
 
     results = pd.DataFrame(results, columns=["sample", "Method"] + ["Top-%d" % k for k in k_values_to_consider])
     
