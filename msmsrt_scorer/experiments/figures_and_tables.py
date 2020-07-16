@@ -31,12 +31,109 @@ import seaborn as sns
 
 from typing import Optional, List
 
-from msmsrt_scorer.experiments.plot_and_table_utils import load_results, load_results_missing_ms2
+from msmsrt_scorer.experiments.plot_and_table_utils import load_results, load_results_missing_ms2, _label_p
 from msmsrt_scorer.experiments.EA_Massbank.plot_and_table_utils import IDIR as IDIR_EA
 from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR as IDIR_CASMI
 
 
+def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):
+    """
+    Table S1 in the paper.
+    """
+    # General parameters
+    # ------------------
+    param_selection_measure = "topk_auc"
+    eval_method = "casmi"
+    margin_type = "max"
+    n_random_trees = 32
+    k_values_to_consider = [1, 5, 10, 20]
+
+    # Table parameters
+    # ----------------
+    escape = False
+    index = False
+    column_format = "lcccc"
+
+    # Load the results
+    # ----------------
+    res = []
+
+    # EA Dataset
+    for i, (make_order_prob, sub_dir) in enumerate(zip(["sigmoid", "hinge_sigmoid", "stepfun"],
+                                                       ["EA_Massbank/results__TFG__platt",
+                                                        "EA_Massbank/results__TFG__gridsearch",
+                                                        "EA_Massbank/results__TFG__gridsearch"])):
+        for ion_mode, max_n_ms2, n_samples in [("positive", 100, 100), ("negative", 65, 50)]:
+            _idir = IDIR_EA(
+                tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
+                mode="application", base_dir=os.path.join(base_dir, sub_dir),
+                param_selection_measure=param_selection_measure, make_order_prob=make_order_prob, norm_scores="none",
+                margin_type=margin_type)
+
+            res.append(load_results(
+                _idir, "MS + RT (our, %s)" % make_order_prob, max_n_ms2, n_samples=n_samples, method=eval_method,
+                k_values_to_consider=k_values_to_consider, load_baseline=(i == 0))[0])
+            res[-1]["Dataset"] = "EA (Massbank)"
+            res[-1]["Ionization"] = ion_mode
+
+    # CASMI Dataset
+    for i, (make_order_prob, sub_dir) in enumerate(zip(["sigmoid", "hinge_sigmoid", "stepfun"],
+                                                       ["CASMI_2016/results__TFG__platt",
+                                                        "CASMI_2016/results__TFG__gridsearch",
+                                                        "CASMI_2016/results__TFG__gridsearch"])):
+        for ion_mode, max_n_ms2, n_samples in [("positive", 75, 50), ("negative", 50, 50)]:
+            _idir = IDIR_CASMI(
+                tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
+                mode="application", base_dir=os.path.join(base_dir, sub_dir),
+                param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+                norm_order_scores=False, margin_type=margin_type)
+
+            res.append(load_results(
+                _idir, "MS + RT (our, %s)" % make_order_prob, max_n_ms2, n_samples=n_samples, method=eval_method,
+                k_values_to_consider=k_values_to_consider, load_baseline=(i == 0))[0])
+            res[-1]["Dataset"] = "CASMI 2016"
+            res[-1]["Ionization"] = ion_mode
+
+    # Get table with aggregated scores
+    # --------------------------------
+    res = pd.concat(res)
+    res_score = res \
+        .drop("sample", axis=1) \
+        .groupby(["Method", "Dataset", "Ionization"]).mean() \
+        .groupby(["Method"]).mean() \
+        .round(1) \
+        .reset_index()
+
+    # Get the table indicating the significance over the baseline
+    # -----------------------------------------------------------
+    res_baseline = res[res.Method == "Only MS"]
+
+    for method in res.Method.unique():
+        assert np.all(res_baseline["sample"].values == res[res.Method == method]["sample"].values)
+        assert np.all(res_baseline["Dataset"].values == res[res.Method == method]["Dataset"].values)
+        assert np.all(res_baseline["Ionization"].values == res[res.Method == method]["Ionization"].values)
+
+    res_p = res[res.Method != "Only MS"] \
+        .drop("sample", axis=1) \
+        .groupby("Method") \
+        .agg({"Top-1": lambda x: _label_p(x, res_baseline["Top-1"], test=test, print_mean=False),
+              "Top-5": lambda x: _label_p(x, res_baseline["Top-5"], test=test, print_mean=False),
+              "Top-10": lambda x: _label_p(x, res_baseline["Top-10"], test=test, print_mean=False),
+              "Top-20": lambda x: _label_p(x, res_baseline["Top-20"], test=test, print_mean=False)}) \
+        .reset_index()
+
+    if to_latex:
+        return "\n---\n\n".join([res_score.to_latex(escape=escape, index=index, column_format=column_format),
+                          res_p.to_latex(escape=escape, index=index, column_format=column_format)])
+
+    else:
+        return res_score, res_p
+
+
 def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
+    """
+    Table 5 in the Paper.
+    """
     # General parameters
     # ------------------
     param_selection_measure = "topk_auc"
@@ -44,6 +141,7 @@ def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
     make_order_prob = "sigmoid"
     margin_type = "max"
     n_random_trees = 32
+    k_values_to_consider = [1, 5, 10, 20]
 
     # Table parameters
     # ----------------
@@ -67,7 +165,7 @@ def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
 
             res.append(load_results(
                 _idir, "MS + RT", max_n_ms2, n_samples=n_samples, method=eval_method,
-                k_values_to_consider=[1, 5, 10, 20])[0])
+                k_values_to_consider=k_values_to_consider)[0])
             res[-1]["Dataset"] = "EA (Massbank)"
             res[-1]["Ionization"] = ion_mode
             res[-1][ms2scorer_col_name] = ms2scorer
@@ -82,7 +180,7 @@ def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
 
             res.append(load_results(
                 _idir, "MS + RT", max_n_ms2, n_samples=n_samples, method=eval_method,
-                k_values_to_consider=[1, 5, 10, 20])[0])
+                k_values_to_consider=k_values_to_consider)[0])
             res[-1]["Dataset"] = "CASMI 2016"
             res[-1]["Ionization"] = ion_mode
             res[-1][ms2scorer_col_name] = ms2scorer

@@ -31,6 +31,7 @@ import gzip
 import numpy as np
 import itertools as it
 
+from scipy.stats import wilcoxon
 from typing import Optional, List
 
 
@@ -156,3 +157,76 @@ def load_results_missing_ms2(
     param_goodness_measure["Method"] = label_ms_rt
 
     return results, opt_params, param_goodness_measure
+
+
+def _label_p(x: pd.Series, y: pd.Series, test: Optional[str] = "wilcoxon_twoside", print_variance=False,
+             print_mean=True) -> str:
+    """
+    We use the Wilcoxon signed-rank test to evaluate the significance of metabolite identification performance of our
+    score integration framework (MS + RT) compared to the baseline (Only MS).
+
+    Let:
+        - x be the list of top-k accuracies x_i for each sample i           (MS + RT)
+        - y be the list of baseline top-k accuracies y_i for each sample i  (Only MS)
+
+    The Wilcoxon signed-rank test tests, given the differences d_i = x_i - y_i, whether the null-hypothesis
+
+        'wilcoxon-twoside' H0: median(d) = 0
+
+        or
+
+        'wilcoxon-oneside' H0: median(d) < 0
+
+        can be rejected assuming the alternative hypothesis is
+
+        'wilcoxon-twoside' H1: median(d) != 0
+
+        or
+
+        'wilcoxon-oneside' H1: median(d) > 0
+
+    The test significance is added to the output string, if the average accuracy of MS + RT is larger then the one of
+    Only MS. That means, the significance level indicates the significance of the (if observed) performance improvement.
+
+    :param x: array-like, shape = (n_samples, ), top-k accuracies for the current setup
+
+    :param y: array-like, shape = (n_samples, ), top-k accuracies for the baseline (Only MS)
+
+    :param test: string, name of the test to use (None, "wilcoxon-twoside" and "wilcoxon-oneside")
+    
+    :param print_variance: boolean, if True the accuracy variance is added to the cell label.
+    
+    :param print_mean: boolean, if True the mean accuracy is added to the cell label.
+    
+    :return: string, cell label
+    """
+    x_mean = np.mean(x)  # mean performance for the current group and top-k
+
+    cell_label = []  # output cell label
+    if print_mean:
+        cell_label.append("%.1f" % x_mean)
+    if print_variance:
+        cell_label.append("(%.1f)" % np.var(x))
+
+    if test == "wilcoxon_oneside":
+        # Calculate D = {d_i = x_i - y_i}_i
+        # H0: median(D) < 0
+        # H1: median(D) > 0
+        _p = wilcoxon(x=x, y=y, alternative="greater")[1]
+    elif test == "wilcoxon_twoside":
+        # Calculate D = {d_i = x_i - y_i}_i
+        # H0: median(D) = 0
+        # H1: median(D) != 0
+        _p = wilcoxon(x=x, y=y, alternative="two-sided")[1]
+    else:
+        raise ValueError("Invalid test: '%s'" % test)
+
+    y_mean = np.mean(y)
+    if _p < 0.001 and (x_mean > y_mean):
+        cell_label.append("(***)")
+    elif _p < 0.01 and (x_mean > y_mean):
+        cell_label.append("(**)")
+    elif _p < 0.05 and (x_mean > y_mean):
+        cell_label.append("(*)")
+
+    return " ".join(cell_label)
