@@ -33,7 +33,153 @@ from typing import Optional, List
 
 from msmsrt_scorer.experiments.plot_and_table_utils import load_results, load_results_missing_ms2, _label_p
 from msmsrt_scorer.experiments.EA_Massbank.plot_and_table_utils import IDIR as IDIR_EA
+from msmsrt_scorer.experiments.EA_Massbank.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_EA
 from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR as IDIR_CASMI
+from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_CASMI
+
+
+def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):
+    """
+    Table 2 in the paper.
+    """
+    # General parameters
+    # ------------------
+    param_selection_measure = "topk_auc"
+    eval_method = "casmi"
+    margin_type = "max"
+    n_random_trees = 32
+    k_values_to_consider = [1, 5, 10, 20]
+    make_order_prob = "sigmoid"
+
+    # Table parameters
+    # ----------------
+    escape = False
+    index = False
+    column_format = "lllcccc"
+
+    # Load the results
+    # ----------------
+    res_global = []
+
+    # EA Massbank
+    for ion_mode, max_n_ms2, n_samples in [("positive", 100, 100), ("negative", 65, 50)]:
+        res = []
+
+        _idir_our = IDIR_EA(
+            tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
+            base_dir=os.path.join(base_dir, "EA_Massbank/results__TFG__platt"), mode="application",
+            param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+            norm_scores="none", margin_type=margin_type)
+
+        _idir_metfrag22 = IDIR_METFRAG_EA(
+            ion_mode=ion_mode, base_dir=os.path.join(base_dir, "EA_Massbank/results__MetFrag22"), mode="application",
+            param_selection_measure=param_selection_measure)
+
+        _idir_chaingraph = IDIR_EA(
+            tree_method="chain", ion_mode=ion_mode, D_value_method=None,
+            base_dir=os.path.join(base_dir, "EA_Massbank/results__TFG__gridsearch"), mode="application",
+            param_selection_measure=param_selection_measure, make_order_prob="hinge_sigmoid",
+            norm_scores="none", margin_type=margin_type)
+
+        res.append(load_results(
+                _idir_our, "MS + RT (our)", max_n_ms2, method=eval_method, n_samples=n_samples,
+                k_values_to_consider=k_values_to_consider)[0])
+        res[-1]["Dataset"] = "EA (Massbank)"
+        res[-1]["Ionization"] = ion_mode
+
+        res.append(load_results(
+                _idir_metfrag22, "MS + RT (MetFrag 2.2)", max_n_ms2, method=eval_method, n_samples=n_samples,
+                k_values_to_consider=k_values_to_consider)[0])
+        res[-1]["Dataset"] = "EA (Massbank)"
+        res[-1]["Ionization"] = ion_mode
+
+        res.append(load_results(
+                _idir_chaingraph, "MS + RT (Chain-graph)", max_n_ms2, method=eval_method, n_samples=n_samples,
+                k_values_to_consider=k_values_to_consider)[0])
+        res[-1]["Dataset"] = "EA (Massbank)"
+        res[-1]["Ionization"] = ion_mode
+
+        # Get table with aggregated scores
+        # --------------------------------
+        res = pd.concat(res).drop_duplicates()
+        res_baseline = res[res.Method == "Only MS"]
+
+        assert (res_baseline.shape[0] == n_samples)
+        assert (res[res.Method == "MS + RT (our)"].shape[0] == n_samples)
+        assert (res[res.Method == "MS + RT (MetFrag 2.2)"].shape[0] == n_samples)
+        assert (res[res.Method == "MS + RT (Chain-graph)"].shape[0] == n_samples)
+
+        res_global.append(
+            res.drop("sample", axis=1)
+               .groupby(["Method", "Dataset", "Ionization"])
+               .agg({"Top-1": lambda x: _label_p(x, res_baseline["Top-1"], test=test),
+                     "Top-5": lambda x: _label_p(x, res_baseline["Top-5"], test=test),
+                     "Top-10": lambda x: _label_p(x, res_baseline["Top-10"], test=test),
+                     "Top-20": lambda x: _label_p(x, res_baseline["Top-20"], test=test)})
+               .reset_index()
+        )
+
+    # CASMI 2016
+    for ion_mode, max_n_ms2, n_samples in [("positive", 75, 50), ("negative", 50, 50)]:
+        res = []
+
+        _idir_our = IDIR_CASMI(
+            tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
+            base_dir=os.path.join(base_dir, "CASMI_2016/results__TFG__platt"), mode="application",
+            param_selection_measure=param_selection_measure,
+            make_order_prob=make_order_prob, norm_order_scores=False, margin_type=margin_type)
+
+        _idir_metfrag22 = IDIR_METFRAG_CASMI(
+            ion_mode=ion_mode, base_dir=os.path.join(base_dir, "CASMI_2016/results__MetFrag22"), mode="application",
+            param_selection_measure=param_selection_measure)
+
+        _idir_chaingraph = IDIR_CASMI(
+            tree_method="chain", ion_mode=ion_mode, D_value_method=None,
+            base_dir=os.path.join(base_dir, "CASMI_2016/results__TFG__gridsearch"), mode="application",
+            param_selection_measure=param_selection_measure, make_order_prob="hinge_sigmoid",
+            norm_order_scores=False, margin_type=margin_type)
+
+        res.append(load_results(_idir_our, "MS + RT (our)", max_n_ms2, n_samples=n_samples, method=eval_method,
+                                k_values_to_consider=k_values_to_consider)[0])
+        res[-1]["Dataset"] = "CASMI 2016"
+        res[-1]["Ionization"] = ion_mode
+
+        res.append(load_results(_idir_metfrag22, "MS + RT (MetFrag 2.2)", max_n_ms2, n_samples=n_samples,
+                                method=eval_method, k_values_to_consider=k_values_to_consider)[0])
+        res[-1]["Dataset"] = "CASMI 2016"
+        res[-1]["Ionization"] = ion_mode
+
+        res.append(load_results(_idir_chaingraph, "MS + RT (Chain-graph)", max_n_ms2, n_samples=n_samples,
+                                method=eval_method, k_values_to_consider=k_values_to_consider)[0])
+        res[-1]["Dataset"] = "CASMI 2016"
+        res[-1]["Ionization"] = ion_mode
+
+        # Get table with aggregated scores
+        # --------------------------------
+        res = pd.concat(res).drop_duplicates()
+        res_baseline = res[res.Method == "Only MS"]
+
+        assert (res_baseline.shape[0] == n_samples)
+        assert (res[res.Method == "MS + RT (our)"].shape[0] == n_samples)
+        assert (res[res.Method == "MS + RT (MetFrag 2.2)"].shape[0] == n_samples)
+        assert (res[res.Method == "MS + RT (Chain-graph)"].shape[0] == n_samples)
+
+        res_global.append(
+            res.drop("sample", axis=1)
+               .groupby(["Method", "Dataset", "Ionization"])
+               .agg({"Top-1": lambda x: _label_p(x, res_baseline["Top-1"], test=test),
+                     "Top-5": lambda x: _label_p(x, res_baseline["Top-5"], test=test),
+                     "Top-10": lambda x: _label_p(x, res_baseline["Top-10"], test=test),
+                     "Top-20": lambda x: _label_p(x, res_baseline["Top-20"], test=test)})
+               .reset_index()
+        )
+
+    if to_latex:
+        return "\n---\n\n".join([_df.to_latex(escape=escape, index=index, column_format=column_format)
+                                 for _df in res_global])
+
+    else:
+        return pd.concat(res_global).set_index(["Dataset", "Ionization", "Method"])
 
 
 def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):

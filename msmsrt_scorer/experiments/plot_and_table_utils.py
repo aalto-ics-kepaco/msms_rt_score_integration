@@ -208,6 +208,11 @@ def _label_p(x: pd.Series, y: pd.Series, test: Optional[str] = "wilcoxon_twoside
     if print_variance:
         cell_label.append("(%.1f)" % np.var(x))
 
+    if np.all(x.values == y.values):
+        # If all values are the same in x and y, the signed-rank test cannot be performed. Should only happen when
+        # x and y belong to "Only MS".
+        return " ".join(cell_label)
+
     if test == "wilcoxon_oneside":
         # Calculate D = {d_i = x_i - y_i}_i
         # H0: median(D) < 0
