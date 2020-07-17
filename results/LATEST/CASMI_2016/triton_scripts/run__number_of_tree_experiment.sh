@@ -30,31 +30,31 @@
 # -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
 # n_random_trees = 1
-#SBATCH --partition=batch --time=01:00:00 --nodes=1
+#SBATCH --partition=batch --time=00:30:00 --nodes=1
 
 # n_random_trees = 2
-# -- SBATCH --partition=batch --time=02:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=01:00:00 --nodes=1
 
 # n_random_trees = 4
-# -- SBATCH --partition=batch --time=03:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=02:00:00 --nodes=1
 
 # n_random_trees = 8
-# -- SBATCH --partition=batch --time=06:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=04:00:00 --nodes=1
 
 # n_random_trees = 16
-# -- SBATCH --partition=batch --time=10:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=08:00:00 --nodes=1
 
 # n_random_trees = 32
-# -- SBATCH --partition=batch --time=20:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=14:00:00 --nodes=1
 
 # n_random_trees = 64
-# -- SBATCH --partition=batch --time=40:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=20:00:00 --nodes=1
 
 # n_random_trees = 128
-# -- SBATCH --partition=batch --time=90:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=40:00:00 --nodes=1
 
 # n_random_trees = 256
-# -- SBATCH --partition=batch --time=110:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=80:00:00 --nodes=1
 
 # Positive
 # -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
