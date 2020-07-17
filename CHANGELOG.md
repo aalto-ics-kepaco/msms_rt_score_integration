@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.2
+## Version 0.2.0
 **Feature release**
 - adressed [#4](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/issues/4): Encapsulate the figure and table generation into 
   dedicated functions
