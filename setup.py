@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="msmsrt_scorer",
-    version="0.1.1",
+    version="0.2.0",
     license="MIT",
     packages=find_packages(exclude=["results*", "tests", "examples", "*.ipynb"]),
 

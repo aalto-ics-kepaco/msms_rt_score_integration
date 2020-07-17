@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.2
+- fixed #4: Encapsulate the figure and table generation into 
+  dedicated functions
+- Simplify the figure and table generation notebooks
+- add versioning to the raw-data
+
 ## Version 0.1.1
 - Bug fix release
 - fixed #1: Wrong margin normalization
