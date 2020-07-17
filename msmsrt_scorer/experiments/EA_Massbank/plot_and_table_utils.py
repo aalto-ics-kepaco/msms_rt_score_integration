@@ -253,38 +253,6 @@ def load_results_missing_ms2(
     return results, opt_params, param_goodness_measure
 
 
-def _label_ci(x, use_boot=True, use_color=False):
-    _m = np.mean(x)
-    
-    if use_boot:
-        _ci = ci_to_errsize(ci(bootstrap(x, n_boot=1000)), heights=_m)
-    else:
-        _ci = ci_to_errsize(ci(x), heights=_m)
-    
-    if use_color:
-        _str = "%.1f \textcolor{gray}{(-%.1f, +%.1f)}" % (_m, _ci[0], _ci[1])
-    else:
-        _str = "%.1f (-%.1f, +%.1f)" % (_m, _ci[0], _ci[1])
-        
-    return _str 
-
-
-def _label_std(x, use_boot=True, use_color=False):
-    _m = np.mean(x)
-    
-    if use_boot:
-        _sd = np.std(bootstrap(x, n_boot=1000))
-    else:
-        _sd = np.std(x)
-    
-    if use_color:
-        _str = "%.1f \textcolor{gray}{($\pm$%.1f)}" % (_m, 2 * _sd)
-    else:
-        _str = "%.1f ($\pm$%.1f)" % (_m, 2 * _sd)
-        
-    return _str 
-
-
 def _label_p(x, _k, test, results, show_variance=False):
     _m = np.mean(x)
     if show_variance:
