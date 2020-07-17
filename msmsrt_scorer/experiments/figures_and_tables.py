@@ -28,7 +28,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import itertools as it
 
+from scipy.stats import wilcoxon
 from typing import Optional, List
 
 from msmsrt_scorer.experiments.plot_and_table_utils import load_results, load_results_missing_ms2, _label_p
@@ -128,7 +130,8 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
 
     # Load the results
     # ----------------
-    res_global = []
+    res_global_score = []
+    res_sigf = []
 
     # EA Massbank
     for ion_mode, max_n_ms2, n_samples in [("positive", 100, 100), ("negative", 65, 50)]:
@@ -171,6 +174,8 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
         # Get table with aggregated scores
         # --------------------------------
         res = pd.concat(res).drop_duplicates()
+        res_sigf.append(res)
+
         res_baseline = res[res.Method == "Only MS"]
 
         assert (res_baseline.shape[0] == n_samples)
@@ -178,7 +183,7 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
         assert (res[res.Method == "MS + RT (MetFrag 2.2)"].shape[0] == n_samples)
         assert (res[res.Method == "MS + RT (Chain-graph)"].shape[0] == n_samples)
 
-        res_global.append(
+        res_global_score.append(
             res.drop("sample", axis=1)
                .groupby(["Method", "Dataset", "Ionization"])
                .agg({"Top-1": lambda x: _label_p(x, res_baseline["Top-1"], test=test),
@@ -226,6 +231,8 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
         # Get table with aggregated scores
         # --------------------------------
         res = pd.concat(res).drop_duplicates()
+        res_sigf.append(res)
+
         res_baseline = res[res.Method == "Only MS"]
 
         assert (res_baseline.shape[0] == n_samples)
@@ -233,7 +240,7 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
         assert (res[res.Method == "MS + RT (MetFrag 2.2)"].shape[0] == n_samples)
         assert (res[res.Method == "MS + RT (Chain-graph)"].shape[0] == n_samples)
 
-        res_global.append(
+        res_global_score.append(
             res.drop("sample", axis=1)
                .groupby(["Method", "Dataset", "Ionization"])
                .agg({"Top-1": lambda x: _label_p(x, res_baseline["Top-1"], test=test),
@@ -243,12 +250,43 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
                .reset_index()
         )
 
-    if to_latex:
-        return "\n---\n\n".join([_df.to_latex(escape=escape, index=index, column_format=column_format)
-                                 for _df in res_global])
+    # Get table comparing all methods pairwise
+    # ----------------------------------------
+    res_sigf = pd.concat(res_sigf)
+    res_global_sigf = []
 
+    for k in [1, 20]:
+        res = []
+        for m1, m2 in it.permutations(res_global_score[0].Method.unique(), 2):
+            _smp_m1 = res_sigf[res_sigf.Method == m1]["sample"].values
+            _smp_m2 = res_sigf[res_sigf.Method == m2]["sample"].values
+            assert np.all(_smp_m1 == _smp_m2)
+
+            _topk_m1 = res_sigf[res_sigf.Method == m1]["Top-%d" % k].values
+            _topk_m2 = res_sigf[res_sigf.Method == m2]["Top-%d" % k].values
+
+            p = wilcoxon(x=_topk_m1, y=_topk_m2, alternative="greater")[1]  # H0: med(x - y) < 0, H1: med(x - y) > 0
+
+            res.append(pd.DataFrame({"Method-1": [m1], "Method-2": [m2], "p_value": [p], "k": [k]}))
+
+        res_global_sigf.append(pd.concat(res))
+
+    res_global_sigf = {_res["k"].unique().item(): _res.pivot(index="Method-1", columns="Method-2", values="p_value")
+                                                      .applymap(lambda z: "%.1e" % z if z < 0.05 else "n.s")
+                                                      .reset_index()
+                       for _res in res_global_sigf}
+
+    if to_latex:
+        res_global_score = "\n---\n\n".join([_df.to_latex(escape=escape, index=index, column_format=column_format)
+                                             for _df in res_global_score])
+        res_global_sigf = {_k: _res.to_latex(escape=escape, index=index, column_format=column_format)
+                           for _k, _res in res_global_sigf.items()}
+
+        return res_global_score, res_global_sigf
     else:
-        return pd.concat(res_global).set_index(["Dataset", "Ionization", "Method"])
+        res_global_score = pd.concat(res_global_score).set_index(["Dataset", "Ionization", "Method"])
+
+        return res_global_score, res_global_sigf
 
 
 def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):
