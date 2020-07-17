@@ -1,16 +1,17 @@
 # Changelog
 
 ## Version 0.2
-- fixed #4: Encapsulate the figure and table generation into 
+**Feature release**
+- adressed [#4](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/issues/4): Encapsulate the figure and table generation into 
   dedicated functions
 - Simplify the figure and table generation notebooks
 - add versioning to the raw-data
 
 ## Version 0.1.1
-- Bug fix release
-- fixed #1: Wrong margin normalization
-- fixed #2: Wrong exact mass calculation
+**Bug fix release**
+- fixed [#1](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/issues/1): Wrong margin normalization
+- fixed [#2](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/issues/2): Wrong exact mass calculation
 
 ## Version 0.1.0 (tagged)
-- Initial release
+**Initial release**
 - version along with the manuscript submission to ECCB20202.
