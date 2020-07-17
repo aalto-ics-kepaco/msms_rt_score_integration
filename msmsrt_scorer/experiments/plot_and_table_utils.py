@@ -223,6 +223,8 @@ def _label_p(x: pd.Series, y: pd.Series, test: Optional[str] = "wilcoxon_twoside
         # H0: median(D) = 0
         # H1: median(D) != 0
         _p = wilcoxon(x=x, y=y, alternative="two-sided")[1]
+    elif test is None:
+        _p = np.nan
     else:
         raise ValueError("Invalid test: '%s'" % test)
 

@@ -38,6 +38,75 @@ from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR as ID
 from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_CASMI
 
 
+def table__candidate_set_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside", ms2scorer="MetFrag"):
+    """
+    Table 6 in the papaer.
+    """
+    # General parameters
+    # ------------------
+    param_selection_measure = "topk_auc"
+    eval_method = "casmi"
+    margin_type = "max"
+    n_random_trees = 32
+    k_values_to_consider = [1, 5, 10, 20]
+    make_order_prob = "sigmoid"
+
+    if ms2scorer == "MetFrag":
+        participant = "MetFrag_2.4.5__8afe4a14"
+    elif ms2scorer == "IOKR":
+        participant = "IOKR__696a17f3"
+    else:
+        raise ValueError("Invalid MS2-scorer '%s'. Choices are 'MetFrag' and 'IOKR'.")
+
+    # Table parameters
+    # ----------------
+    escape = False
+    index = False
+    column_format = "lcccc"
+
+    # Load the results
+    # ----------------
+    res_global = []
+
+    for restrict_candidates_to_correct_mf, candidate_set in [(None, "All"), (True, "Correct MF")]:
+        res = []
+        for ion_mode, max_n_ms2, n_samples in [("positive", 75, 50), ("negative", 50, 50)]:
+            _idir = IDIR_CASMI(
+                tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
+                base_dir=os.path.join(base_dir, "CASMI_2016/results__TFG__platt"), mode="application",
+                param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+                norm_order_scores=False, margin_type=margin_type, participant=participant,
+                restrict_candidates_to_correct_mf=restrict_candidates_to_correct_mf)
+
+            res.append(load_results(
+                _idir, "MS + RT (our)", max_n_ms2=max_n_ms2, n_samples=n_samples, method=eval_method,
+                k_values_to_consider=k_values_to_consider)[0])
+            res[-1]["Ionization"] = ion_mode
+            res[-1]["Candidate Set"] = candidate_set
+
+        # Get table with aggregated scores
+        # --------------------------------
+        res = pd.concat(res)
+        res_baseline = res[res.Method == "Only MS"]
+        res = res \
+            .drop("sample", axis=1) \
+            .groupby(["Candidate Set", "Method"]) \
+            .agg({"Top-1": lambda x: _label_p(x, res_baseline["Top-1"], test=test),
+                  "Top-5": lambda x: _label_p(x, res_baseline["Top-5"], test=test),
+                  "Top-10": lambda x: _label_p(x, res_baseline["Top-10"], test=test),
+                  "Top-20": lambda x: _label_p(x, res_baseline["Top-20"], test=test)}) \
+            .reset_index()
+
+        res_global.append(res)
+
+    res_global = pd.concat(res_global)
+
+    if to_latex:
+        return res_global.to_latex(escape=escape, index=index, column_format=column_format)
+    else:
+        return res_global.set_index(["Candidate Set", "Method"])
+
+
 def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):
     """
     Table 2 in the paper.
