@@ -26,9 +26,8 @@
 #
 ####
 
-
-# -- SBATCH --partition=debug --time=01:00:00 --nodes=1
-# -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
+#SBATCH --partition=debug --time=01:00:00 --nodes=1
+#SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
 # n_random_trees = 1
 # -- SBATCH --partition=batch --time=02:00:00 --nodes=1
@@ -46,7 +45,7 @@
 # -- SBATCH --partition=batch --time=12:00:00 --nodes=1
 
 # n_random_trees = 32
-#SBATCH --partition=batch --time=00:20:00 --nodes=1
+# -- SBATCH --partition=batch --time=00:20:00 --nodes=1
 
 # n_random_trees = 64
 # -- SBATCH --partition=batch --time=48:00:00 --nodes=1
@@ -58,9 +57,9 @@
 # -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
 # Negative
-#SBATCH --cpus-per-task=24 --mem-per-cpu=4000
+# -- SBATCH --cpus-per-task=24 --mem-per-cpu=4000
 
-#SBATCH --job-name=CAS_neg_1_max_platt
+#SBATCH --job-name=CAS_neg_32_max_platt
 
 # MODE='debug_application'
 MODE='application'
@@ -97,21 +96,24 @@ echo "Margin type: $MTYPE"
 N_JOBS=$SLURM_CPUS_PER_TASK
 echo "Number of jobs: $N_JOBS"
 
+# Set up file- and directory paths
+PROJECTDIR="$SCRATCHHOME/projects/msms_rt_score_integration"
+EXPDIR="$PROJECTDIR/experiments/LATEST/CASMI_2016/"
+RESULT_DIR="$EXPDIR/results__TFG__platt"
+EVALSCRIPT="$EXPDIR/eval__TFG.py"
+CASMI_DB_FN="$SCRATCHHOME/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"
+
 # Load the required modules
 module purge
 module load Python/3.6.6-foss-2018b
 
+# Active the virtual environment
+# shellcheck source=/dev/null
+source "$PROJECTDIR/venv/bin/activate"
+
 # Sleep for some time to prevent conflicts when creating
 # directories within the evaluations scripts.
 sleep $(( ( ${RANDOM} % 15 ) + 1 ))
-
-# Set up file- and directory paths
-PROJECTDIR="$SCRATCHHOME/projects/rt_msms_score_integration_glasgow"
-EXPDIR="$PROJECTDIR/experiments/LATEST"
-SRCDIR="$PROJECTDIR/src"
-EVALSCRIPT="$EXPDIR/run__TFG__param_selection__ms2score_fix.py"
-CASMI_DB_FN="$SCRATCHHOME/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"
-RESULT_DIR="$EXPDIR/results__platt"
 
 # Create temporary output directory for results on local disk of node
 BASE_ODIR="/tmp/$SLURM_JOB_ID"
@@ -126,8 +128,7 @@ trap "rm -rf $BASE_ODIR; exit" TERM EXIT
 # Run the evaluation scripts
 if [ $MODE = "application" ]
 then
-  PYTHONPATH="$PYTHONPATH:$EXPDIR:$SRCDIR" \
-      srun python "$EVALSCRIPT" \
+  srun python "$EVALSCRIPT" \
       --mode="$MODE" \
       --param_selection_measure="$PARAM_SELECTION_MEASURE" \
       --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
@@ -139,8 +140,7 @@ then
       --margin_type="$MTYPE"
 elif [ $MODE = "debug_application" ]
 then
-  PYTHONPATH="$PYTHONPATH:$EXPDIR:$SRCDIR" \
-      srun python "$EVALSCRIPT" \
+  srun python "$EVALSCRIPT" \
       --mode="$MODE" \
       --param_selection_measure="$PARAM_SELECTION_MEASURE" \
       --D_value_grid 0.01 0.1 0.5 \
