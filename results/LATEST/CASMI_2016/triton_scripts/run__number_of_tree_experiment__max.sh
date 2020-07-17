@@ -26,49 +26,51 @@
 #
 ####
 
-#SBATCH --partition=debug --time=01:00:00 --nodes=1
-#SBATCH --cpus-per-task=8 --mem-per-cpu=4000
+# -- SBATCH --partition=debug --time=01:00:00 --nodes=1
+# -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
 # n_random_trees = 1
-# -- SBATCH --partition=batch --time=02:00:00 --nodes=1
+#SBATCH --partition=batch --time=01:00:00 --nodes=1
 
 # n_random_trees = 2
-# -- SBATCH --partition=batch --time=03:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=02:00:00 --nodes=1
 
 # n_random_trees = 4
-# -- SBATCH --partition=batch --time=04:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=03:00:00 --nodes=1
 
 # n_random_trees = 8
-# -- SBATCH --partition=batch --time=08:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=06:00:00 --nodes=1
 
 # n_random_trees = 16
-# -- SBATCH --partition=batch --time=12:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=10:00:00 --nodes=1
 
 # n_random_trees = 32
-# -- SBATCH --partition=batch --time=00:20:00 --nodes=1
+# -- SBATCH --partition=batch --time=20:00:00 --nodes=1
 
 # n_random_trees = 64
-# -- SBATCH --partition=batch --time=48:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=40:00:00 --nodes=1
 
 # n_random_trees = 128
-# -- SBATCH --partition=batch --time=98:00:00 --nodes=1
+# -- SBATCH --partition=batch --time=90:00:00 --nodes=1
+
+# n_random_trees = 256
+# -- SBATCH --partition=batch --time=110:00:00 --nodes=1
 
 # Positive
 # -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
 # Negative
-# -- SBATCH --cpus-per-task=24 --mem-per-cpu=4000
+#SBATCH --cpus-per-task=24 --mem-per-cpu=4000
 
-#SBATCH --job-name=CAS_neg_32_max_platt
+#SBATCH --job-name=CA_neg_001_max
 
-MODE='debug_application'
-# MODE='application'
+# MODE='debug_application'
+MODE='application'
 echo "Mode: $MODE"
 
 # Read script arguments
 TREE_METHOD="random"
 MAKE_ORDER_PROB="sigmoid"
-MTYPE="max"
 PARAM_SELECTION_MEASURE="topk_auc"
 
 ION_MODE=${1}
@@ -85,6 +87,7 @@ else
   exit 1
 fi
 N_RANDOM_TREES=${2}
+MTYPE=${3}
 
 echo "tree-method: $TREE_METHOD (with n_trees=$N_RANDOM_TREES)"
 echo "Function for preference score conversion: $MAKE_ORDER_PROB"
