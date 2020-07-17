@@ -61,14 +61,15 @@
 
 #SBATCH --job-name=CAS_neg_32_max_platt
 
-# MODE='debug_application'
-MODE='application'
+MODE='debug_application'
+# MODE='application'
 echo "Mode: $MODE"
 
 # Read script arguments
 TREE_METHOD="random"
 MAKE_ORDER_PROB="sigmoid"
 MTYPE="max"
+PARAM_SELECTION_MEASURE="topk_auc"
 
 ION_MODE=${1}
 if [ $ION_MODE = "positive" ]
@@ -84,7 +85,6 @@ else
   exit 1
 fi
 N_RANDOM_TREES=${2}
-PARAM_SELECTION_MEASURE=${3}
 
 echo "tree-method: $TREE_METHOD (with n_trees=$N_RANDOM_TREES)"
 echo "Function for preference score conversion: $MAKE_ORDER_PROB"
@@ -98,9 +98,8 @@ echo "Number of jobs: $N_JOBS"
 
 # Set up file- and directory paths
 PROJECTDIR="$SCRATCHHOME/projects/msms_rt_score_integration"
-EXPDIR="$PROJECTDIR/experiments/LATEST/CASMI_2016/"
-RESULT_DIR="$EXPDIR/results__TFG__platt"
-EVALSCRIPT="$EXPDIR/eval__TFG.py"
+RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__platt"
+EVALSCRIPT="$PROJECTDIR/msmsrt_scorer/experiments/CASMI_2016/eval__TFG.py"
 CASMI_DB_FN="$SCRATCHHOME/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"
 
 # Load the required modules

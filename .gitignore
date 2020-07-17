@@ -6,3 +6,6 @@ venv
 **/__pycache__
 **/.ipynb_checkpoints
 results/YOUR_RESULTS_GO_HERE
+**/slurm-*.out
+**/results_*.tar
+**/debug_*
