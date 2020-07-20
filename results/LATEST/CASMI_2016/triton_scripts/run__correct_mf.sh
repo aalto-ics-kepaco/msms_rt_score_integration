@@ -38,7 +38,7 @@
 # Negative
 #SBATCH --cpus-per-task=24 --mem-per-cpu=4000
 
-#SBATCH --job-name=CAS_neg_128_iokr
+#SBATCH --job-name=CA_neg_128_crcmf
 
 # MODE='debug_application'
 MODE='application'
@@ -116,7 +116,7 @@ then
       --max_n_ms2="$MAX_N_MS2" \
       --make_order_prob="$MAKE_ORDER_PROB" \
       --margin_type="$MTYPE" \
-      --participant="IOKR__696a17f3"
+      --restrict_candidates_to_correct_mf
 elif [ $MODE = "debug_application" ]
 then
   srun python "$EVALSCRIPT" \
@@ -129,7 +129,7 @@ then
       --max_n_ms2="$MAX_N_MS2" \
       --make_order_prob="$MAKE_ORDER_PROB" \
       --margin_type="$MTYPE" \
-      --participant="IOKR__696a17f3"
+      --restrict_candidates_to_correct_mf
 else
   echo "Invalid mode: $MODE"
   exit 1
