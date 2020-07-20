@@ -29,20 +29,23 @@
 # -- SBATCH --partition=debug --time=01:00:00 --nodes=1
 # -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
-#SBATCH --partition=batch --time=06:00:00 --nodes=1
-#SBATCH --cpus-per-task=24 --mem-per-cpu=3500
+# Positive
+#SBATCH --time=20:00:00 --nodes=1
+#SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
-#SBATCH --job-name=CA_ms2_neg
+# Negative
+# -- SBATCH --time=08:00:00 --nodes=1
+# -- SBATCH --cpus-per-task=24 --mem-per-cpu=5000
 
-# MODE='debug_missing_ms2'
-MODE='missing_ms2'
+#SBATCH --job-name=CA_pos_paramsel
+
+# MODE='debug_development'
+MODE='development'
 echo "Mode: $MODE"
 
 # Read script arguments
 TREE_METHOD="random"
-MAKE_ORDER_PROB="sigmoid"
 MTYPE="max"
-PARAM_SELECTION_MEASURE="topk_auc"
 N_RANDOM_TREES=128
 
 ION_MODE=${1}
@@ -58,11 +61,11 @@ else
   echo "Invalid ionization mode: $ION_MODE"
   exit 1
 fi
+MAKE_ORDER_PROB=${2}  # 'sigmoid' or 'stepfun'
 
 echo "tree-method: $TREE_METHOD (with n_trees=$N_RANDOM_TREES)"
 echo "Function for preference score conversion: $MAKE_ORDER_PROB"
 echo "Dataset CASMI (ion_mode=$ION_MODE) with max_n_ms2=$MAX_N_MS2"
-echo "Parameter selection measure: $PARAM_SELECTION_MEASURE"
 echo "Margin type: $MTYPE"
 
 # Number of jobs to run tree optimization in parallel
@@ -71,9 +74,21 @@ echo "Number of jobs: $N_JOBS"
 
 # Set up file- and directory paths
 PROJECTDIR="$SCRATCHHOME/projects/msms_rt_score_integration"
-RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__platt"
-EVALSCRIPT="$PROJECTDIR/msmsrt_scorer/experiments/CASMI_2016/eval__TFG__missing_MS2.py"
+EVALSCRIPT="$PROJECTDIR/msmsrt_scorer/experiments/CASMI_2016/eval__TFG.py"
 CASMI_DB_FN="$SCRATCHHOME/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"
+
+if [ $MAKE_ORDER_PROB = "sigmoid" ]
+then
+  RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__platt"
+  ORDER_PROB_K_GRID="platt"
+elif [ $MAKE_ORDER_PROB = "stepfun" ]
+then
+  RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__gridsearch"
+  ORDER_PROB_K_GRID="inf"
+else
+  echo "Invalid order probability function: $ION_MODE"
+  exit 1
+fi
 
 # Load the required modules
 module purge
@@ -98,36 +113,28 @@ cd "$BASE_ODIR" || exit 1
 trap "rm -rf $BASE_ODIR; exit" TERM EXIT
 
 # Run the evaluation scripts
-if [ $MODE = "missing_ms2" ]
+if [ $MODE = "development" ]
 then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
-      --param_selection_measure="$PARAM_SELECTION_MEASURE" \
-      --D_value_grid nan \
-      --order_prob_k_grid nan \
+      --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
+      --order_prob_k_grid "$ORDER_PROB_K_GRID" \
       --database_fn="$CASMI_DB_FN" --n_jobs="$N_JOBS" \
-      --base_odir="$BASE_ODIR" --opt_param_dir="$RESULT_DIR" \
-      --n_samples="$N_SAMPLES" --n_random_trees="$N_RANDOM_TREES" --ion_mode="$ION_MODE" \
+      --base_odir="$BASE_ODIR" --n_samples="$N_SAMPLES" --n_random_trees="$N_RANDOM_TREES" --ion_mode="$ION_MODE" \
       --max_n_ms2="$MAX_N_MS2" \
       --make_order_prob="$MAKE_ORDER_PROB" \
-      --margin_type="$MTYPE" \
-      --use_global_parameter_selection \
-      --load_optimal_parameters
-elif [ $MODE = "debug_missing_ms2" ]
+      --margin_type="$MTYPE"
+elif [ $MODE = "debug_development" ]
 then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
-      --param_selection_measure="$PARAM_SELECTION_MEASURE" \
-      --D_value_grid nan \
-      --order_prob_k_grid nan \
+      --D_value_grid 0.01 0.1 0.5 \
+      --order_prob_k_grid "$ORDER_PROB_K_GRID" \
       --database_fn="$CASMI_DB_FN" --n_jobs="$N_JOBS" \
-      --base_odir="$BASE_ODIR" --opt_param_dir="$RESULT_DIR" \
-      --n_samples=3 --n_random_trees=4 --ion_mode="$ION_MODE" \
+      --base_odir="$BASE_ODIR" --n_samples=3 --n_random_trees=4 --ion_mode="$ION_MODE" \
       --max_n_ms2="$MAX_N_MS2" \
       --make_order_prob="$MAKE_ORDER_PROB" \
-      --margin_type="$MTYPE" \
-      --use_global_parameter_selection \
-      --load_optimal_parameters
+      --margin_type="$MTYPE"
 else
   echo "Invalid mode: $MODE"
   exit 1
