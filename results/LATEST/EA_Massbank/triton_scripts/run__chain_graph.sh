@@ -31,7 +31,7 @@
 
 #SBATCH --partition=batch --time=08:00:00 --nodes=1
 #SBATCH --cpus-per-task=12 --mem-per-cpu=3500
-#SBATCH --job-name=EA_chain_neg
+#SBATCH --job-name=EA_chain_pos
 
 # MODE='debug_application'
 MODE='application'

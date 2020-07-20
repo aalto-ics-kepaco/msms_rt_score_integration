@@ -29,10 +29,10 @@
 # -- SBATCH --partition=debug --time=01:00:00 --nodes=1
 # -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
-#SBATCH --partition=batch --time=02:00:00 --nodes=1
+#SBATCH --partition=batch --time=08:00:00 --nodes=1
 #SBATCH --cpus-per-task=32 --mem-per-cpu=5000
 
-#SBATCH --job-name=EA_ms2_neg
+#SBATCH --job-name=EA_ms2_pos
 
 # MODE='debug_missing_ms2'
 MODE='missing_ms2'

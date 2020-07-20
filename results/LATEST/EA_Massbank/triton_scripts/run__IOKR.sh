@@ -33,12 +33,12 @@
 #SBATCH --partition=batch --time=03:30:00 --nodes=1
 
 # Positive
-# -- SBATCH --cpus-per-task=36 --mem-per-cpu=4000
+#SBATCH --cpus-per-task=36 --mem-per-cpu=4000
 
 # Negative
-#SBATCH --cpus-per-task=20 --mem-per-cpu=3000
+# -- SBATCH --cpus-per-task=20 --mem-per-cpu=3000
 
-#SBATCH --job-name=EA_neg_128_iokr
+#SBATCH --job-name=EA_pos_128_iokr
 
 # MODE='debug_application'
 MODE='application'

@@ -30,14 +30,14 @@
 # -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
 # Positive
-#SBATCH --time=20:00:00 --nodes=1
-#SBATCH --cpus-per-task=36 --mem-per-cpu=5000
+# -- SBATCH --time=20:00:00 --nodes=1
+# -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
 # Negative
-# -- SBATCH --time=08:00:00 --nodes=1
-# -- SBATCH --cpus-per-task=24 --mem-per-cpu=5000
+#SBATCH --time=08:00:00 --nodes=1
+#SBATCH --cpus-per-task=24 --mem-per-cpu=5000
 
-#SBATCH --job-name=EA_pos_paramsel
+#SBATCH --job-name=EA_neg_par_sig
 
 # MODE='debug_development'
 MODE='development'
@@ -51,11 +51,11 @@ N_RANDOM_TREES=128
 ION_MODE=${1}
 if [ $ION_MODE = "positive" ]
 then
-  MAX_N_MS2=75
-  N_SAMPLES=50
+  MAX_N_MS2=100
+  N_SAMPLES=100
 elif [ $ION_MODE = "negative" ]
 then
-  MAX_N_MS2=50
+  MAX_N_MS2=65
   N_SAMPLES=50
 else
   echo "Invalid ionization mode: $ION_MODE"
@@ -86,7 +86,7 @@ then
   RESULT_DIR="$PROJECTDIR/results/LATEST/EA_Massbank/results__TFG__gridsearch"
   ORDER_PROB_K_GRID="inf"
 else
-  echo "Invalid order probability function: $ION_MODE"
+  echo "Invalid order probability function: $MAKE_ORDER_PROB"
   exit 1
 fi
 
