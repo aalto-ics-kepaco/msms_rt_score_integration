@@ -814,7 +814,7 @@ def figure__number_of_random_spanning_trees(base_dir: str, L_range: Optional[Lis
             ax.set_xticklabels([])
         else:
             ax.set_xticks(_x)
-            ax.set_xticklabels(_xlabels)
+            ax.set_xticklabels(_xlabels, rotation=45)
             ax.set_xlabel("Number of Spanning-Trees")
 
         if i == 0:
