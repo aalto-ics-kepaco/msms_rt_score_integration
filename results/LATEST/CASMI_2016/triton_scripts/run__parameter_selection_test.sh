@@ -37,7 +37,7 @@
 # -- SBATCH --time=08:00:00 --nodes=1
 # -- SBATCH --cpus-per-task=24 --mem-per-cpu=5000
 
-#SBATCH --job-name=CA_pos_paramsel
+#SBATCH --job-name=CA_pos_par_sig
 
 # MODE='debug_development'
 MODE='development'
@@ -86,7 +86,7 @@ then
   RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__gridsearch"
   ORDER_PROB_K_GRID="inf"
 else
-  echo "Invalid order probability function: $ION_MODE"
+  echo "Invalid order probability function: $MAKE_ORDER_PROB"
   exit 1
 fi
 
