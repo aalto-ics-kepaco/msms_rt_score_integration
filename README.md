@@ -28,15 +28,19 @@ version:
 
 ## Install into a Virtual Environment
 
-First clone the repository and change to the directory:
+Clone the repository:
 
-```git clone https://github.com/aalto-ics-kepaco/msms_rt_score_integration.git && cd msms_rt_score_integration```
+```git clone https://github.com/aalto-ics-kepaco/msms_rt_score_integration.git```
 
-Subsequently create a virtual Python environment and activate it:
+Change to the directory: 
+
+```cd msms_rt_score_integration```
+
+Create a virtual Python environment and activate it:
 
 ```virtualenv msmsrt_scorer_venv && source msmsrt_scorer_venv/bin/activate```
 
-Subsequently you can run the setup. All required packages will be fetched as well:
+Run the setup. All required packages will be fetched as well:
 
 ```pip install .```
 
