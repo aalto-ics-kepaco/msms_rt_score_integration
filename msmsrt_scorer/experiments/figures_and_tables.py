@@ -594,7 +594,7 @@ def figure__missing_ms2(base_dir: str, n_random_trees=128, for_paper=True):
 
 
 def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None, ion_mode=None, for_paper=True,
-                                plot_performance_for="test"):
+                                plot_performance_for="test", plot_baseline=False):
     """
     Figure 4 in the paper.
 
@@ -637,6 +637,7 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
         # Load results
         # ------------
         msr = []
+        msr_baseline = []
 
         # CASMI
         if load_CASMI:
@@ -650,6 +651,7 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
                 msr.append(pd.read_csv(os.path.join(_idir, "measures.csv")))
                 msr[-1]["Dataset"] = "CASMI 2016"
                 msr[-1]["Ionization"] = imode
+                msr_baseline.append(msr[-1][msr[-1].D == 0])
                 msr[-1] = msr[-1][msr[-1].D != 0]
 
         # EA Massbank
@@ -666,13 +668,18 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
                 msr[-1]["Ionization"] = imode
                 # 100 samples available for the positive ionization mode. Reduce to 50, so we have the same number for
                 # all datasets.
-                msr[-1] = msr[-1][(msr[-1].D != 0) & (msr[-1]["sample"] < 50)]
+                msr[-1] = msr[-1][msr[-1]["sample"] < 50]
+                msr_baseline.append(msr[-1][msr[-1].D == 0])
+                msr[-1] = msr[-1][msr[-1].D != 0]
 
         # Prepare data for plotting
         # -------------------------
         msr = pd.concat(msr, axis=0, sort=True)
+        msr_baseline = pd.concat(msr_baseline, axis=0, sort=True)
         msr_test = msr[(msr.set == "test")].reset_index()
         msr_train = msr[(msr.set == "train")].reset_index()
+        msr_baseline_test = msr_baseline[(msr_baseline.set == "test")].reset_index()
+        msr_baseline_train = msr_baseline[(msr_baseline.set == "train")].reset_index()
         opt = msr_train \
             .iloc[msr_train.groupby(["sample", "Dataset", "Ionization"]).idxmax()[param_selection_method]]  # type: pd.DataFrame
 
@@ -686,17 +693,24 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
 
         for col, k in enumerate(k_values_to_plot):
             ax_bar = axrr[row, col]
-            ax_line = axrr[row, col].twinx()
+            ax_line = axrr[row, col].twinx()  # type: plt.Axes
 
             # Line-plot
             if plot_performance_for == "test":
                 sns.pointplot(data=msr_test, x="D", y="top%d" % k, linestyles="--", errwidth=1.5, capsize=0.25,
                               scale=0.8, ax=ax_line, seed=2020)
+
+                if plot_baseline:
+                    ax_line.hlines(y=msr_baseline_test["top%d" % k].mean(), xmin=0, xmax=(len(D_range) - 1))
             else:
                 sns.pointplot(data=msr_train, x="D", y="top%d" % k, linestyles="--", errwidth=1.5, capsize=0.25,
                               scale=0.8, ax=ax_line, seed=2020)
 
+                if plot_baseline:
+                    ax_line.hlines(y=msr_baseline_train["top%d" % k].mean(), xmin=0, xmax=(len(D_range) - 1))
+
             ax_line.set_ylabel("")
+
 
             # Bar-plot
             ax_bar.bar(x=_x, height=cts / np.sum(cts), width=0.7, alpha=0.25, edgecolor="black", color="grey")
