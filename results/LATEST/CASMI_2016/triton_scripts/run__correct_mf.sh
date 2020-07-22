@@ -38,7 +38,7 @@
 # Negative
 #SBATCH --cpus-per-task=24 --mem-per-cpu=4000
 
-#SBATCH --job-name=CA_neg_128_crcmf
+#SBATCH --job-name=CA_neg_128_crcmf_iokr
 
 # MODE='debug_application'
 MODE='application'
@@ -62,6 +62,18 @@ then
   N_SAMPLES=50
 else
   echo "Invalid ionization mode: $ION_MODE"
+  exit 1
+fi
+
+MS2SCORER=${2}
+if [ $MS2SCORER = "IOKR" ]
+then
+  PARTICIPANT="IOKR__696a17f3"
+elif [ $MS2SCORER = "MetFrag" ]
+then
+  PARTICIPANT="MetFrag_2.4.5__8afe4a14"
+else
+  echo "Invalid MS2-scorer: $MS2SCORER"
   exit 1
 fi
 
@@ -116,7 +128,8 @@ then
       --max_n_ms2="$MAX_N_MS2" \
       --make_order_prob="$MAKE_ORDER_PROB" \
       --margin_type="$MTYPE" \
-      --restrict_candidates_to_correct_mf
+      --restrict_candidates_to_correct_mf \
+      --participant="$PARTICIPANT"
 elif [ $MODE = "debug_application" ]
 then
   srun python "$EVALSCRIPT" \
@@ -129,7 +142,8 @@ then
       --max_n_ms2="$MAX_N_MS2" \
       --make_order_prob="$MAKE_ORDER_PROB" \
       --margin_type="$MTYPE" \
-      --restrict_candidates_to_correct_mf
+      --restrict_candidates_to_correct_mf \
+      --participant="$PARTICIPANT"
 else
   echo "Invalid mode: $MODE"
   exit 1
