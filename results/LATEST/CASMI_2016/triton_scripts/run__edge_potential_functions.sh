@@ -31,15 +31,15 @@
 
 # Positive
 # -- SBATCH --time=06:00:00 --nodes=1
-# -- SBATCH --time=96:00:00 --nodes=1
-# -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
+#SBATCH --time=96:00:00 --nodes=1
+#SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
 # Negative
 # -- SBATCH --time=03:00:00 --nodes=1
-#SBATCH --time=48:00:00 --nodes=1
-#SBATCH --cpus-per-task=24 --mem-per-cpu=5000
+# -- SBATCH --time=48:00:00 --nodes=1
+# -- SBATCH --cpus-per-task=24 --mem-per-cpu=5000
 
-#SBATCH --job-name=CA_neg_sf_hinge
+#SBATCH --job-name=CA_pos_sf_hinge
 
 # MODE='debug_application'
 MODE='application'
@@ -124,7 +124,7 @@ then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
       --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
-      --order_prob_k_grid "${ORDER_PROB_K_GRID[*]}" \
+      --order_prob_k_grid ${ORDER_PROB_K_GRID[*]} \
       --database_fn="$CASMI_DB_FN" --n_jobs="$N_JOBS" \
       --base_odir="$BASE_ODIR" --n_samples="$N_SAMPLES" --n_random_trees="$N_RANDOM_TREES" --ion_mode="$ION_MODE" \
       --max_n_ms2="$MAX_N_MS2" \
@@ -135,7 +135,7 @@ then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
       --D_value_grid 0.01 0.1 0.5 \
-      --order_prob_k_grid "${ORDER_PROB_K_GRID[*]}" \
+      --order_prob_k_grid ${ORDER_PROB_K_GRID[*]} \
       --database_fn="$CASMI_DB_FN" --n_jobs="$N_JOBS" \
       --base_odir="$BASE_ODIR" --n_samples=3 --n_random_trees=4 --ion_mode="$ION_MODE" \
       --max_n_ms2="$MAX_N_MS2" \
