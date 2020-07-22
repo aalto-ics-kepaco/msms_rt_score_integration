@@ -40,7 +40,8 @@ from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR as ID
 from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_CASMI
 
 
-def table__candidate_set_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside", ms2scorer="MetFrag"):
+def table__candidate_set_comparison(base_dir: str, to_latex=False, test="wilcoxon_oneside", ms2scorer="MetFrag",
+                                    n_random_trees=128):
     """
     Table 6 in the papaer.
     """
@@ -49,7 +50,6 @@ def table__candidate_set_comparison(base_dir: str, to_latex=False, test="wilcoxo
     param_selection_measure = "topk_auc"
     eval_method = "casmi"
     margin_type = "max"
-    n_random_trees = 32
     k_values_to_consider = [1, 5, 10, 20]
     make_order_prob = "sigmoid"
 
@@ -109,7 +109,7 @@ def table__candidate_set_comparison(base_dir: str, to_latex=False, test="wilcoxo
         return res_global.set_index(["Candidate Set", "Method"])
 
 
-def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):
+def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="wilcoxon_oneside", n_random_trees=128):
     """
     Table 2 in the paper.
     """
@@ -118,7 +118,6 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
     param_selection_measure = "topk_auc"
     eval_method = "casmi"
     margin_type = "max"
-    n_random_trees = 32
     k_values_to_consider = [1, 5, 10, 20]
     make_order_prob = "sigmoid"
 
@@ -289,7 +288,7 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
         return res_global_score, res_global_sigf
 
 
-def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_twoside"):
+def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_oneside", n_random_trees=128):
     """
     Table S1 in the paper.
     """
@@ -298,7 +297,6 @@ def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test
     param_selection_measure = "topk_auc"
     eval_method = "casmi"
     margin_type = "max"
-    n_random_trees = 32
     k_values_to_consider = [1, 5, 10, 20]
 
     # Table parameters
@@ -383,7 +381,7 @@ def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test
         return res_score, res_p
 
 
-def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
+def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False, n_random_trees=128):
     """
     Table 5 in the Paper.
     """
@@ -393,7 +391,6 @@ def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
     eval_method = "casmi"
     make_order_prob = "sigmoid"
     margin_type = "max"
-    n_random_trees = 32
     k_values_to_consider = [1, 5, 10, 20]
 
     # Table parameters
@@ -451,7 +448,7 @@ def table__MetFrag_vs_IOKR_comparison(base_dir: str, to_latex=False):
         return res
 
 
-def figure__missing_ms2(base_dir: str):
+def figure__missing_ms2(base_dir: str, n_random_trees=128, for_paper=True):
     """
     Figure 4 in the paper.
     """
@@ -461,9 +458,13 @@ def figure__missing_ms2(base_dir: str):
     use_global_parameter_selection = True
     k_values_to_consider = [1, 5, 10, 20]
     eval_method = "casmi"
-    n_random_trees = 32
     margin_type = "max"
     make_order_prob = "sigmoid"
+
+    if for_paper:
+        k_values_to_plot = [1, 20]
+    else:
+        k_values_to_plot = [1, 5, 10, 20]
 
     # Load the results
     # ----------------
@@ -526,28 +527,27 @@ def figure__missing_ms2(base_dir: str):
 
     # Plot results
     # ------------
-    fig, axrr = plt.subplots(2, 2, squeeze=False, figsize=(6, 4.5), sharex="all")
+    fig, axrr = plt.subplots(2, len(k_values_to_plot), squeeze=False, figsize=(3 * len(k_values_to_plot), 4.5),
+                             sharex="all")
 
     _xlabels = [0, 25, 50, 75, 100]
     _x = range(len(_xlabels))
 
-    for i, topk in enumerate(["Top-%d" % k for k in [1, 20]]):
+    for i, topk in enumerate(["Top-%d" % k for k in k_values_to_plot]):
         # Get the current axis
         ax = axrr[1, i]
 
-        # Plot basline, horizontal line at 0
-        _h_bsl = ax.hlines(0, -0.15, 4.15, color="black", linestyle="-")
+        # Plot baseline, horizontal line at 0
+        ax.hlines(0, -0.15, 4.15, color="black", linestyle="-")
 
         # Plot average (RT + MS)
         #   (1) Calculate average for each (perc, dataset, ionization)
         #   (2) Calculate overall-average for each 'perc'
-        _eval_method = "casmi"
-
-        _y = res_imp.loc[(res_imp["Top-k"] == topk) & (res_imp["Evaluation"] == _eval_method)] \
+        _y = res_imp.loc[(res_imp["Top-k"] == topk) & (res_imp["Evaluation"] == eval_method)] \
             .groupby(["perc_ms2", "Dataset", "Ionization"]).mean() \
             .groupby("perc_ms2").mean()
-        _h1_rtms, = ax.plot(_x, _y, linestyle="--", color="black")
-        _h2_rtms = ax.scatter(_x, _y, color="black")
+        ax.plot(_x, _y, linestyle="--", color="black")
+        ax.scatter(_x, _y, color="black")
 
         ax.grid(axis="y", linestyle="--")
 
@@ -558,29 +558,28 @@ def figure__missing_ms2(base_dir: str):
         ax.set_xticks(_x)
         ax.set_xticklabels(_xlabels)
 
-    for i, topk in enumerate(["Top-%d" % k for k in [1, 20]]):
+    for i, topk in enumerate(["Top-%d" % k for k in k_values_to_plot]):
         # Get the current axis
         ax = axrr[0, i]
 
         # Plot average (RT + MS)
         #   (1) Calculate average for each (perc, dataset, ionization)
         #   (2) Calculate overall-average for each 'perc'
-        _eval_method = "casmi"
 
         # Plot Baseline (Only RT)
         _y = res_baseline \
-            .loc[res_baseline.Evaluation == _eval_method, ["Dataset", "Ionization", "perc_ms2", topk]] \
+            .loc[res_baseline.Evaluation == eval_method, ["Dataset", "Ionization", "perc_ms2", topk]] \
             .groupby(["Dataset", "Ionization", "perc_ms2"]).mean() \
             .groupby(["perc_ms2"]).mean()
-        ax.plot(_x, _y, linestyle="-", color="black")
+        _h_bsl, = ax.plot(_x, _y, linestyle="-", color="black")
 
         # Plot average (RT + MS)
         _y = res_msrt \
-            .loc[res_msrt.Evaluation == _eval_method, ["Dataset", "Ionization", "perc_ms2", topk]] \
+            .loc[res_msrt.Evaluation == eval_method, ["Dataset", "Ionization", "perc_ms2", topk]] \
             .groupby(["Dataset", "Ionization", "perc_ms2"]).mean() \
             .groupby(["perc_ms2"]).mean()
-        ax.plot(_x, _y, linestyle="--", color="black")
-        ax.scatter(_x, _y, color="black")
+        _h1_rtms, = ax.plot(_x, _y, linestyle="--", color="black")
+        _h2_rtms = ax.scatter(_x, _y, color="black")
 
         ax.grid(axis="y", linestyle="--")
 
@@ -589,27 +588,49 @@ def figure__missing_ms2(base_dir: str):
 
         ax.set_title("%s" % topk)
 
+    axrr[0, 0].legend([(_h1_rtms, _h2_rtms), _h_bsl], ("MS + RT", "Only MS"), loc="lower right")
+
     return fig, axrr
 
 
-def figure__parameter_selection(base_dir: str):
+def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None, ion_mode=None, for_paper=True,
+                                plot_performance_for="test"):
     """
     Figure 4 in the paper.
 
     :param base_dir:
+    :param n_random_trees:
     :return:
     """
 
     # General parameters
     # ------------------
     D_range = [0.001, 0.005, 0.01, 0.05, 0.1, 0.15, 0.25, 0.35, 0.5]
-    n_random_trees = 32
     param_selection_method = "topk_auc"
     margin_type = "max"
 
+    if for_paper:
+        k_values_to_plot = [1, 20]
+    else:
+        k_values_to_plot = [1, 5, 10, 20]
+
+    if ion_mode is None:
+        ion_modes = ["Positive", "Negative"]
+    else:
+        ion_modes = np.atleast_1d(ion_mode)
+
+    if dataset is None:
+        load_CASMI = True
+        load_EA = True
+    else:
+        load_CASMI = True if dataset == "CASMI" else False
+        load_EA = True if dataset == "EA" else False
+
+    assert load_EA or load_CASMI
+
     # Prepare figure
     # --------------
-    fig, axrr = plt.subplots(2, 2, figsize=(7.5, 5.25), sharey="all")
+    fig, axrr = plt.subplots(2, len(k_values_to_plot), figsize=(3.75 * len(k_values_to_plot), 5.25), sharey="all")
 
     for row, (make_order_prob, sub_dir) in enumerate([("sigmoid", "results__TFG__platt"),
                                                       ("stepfun", "results__TFG__gridsearch")]):
@@ -618,68 +639,79 @@ def figure__parameter_selection(base_dir: str):
         msr = []
 
         # CASMI
-        for ion_mode in ["Positive", "Negative"]:
-            _idir = IDIR_CASMI(
-                tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode.lower(), D_value_method=None,
-                base_dir=os.path.join(base_dir, "CASMI_2016", sub_dir), mode="development",
-                param_selection_measure=None, make_order_prob=make_order_prob, margin_type=margin_type,
-                norm_order_scores=False)
+        if load_CASMI:
+            for imode in ion_modes:
+                _idir = IDIR_CASMI(
+                    tree_method="random", n_random_trees=n_random_trees, ion_mode=imode.lower(), D_value_method=None,
+                    base_dir=os.path.join(base_dir, "CASMI_2016", sub_dir), mode="development",
+                    param_selection_measure=None, make_order_prob=make_order_prob, margin_type=margin_type,
+                    norm_order_scores=False)
 
-            msr.append(pd.read_csv(os.path.join(_idir, "measures.csv")))
-            msr[-1]["Dataset"] = "CASMI 2016"
-            msr[-1]["Ionization"] = ion_mode
-            msr[-1] = msr[-1][msr[-1].D != 0]
+                msr.append(pd.read_csv(os.path.join(_idir, "measures.csv")))
+                msr[-1]["Dataset"] = "CASMI 2016"
+                msr[-1]["Ionization"] = imode
+                msr[-1] = msr[-1][msr[-1].D != 0]
 
         # EA Massbank
-        for ion_mode in ["Positive", "Negative"]:
-            _idir = IDIR_EA(
-                tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode.lower(), D_value_method=None,
-                base_dir=os.path.join(base_dir, "EA_Massbank", sub_dir), mode="development",
-                param_selection_measure=None, make_order_prob=make_order_prob, norm_scores="none",
-                margin_type=margin_type)
+        if load_EA:
+            for imode in ion_modes:
+                _idir = IDIR_EA(
+                    tree_method="random", n_random_trees=n_random_trees, ion_mode=imode.lower(), D_value_method=None,
+                    base_dir=os.path.join(base_dir, "EA_Massbank", sub_dir), mode="development",
+                    param_selection_measure=None, make_order_prob=make_order_prob, norm_scores="none",
+                    margin_type=margin_type)
 
-            msr.append(pd.read_csv(os.path.join(_idir, "measures.csv")))
-            msr[-1]["Dataset"] = "EA (Massbank)"
-            msr[-1]["Ionization"] = ion_mode
-            # 100 samples available for the positive ionization mode. Reduce to 50, so we have the same number for all
-            # datasets.
-            msr[-1] = msr[-1][(msr[-1].D != 0) & (msr[-1]["sample"] < 50)]
+                msr.append(pd.read_csv(os.path.join(_idir, "measures.csv")))
+                msr[-1]["Dataset"] = "EA (Massbank)"
+                msr[-1]["Ionization"] = imode
+                # 100 samples available for the positive ionization mode. Reduce to 50, so we have the same number for
+                # all datasets.
+                msr[-1] = msr[-1][(msr[-1].D != 0) & (msr[-1]["sample"] < 50)]
 
         # Prepare data for plotting
         # -------------------------
         msr = pd.concat(msr, axis=0, sort=True)
         msr_test = msr[(msr.set == "test")].reset_index()
         msr_train = msr[(msr.set == "train")].reset_index()
-        opt = msr_train.iloc[msr_train.groupby(["sample", "Dataset", "Ionization"]).idxmax()[param_selection_method]]
+        opt = msr_train \
+            .iloc[msr_train.groupby(["sample", "Dataset", "Ionization"]).idxmax()[param_selection_method]]  # type: pd.DataFrame
 
         # Plot results
         # ------------
         cts = np.array([np.sum(opt.D == D) for D in D_range])
         _x = np.arange(len(D_range))
 
-        for col, k in enumerate([1, 20]):
+        print("%s - Selected 'D' value: mean = %.3f, median = %.3f, most frequent = %.3f" %
+              (make_order_prob, opt.D.mean(), opt.D.median(), opt.D.mode()[0]))
+
+        for col, k in enumerate(k_values_to_plot):
             ax_bar = axrr[row, col]
             ax_line = axrr[row, col].twinx()
 
             # Line-plot
-            sns.pointplot(data=msr_test, x="D", y="top%d" % k, linestyles="--", errwidth=1.5, capsize=0.25,
-                          scale=0.8, ax=ax_line, seed=2020)
+            if plot_performance_for == "test":
+                sns.pointplot(data=msr_test, x="D", y="top%d" % k, linestyles="--", errwidth=1.5, capsize=0.25,
+                              scale=0.8, ax=ax_line, seed=2020)
+            else:
+                sns.pointplot(data=msr_train, x="D", y="top%d" % k, linestyles="--", errwidth=1.5, capsize=0.25,
+                              scale=0.8, ax=ax_line, seed=2020)
+
             ax_line.set_ylabel("")
 
             # Bar-plot
             ax_bar.bar(x=_x, height=cts / np.sum(cts), width=0.7, alpha=0.25, edgecolor="black", color="grey")
             ax_bar.grid(axis="y")
 
-            axrr[row, col].set_title("Top-%d" % k, fontweight="bold", fontsize=12)
+            axrr[row, col].set_title("%s - Top-%d" % (make_order_prob, k), fontweight="bold", fontsize=12)
 
             ax_line.tick_params(axis="y", colors=sns.color_palette()[0], labelsize=11)
             ax_bar.tick_params(axis="y", colors="gray", labelsize=11)
 
             if col == 0:
-                ax_bar.set_ylabel("Selection frequency\nof parameter D\n(on Training sets)", fontsize=11,
+                ax_bar.set_ylabel("Selection frequency\nof parameter D\n(on training sets)", fontsize=11,
                                   color="gray")
-            if col == 1:
-                ax_line.set_ylabel("Identification accuarcy (%)\n(on Test sets)", fontsize=11,
+            if col == (len(k_values_to_plot) - 1):
+                ax_line.set_ylabel("Identification accuarcy (%%)\n(on %s sets)" % plot_performance_for, fontsize=11,
                                    color=sns.color_palette()[0])
 
             if row == 0:
@@ -692,7 +724,7 @@ def figure__parameter_selection(base_dir: str):
     return fig, axrr
 
 
-def figure__number_of_random_spanning_trees(base_dir: str, L_range: Optional[List] = None, for_paper=False):
+def figure__number_of_random_spanning_trees(base_dir: str, L_range: Optional[List] = None, for_paper=True):
     """
     Figure 2 in the paper (for_paper=True).
 
@@ -708,7 +740,7 @@ def figure__number_of_random_spanning_trees(base_dir: str, L_range: Optional[Lis
     mode = "application"
     make_order_prob = "sigmoid"
     if L_range is None:
-        L_range = [1, 2, 4, 8, 16, 32, 64]
+        L_range = [1, 2, 4, 8, 16, 32, 64, 128, 256]
 
     # Load the results
     # ----------------
