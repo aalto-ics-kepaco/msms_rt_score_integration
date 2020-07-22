@@ -82,15 +82,15 @@ CASMI_DB_FN="$SCRATCHHOME/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"
 if [ $MAKE_ORDER_PROB = "sigmoid" ]
 then
   RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__platt"
-  ORDER_PROB_K_GRID="platt"
+  ORDER_PROB_K_GRID=("platt")
 elif [ $MAKE_ORDER_PROB = "stepfun" ]
 then
   RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__gridsearch"
-  ORDER_PROB_K_GRID="inf"
+  ORDER_PROB_K_GRID=("inf")
 elif [ $MAKE_ORDER_PROB = "hinge_sigmoid" ]
 then
   RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__gridsearch"
-  ORDER_PROB_K_GRID=0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 7.0 10.0
+  ORDER_PROB_K_GRID=(0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 7.0 10.0)
 else
   echo "Invalid order probability function: $MAKE_ORDER_PROB"
   exit 1
@@ -124,7 +124,7 @@ then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
       --D_value_grid 0.001 0.005 0.01 0.05 0.1 0.15 0.25 0.35 0.5 \
-      --order_prob_k_grid "$ORDER_PROB_K_GRID" \
+      --order_prob_k_grid "${ORDER_PROB_K_GRID[*]}" \
       --database_fn="$CASMI_DB_FN" --n_jobs="$N_JOBS" \
       --base_odir="$BASE_ODIR" --n_samples="$N_SAMPLES" --n_random_trees="$N_RANDOM_TREES" --ion_mode="$ION_MODE" \
       --max_n_ms2="$MAX_N_MS2" \
@@ -135,7 +135,7 @@ then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
       --D_value_grid 0.01 0.1 0.5 \
-      --order_prob_k_grid "$ORDER_PROB_K_GRID" \
+      --order_prob_k_grid "${ORDER_PROB_K_GRID[*]}" \
       --database_fn="$CASMI_DB_FN" --n_jobs="$N_JOBS" \
       --base_odir="$BASE_ODIR" --n_samples=3 --n_random_trees=4 --ion_mode="$ION_MODE" \
       --max_n_ms2="$MAX_N_MS2" \
