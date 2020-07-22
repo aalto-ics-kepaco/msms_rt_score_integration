@@ -146,8 +146,8 @@ table.
 
 ## Summary and Potential of the Database
 
-We created the database mainly to easy the data handling and ensure reduce errors
-introduced by merges of different data sources. It provides a unifyed view on the
+We created the database mainly to easy the data handling and reduce errors
+introduced by mergin different data sources. It provides a unifyed view on the
 data, ensuring that, e.g., the same molecular representation is used througout the
 various framework-steps. 
 
