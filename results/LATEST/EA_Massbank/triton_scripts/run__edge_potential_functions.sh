@@ -76,20 +76,20 @@ echo "Number of jobs: $N_JOBS"
 
 # Set up file- and directory paths
 PROJECTDIR="$SCRATCHHOME/projects/msms_rt_score_integration"
-EVALSCRIPT="$PROJECTDIR/msmsrt_scorer/experiments/CASMI_2016/eval__TFG.py"
+EVALSCRIPT="$PROJECTDIR/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py"
 CASMI_DB_FN="$SCRATCHHOME/projects/local_casmi_db/db/use_inchis/DB_LATEST.db"
 
 if [ $MAKE_ORDER_PROB = "sigmoid" ]
 then
-  RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__platt"
+  RESULT_DIR="$PROJECTDIR/results/LATEST/EA_Massbank/results__TFG__platt"
   ORDER_PROB_K_GRID=("platt")
 elif [ $MAKE_ORDER_PROB = "stepfun" ]
 then
-  RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__gridsearch"
+  RESULT_DIR="$PROJECTDIR/results/LATEST/EA_Massbank/results__TFG__gridsearch"
   ORDER_PROB_K_GRID=("inf")
 elif [ $MAKE_ORDER_PROB = "hinge_sigmoid" ]
 then
-  RESULT_DIR="$PROJECTDIR/results/LATEST/CASMI_2016/results__TFG__gridsearch"
+  RESULT_DIR="$PROJECTDIR/results/LATEST/EA_Massbank/results__TFG__gridsearch"
   ORDER_PROB_K_GRID=("0.25 0.5 0.75 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 7.0 10.0")
 else
   echo "Invalid order probability function: $MAKE_ORDER_PROB"
