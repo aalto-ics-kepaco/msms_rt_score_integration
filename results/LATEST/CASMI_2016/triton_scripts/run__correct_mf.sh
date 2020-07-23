@@ -30,15 +30,15 @@
 # -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
 # n_random_trees = 128
-#SBATCH --partition=batch --time=07:00:00 --nodes=1
+#SBATCH --partition=batch --time=02:30:00 --nodes=1
 
 # Positive
-# -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
+#SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
 # Negative
-#SBATCH --cpus-per-task=24 --mem-per-cpu=4000
+# -- SBATCH --cpus-per-task=24 --mem-per-cpu=4000
 
-#SBATCH --job-name=CA_neg_128_crcmf_iokr
+#SBATCH --job-name=CA_pos_128_crcmf_iokr
 
 # MODE='debug_application'
 MODE='application'
