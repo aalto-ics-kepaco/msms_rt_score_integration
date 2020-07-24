@@ -30,16 +30,16 @@
 # -- SBATCH --cpus-per-task=8 --mem-per-cpu=4000
 
 # Positive
-# -- SBATCH --time=03:30:00 --nodes=1
+# -- SBATCH --time=05:30:00 --nodes=1
 # -- SBATCH --time=44:00:00 --nodes=1
 # -- SBATCH --cpus-per-task=36 --mem-per-cpu=5000
 
 # Negative
-# -- SBATCH --time=02:00:00 --nodes=1
-#SBATCH --time=24:00:00 --nodes=1
+#SBATCH --time=03:30:00 --nodes=1
+# -- SBATCH --time=24:00:00 --nodes=1
 #SBATCH --cpus-per-task=24 --mem-per-cpu=5000
 
-#SBATCH --job-name=EA_neg_sf_hinge
+#SBATCH --job-name=EA_neg_sf_step
 
 # MODE='debug_application'
 MODE='application'
