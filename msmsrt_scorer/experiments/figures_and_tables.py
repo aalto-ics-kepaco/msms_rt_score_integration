@@ -288,7 +288,8 @@ def table__alternative_methods_comparison(base_dir: str, to_latex=False, test="w
         return res_global_score, res_global_sigf
 
 
-def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_oneside", n_random_trees=128):
+def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test="wilcoxon_oneside",
+                                             n_random_trees=128):
     """
     Table S1 in the paper.
     """
@@ -298,6 +299,13 @@ def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test
     eval_method = "casmi"
     margin_type = "max"
     k_values_to_consider = [1, 5, 10, 20]
+
+    make_order_probs = ["sigmoid", "stepfun"]  # + ["hinge_sigmoid"]
+    sub_dirs_EA = ["EA_Massbank/results__TFG__platt",
+                   "EA_Massbank/results__TFG__gridsearch"]  #  + ["EA_Massbank/results__TFG__gridsearch"]
+    sub_dirs_CASMI = ["CASMI_2016/results__TFG__platt",
+                      "CASMI_2016/results__TFG__gridsearch"]  #  + ["CASMI_2016/results__TFG__gridsearch"]
+
 
     # Table parameters
     # ----------------
@@ -310,10 +318,7 @@ def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test
     res = []
 
     # EA Dataset
-    for i, (make_order_prob, sub_dir) in enumerate(zip(["sigmoid", "hinge_sigmoid", "stepfun"],
-                                                       ["EA_Massbank/results__TFG__platt",
-                                                        "EA_Massbank/results__TFG__gridsearch",
-                                                        "EA_Massbank/results__TFG__gridsearch"])):
+    for i, (make_order_prob, sub_dir) in enumerate(zip(make_order_probs, sub_dirs_EA)):
         for ion_mode, max_n_ms2, n_samples in [("positive", 100, 100), ("negative", 65, 50)]:
             _idir = IDIR_EA(
                 tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
@@ -328,10 +333,7 @@ def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test
             res[-1]["Ionization"] = ion_mode
 
     # CASMI Dataset
-    for i, (make_order_prob, sub_dir) in enumerate(zip(["sigmoid", "hinge_sigmoid", "stepfun"],
-                                                       ["CASMI_2016/results__TFG__platt",
-                                                        "CASMI_2016/results__TFG__gridsearch",
-                                                        "CASMI_2016/results__TFG__gridsearch"])):
+    for i, (make_order_prob, sub_dir) in enumerate(zip(make_order_probs, sub_dirs_CASMI)):
         for ion_mode, max_n_ms2, n_samples in [("positive", 75, 50), ("negative", 50, 50)]:
             _idir = IDIR_CASMI(
                 tree_method="random", n_random_trees=n_random_trees, ion_mode=ion_mode, D_value_method=None,
@@ -620,13 +622,9 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
         ion_modes = np.atleast_1d(ion_mode)
 
     if dataset is None:
-        load_CASMI = True
-        load_EA = True
+        datasets = ["CASMI", "EA"]
     else:
-        load_CASMI = True if dataset == "CASMI" else False
-        load_EA = True if dataset == "EA" else False
-
-    assert load_EA or load_CASMI
+        datasets = np.atleast_1d(dataset)
 
     # Prepare figure
     # --------------
@@ -640,7 +638,7 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
         msr_baseline = []
 
         # CASMI
-        if load_CASMI:
+        if "CASMI" in datasets:
             for imode in ion_modes:
                 _idir = IDIR_CASMI(
                     tree_method="random", n_random_trees=n_random_trees, ion_mode=imode.lower(), D_value_method=None,
@@ -655,7 +653,7 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
                 msr[-1] = msr[-1][msr[-1].D != 0]
 
         # EA Massbank
-        if load_EA:
+        if "EA" in datasets:
             for imode in ion_modes:
                 _idir = IDIR_EA(
                     tree_method="random", n_random_trees=n_random_trees, ion_mode=imode.lower(), D_value_method=None,
