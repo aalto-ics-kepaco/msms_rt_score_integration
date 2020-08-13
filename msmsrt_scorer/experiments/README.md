@@ -12,7 +12,7 @@ Scripts to produce the raw results that can be used to [create plots and tables]
 
 ## Re-run Experiments
 
-Here, we will describe how the experiments can be re-run on the example of [```eval__TFG.py``` (EA Massbank)](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L82). Assuming you have installed the [```nmsmsrt_scorer``` package and, if needed, activated the virtual environment](https://github.com/aalto-ics-kepaco/msms_rt_score_integration#install-into-a-virtual-environment), you can run the evaluation script as follows:
+Here, we will describe how the experiments can be re-run on the example of [```eval__TFG.py``` (EA Massbank)](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L86). Assuming you have installed the [```nmsmsrt_scorer``` package and, if needed, activated the virtual environment](https://github.com/aalto-ics-kepaco/msms_rt_score_integration#install-into-a-virtual-environment), you can run the evaluation script as follows:
 ```bash
 python EA_Massbank/eval__TFG.py \
       --mode=EVALUATION_MODE \
@@ -30,11 +30,11 @@ python EA_Massbank/eval__TFG.py \
 
 ### Detailed description of selected parameters 
 
-A description of all parameters, can be found in the [```__main___```](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L82) of the "eval__" script files. Some selected parameters will be explained here: 
+A description of all parameters, can be found in the [```__main___```](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L86) of the "eval__" script files. Some selected parameters will be explained here: 
 
 ```--mode```
 
-| EVALUATION_MODE [[1](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L174), [2](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG__missing_MS2.py#L151)] | Description |
+| EVALUATION_MODE [[1](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG.py#L174), [2](/msmsrt_scorer/experiments/EA_Massbank/eval__TFG__missing_MS2.py#L149)] | Description |
 | --- | --- |
 | application | Results to Evaluate the performance on the test sets in the application setting. |
 | development | Performance evaluation of training _and_ test set for each hyper parameter grid value |
@@ -116,4 +116,4 @@ You will find:
 | opt_params.csv | Selected (D, k) for each sample | 
 | topk_casmi__max_n_ms2=VALUE__sample_id=VALUE.pkl.gz | Top-k accuracies for the baseline (Only MS) and after the score integration (MS + RT) | 
 
-You can load the results using the [```load_results```](/msmsrt_scorer/experiments/EA_Massbank/plot_and_table_utils.py#L178) function specific for the CASMI and EA datasets (due to slighly different directory structures). To reproduce figures and tables of the paper, please take a look [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/results). 
+You can load the results using the [```load_results```](/msmsrt_scorer/experiments/plot_and_table_utils.py#L75) function. To reproduce figures and tables of the paper, please take a look [here](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/tree/master/results). 
