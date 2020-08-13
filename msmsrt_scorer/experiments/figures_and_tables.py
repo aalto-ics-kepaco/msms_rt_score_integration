@@ -375,9 +375,28 @@ def table__edgepotential_function_comparison(base_dir: str, to_latex=False, test
               "Top-20": lambda x: _label_p(x, res_baseline["Top-20"], test=test, print_mean=False)}) \
         .reset_index()
 
+    for m1, m2 in it.product(make_order_probs, make_order_probs):
+        if m1 == m2:
+            continue
+
+        print("Does '%s' significantly improves over '%s'?" % (m1, m2))
+
+        _m1, _m2 = "MS + RT (our, %s)" % m1, "MS + RT (our, %s)" % m2
+
+        print(
+            res[res.Method == _m1]
+                .drop("sample", axis=1)
+                .groupby("Method")
+                .agg({"Top-1": lambda x: _label_p(x, res[res.Method == _m2]["Top-1"], test=test, print_mean=False),
+                      "Top-5": lambda x: _label_p(x, res[res.Method == _m2]["Top-5"], test=test, print_mean=False),
+                      "Top-10": lambda x: _label_p(x, res[res.Method == _m2]["Top-10"], test=test, print_mean=False),
+                      "Top-20": lambda x: _label_p(x, res[res.Method == _m2]["Top-20"], test=test, print_mean=False)})
+                .reset_index()
+        )
+
     if to_latex:
         return "\n---\n\n".join([res_score.to_latex(escape=escape, index=index, column_format=column_format),
-                          res_p.to_latex(escape=escape, index=index, column_format=column_format)])
+                                 res_p.to_latex(escape=escape, index=index, column_format=column_format)])
 
     else:
         return res_score, res_p

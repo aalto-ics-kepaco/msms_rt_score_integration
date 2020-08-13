@@ -235,5 +235,7 @@ def _label_p(x: pd.Series, y: pd.Series, test: Optional[str] = "wilcoxon_twoside
         cell_label.append("(**)")
     elif _p < 0.05 and (x_mean > y_mean):
         cell_label.append("(*)")
+    else:
+        cell_label.append("(n.s.)")
 
     return " ".join(cell_label)
