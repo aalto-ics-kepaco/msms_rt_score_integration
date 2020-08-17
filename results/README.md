@@ -30,5 +30,5 @@ This description follows the instructions given [here](https://janakiev.com/blog
 
 | Notebook | Description | 
 | --- | --- |
-| [make_figures.ipynb](./make_figures.ipynb) | Produces all result figures in the paper: 2, 3 and 4. |
-| [make_tables.ipynb](./make_tables.ipynb) | Produces all result tables in the paper: 3, 4, 5, 6 and S1. |
+| [make_figures.ipynb](./make_figures__v0.2.0.ipynb) | Produces all result figures in the paper: 2 and 3 |
+| [make_tables.ipynb](./make_tables__v0.2.0.ipynb) | Produces all result tables in the paper: 2, 3, 4, 5 and S1. |
