@@ -2,7 +2,7 @@
 
 Scripts used to run the experiments presented in the paper:
 
-__"Probabilistic Framework for Integration of Mass Spectrum and Retention Time Information in Metabolite Identification"__,
+__"Probabilistic Framework for Integration of Mass Spectrum and Retention Time Information in Small Molecule Identification"__,
 
 _Eric Bach, Simon Rogers, John Williamson and Juho Rousu_, 2020
 
