@@ -526,13 +526,13 @@ def figure__missing_ms2(base_dir: str, n_random_trees=128, for_paper=True):
     # Prepare data for plotting
     # -------------------------
     res_baseline = res[res.Method == "Only MS"] \
-                       .reset_index() \
-                       .drop(["index"], axis=1) \
-                       .iloc[:, [0, 1, 2, 7, 8, 9, 3, 4, 5, 6]]
+        .reset_index() \
+        .drop(["index"], axis=1) \
+        .iloc[:, [0, 1, 2, 7, 8, 9, 3, 4, 5, 6]]
     res_msrt = res[res.Method == "MS + RT"] \
-                   .reset_index() \
-                   .drop(["index"], axis=1) \
-                   .iloc[:, [0, 1, 2, 7, 8, 9, 3, 4, 5, 6]]
+        .reset_index() \
+        .drop(["index"], axis=1) \
+        .iloc[:, [0, 1, 2, 7, 8, 9, 3, 4, 5, 6]]
 
     assert all(res_baseline.Method == "Only MS")
     assert all(res_msrt.Method == "MS + RT")
@@ -755,6 +755,103 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
     return fig, axrr
 
 
+def figure__number_of_random_spanning_trees__WITH_CI(base_dir: str, L_range: Optional[List] = None, for_paper=True):
+    """
+    Figure 2 in the paper (for_paper=True).
+
+    :param base_dir:
+    :param L_range: list, range of the number of spanning trees to plot.
+    :param for_paper: boolean, if true only the curves top-1 and top-20 accuracy are plotted (less space in the paper)
+    :return:
+    """
+    # General parameters
+    # ------------------
+    param_selection_measure = "topk_auc"
+    eval_method = "casmi"
+    mode = "application"
+    make_order_prob = "sigmoid"
+    if L_range is None:
+        L_range = [1, 2, 4, 8, 16, 32, 64, 128, 256]
+
+    # Load the results
+    # ----------------
+    results = pd.DataFrame()
+    margin_types = ["Max", "Sum"]
+    for margin_type in margin_types:
+        for i, T in enumerate(L_range):
+            #########################
+            # LOAD CASMI 2016 RESULTS
+            #########################
+            for _ionm, _maxn, _nsamp in [("positive", 75, 50), ("negative", 50, 50)]:
+                _idir = IDIR_CASMI(
+                    tree_method="random", n_random_trees=T, ion_mode=_ionm, D_value_method=None,
+                    base_dir=os.path.join(base_dir, "CASMI_2016/results__TFG__platt"), mode=mode,
+                    param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+                    norm_order_scores=False, margin_type=margin_type.lower())
+
+                _tmp = load_results(_idir, "MS + RT (%s)" % margin_type, _maxn, method=eval_method,
+                                    label_only_ms="Only MS", n_samples=_nsamp,
+                                    load_baseline=(margin_type == "Max"))
+
+                # Results
+                _results = _tmp[0]
+                _results = _results.assign(T=T, Ionization=_ionm, Dataset="CASMI2016")
+                results = pd.concat([results, _results], axis=0, sort=True)
+
+            ############################
+            # LOAD EA (MASSBANK) RESULTS
+            ############################
+            for _ionm, _maxn, _nsamp in [("positive", 100, 100), ("negative", 65, 50)]:
+                _idir = IDIR_EA(
+                    tree_method="random", n_random_trees=T, ion_mode=_ionm, D_value_method=None,
+                    base_dir=os.path.join(base_dir, "EA_Massbank/results__TFG__platt"), mode=mode,
+                    param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+                    norm_scores="none", margin_type=margin_type.lower())
+
+                _tmp = load_results(_idir, "MS + RT (%s)" % margin_type, _maxn, method=eval_method,
+                                    label_only_ms="Only MS", n_samples=_nsamp,
+                                    load_baseline=(margin_type == "Max"))
+                # Results
+                _results = _tmp[0]
+                _results = _results.loc[_results["sample"] < 50]  # type: pd.DataFrame
+                _results = _results.assign(T=T, Ionization=_ionm, Dataset="EA")
+                results = pd.concat([results, _results], axis=0, sort=True)
+
+    # Prepare the results for plotting
+    # --------------------------------
+    results = results \
+        .drop(["sample"], axis=1) \
+        .melt(id_vars=["Ionization", "T", "Method", "Dataset"], var_name="Top-k", value_name="Top-k Accuracy (%)")
+
+    # Plot the figure
+    # ---------------
+    if for_paper:
+        k_range = [1, 20]
+    else:
+        k_range = [1, 5, 10, 20]
+
+    sns.set(style="ticks", font_scale=1.1, rc={"lines.linewidth": 1.35, "xtick.major.size": 8})
+    g = sns.catplot(x="T", y="Top-k Accuracy (%)", hue="Method", col="Top-k",
+                    data=results[results["Top-k"].isin(["Top-%d" % k for k in k_range])], kind="point",
+                    sharey=False, seed=102, height=3.25, aspect=1.15,
+                    hue_order=["MS + RT (Max)", "MS + RT (Sum)", "Only MS"],
+                    palette={"MS + RT (Max)": sns.color_palette()[0], "MS + RT (Sum)": sns.color_palette()[1],
+                             "Only MS": (0.35, 0.35, 0.35)}, legend=True,
+                    **{"capsize": 0.2, "errwidth": 1.75, "dodge": 0.25, "linestyles": ["-", "-", "-"],
+                       "markers": "o"})
+    g.set_titles(col_template="{col_name}")
+    g.set_ylabels("Identification\nAccuracy (%)")
+    g.set_xlabels("Number of Spanning-Trees")
+    for c in range(len(k_range)):
+        ax = g.axes[0, c]
+        ax.grid(axis="y")
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+    # g.add_legend(title="", ncol=3, loc=(0.15, -0.02), labelspacing=-0.3, frameon=True)
+    sns.reset_orig()
+
+    return g
+
+
 def figure__number_of_random_spanning_trees(base_dir: str, L_range: Optional[List] = None, for_paper=True):
     """
     Figure 2 in the paper (for_paper=True).
@@ -857,14 +954,16 @@ def figure__number_of_random_spanning_trees(base_dir: str, L_range: Optional[Lis
             ax.plot(_x, _y, linestyle="--", label="MS + RT (%s)" % margin_type)
             ax.scatter(_x, _y)
 
-        # Plot average (Only MS)
-        for margin_type in results:
-            _y = results[margin_type] \
-                .loc[(results[margin_type]["Top-k"] == topk) & (results[margin_type].Method == "Only MS")] \
-                .groupby(["Dataset", "Ionization"])["Top-k Accuracy (%)"].mean() \
-                .mean()
+            # print("%s - MS + RT (%s): acc_mean" % (topk, margin_type), _y)
 
+        # Plot average (Only MS)
+        # Note: Baseline performance does not differ between Max and Sum margin
+        _y = results["Max"] \
+            .loc[(results["Max"]["Top-k"] == topk) & (results["Max"].Method == "Only MS")] \
+            .groupby(["Dataset", "Ionization"])["Top-k Accuracy (%)"].mean() \
+            .mean()
         ax.hlines(_y, -0.15, len(L_range) - 1 + 0.15, linestyle="-", color="black", label="Only MS")
+        # print("%s - Only MS: acc_mean=%.3f" % (topk, _y))
 
         ax.set_title(topk)
 
