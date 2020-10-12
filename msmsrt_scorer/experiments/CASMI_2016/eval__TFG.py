@@ -45,7 +45,8 @@ from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores,
 from msmsrt_scorer.lib.evaluation_tools import run_parameter_grid, get_top20AUC
 
 
-def load_data(args):
+def load_data(args, participant=None, prefmodel=None, sort_candidates_by_ms2_score=None,
+              restrict_candidates_to_correct_mf=None):
     """
     Load data from CASMI database
 
@@ -53,27 +54,45 @@ def load_data(args):
 
     :return: challenge and candidates, dictionaries
     """
+    if participant is None:
+        participant = args.participant
+
+    if prefmodel is None:
+        prefmodel = args.pref_model
+
+    if sort_candidates_by_ms2_score is None:
+        sort_candidates_by_ms2_score = args.sort_candidates_by_ms2_score
+
+    if restrict_candidates_to_correct_mf is None:
+        restrict_candidates_to_correct_mf = args.restrict_candidates_to_correct_mf
+
     with sqlite3.connect("file:" + args.database_fn + "?mode=ro", uri=True) as db:
         challenges, candidates = load_dataset_CASMI(
-            db, ion_mode=args.ion_mode, participant=args.participant, prefmodel=args.pref_model,
-            max_n_cand=args.max_n_cand, sort_candidates_by_ms2_score=args.sort_candidates_by_ms2_score,
-            restrict_candidates_to_correct_mf=args.restrict_candidates_to_correct_mf)
+            db, ion_mode=args.ion_mode, participant=participant, prefmodel=prefmodel,
+            max_n_cand=args.max_n_cand, sort_candidates_by_ms2_score=sort_candidates_by_ms2_score,
+            restrict_candidates_to_correct_mf=restrict_candidates_to_correct_mf)
 
     return challenges, candidates
 
 
-def load_platt_k(args):
+def load_platt_k(args, pref_model=None):
     """
     Load the sigmoid parameter k determined using Platt's method during the RankSVM model training.
 
     See Section 4.2.2
 
     :param args: argparse.ArgumentParser() object, holding the script parameters
+
+    :param pref_model: string, identifier of the preference model used to pre-calculate the preference scores.
+
     :return: scalar, sigmoid k parameter
     """
+    if pref_model is None:
+        pref_model = args.pref_model
+
     with sqlite3.connect("file:" + args.database_fn + "?mode=ro", uri=True) as db:
         res = db.execute("SELECT platt_parameters FROM preference_scores_meta"
-                         "   WHERE name IS ?", (args.pref_model, )).fetchall()
+                         "   WHERE name IS ?", (pref_model, )).fetchall()
         k = - eval(res[0][0])["A"]
 
     return k
