@@ -28,16 +28,16 @@
 
 # -- SBATCH --partition=debug --time=01:00:00
 # -- SBATCH --nodes=1
-# -- SBATCH --cpus-per-task=6 --mem-per-cpu=7500
+# -- SBATCH --cpus-per-task=12 --mem-per-cpu=5000
 
 #SBATCH --partition=batch --time=08:00:00
 #SBATCH --nodes=1 --constraint=hsw --exclude=c[579-698] --gres=spindle
-#SBATCH --cpus-per-task=12 --mem-per-cpu=7500
+#SBATCH --cpus-per-task=12 --mem-per-cpu=5000
 
-#SBATCH --job-name=CA_pos_time
+#SBATCH --job-name=CA_neg_time
 
 MODE='runtime'
-# -- MODE='debug_runtime'
+# MODE='debug_runtime'
 echo "Mode: $MODE"
 
 # Read script arguments
@@ -69,7 +69,7 @@ source "$PROJECTDIR/venv/bin/activate"
 
 # Sleep for some time to prevent conflicts when creating
 # directories within the evaluations scripts.
-sleep $(( ( ${RANDOM} % 15 ) + 1 ))
+sleep $(( ( ${RANDOM} % 5 ) + 1 ))
 
 # Create temporary output directory for results on local disk of node
 BASE_ODIR="/tmp/$SLURM_JOB_ID"
@@ -82,7 +82,7 @@ cd "$BASE_ODIR" || exit 1
 trap "rm -rf $BASE_ODIR; exit" TERM EXIT
 
 # Run the evaluation scripts
-if [ $MODE = "application" ]
+if [ $MODE = "runtime" ]
 then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
@@ -94,7 +94,7 @@ then
       --n_random_trees="$N_RANDOM_TREES" \
       --ion_mode="$ION_MODE" \
       --max_n_ms2_grid 15 30 45 60 75
-elif [ $MODE = "debug_application" ]
+elif [ $MODE = "debug_runtime" ]
 then
   srun python "$EVALSCRIPT" \
       --mode="$MODE" \
