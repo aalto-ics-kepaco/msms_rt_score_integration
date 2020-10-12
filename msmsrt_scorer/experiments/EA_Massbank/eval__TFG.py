@@ -24,8 +24,8 @@
 #
 ####
 
-# Script to run the experiments presented in Section 4.2 of the paper for the EA (Massbank) datasets.
-# The description of the experiment can be found in Section 3.5.1.
+# Script to run the experiments presented in Section 4.1 and 4.2 of the paper for the EA (Massbank) datasets.
+# The description of the experiment can be found in Section 3.6.
 
 import argparse
 import sqlite3
@@ -89,27 +89,27 @@ if __name__ == "__main__":
     arg_parser.add_argument("--param_selection_measure", type=str, default="topk_auc",
                             choices=["topk_auc", "ndcg", "p_marg", "p_max", "un_topk_auc", "un_p_marg"],
                             help="Criteria for the selection of the best (D, k)-tuple (hyper-parameters, see Section "
-                                 "3.4 and 4.2.2). In the paper 'topk_auc' (top20AUC) was used.")
+                                 "3.5 and S.2). In the paper 'topk_auc' (top20AUC) was used.")
 
     arg_parser.add_argument("--D_value_grid", nargs="+", type=float,
                             help="Grid-values for the retention order weight. (1 - D) * llh(MS) + D * llh(RT)")
 
     arg_parser.add_argument("--order_prob_k_grid", nargs="+", type=str, default="platt",
-                            help="K-parameter grid for the sigmoid used as edge potential function (see Section 2.2.3).")
+                            help="K-parameter grid for the sigmoid used as edge potential function (see Section 2.2).")
 
     arg_parser.add_argument("--margin_type", type=str, default="max", choices=["max", "sum"],
                             help="Which marginal should be used: max-marginal or sum-marginal. See Section 2.3.")
 
     arg_parser.add_argument("--make_order_prob", type=str, choices=["sigmoid", "stepfun", "hinge_sigmoid"],
                             default="sigmoid", help="Which function to use as edge potential function. (see Section "
-                                                    "2.2.3)")
+                                                    "2.2)")
 
     arg_parser.add_argument("--norm_scores", type=str, default="none", choices=["both", "ms", "rt", "none"],
                             help="Which potential functions (ms = node potential; rt = edge potential) should be "
                                  "normalized. We use no extra normalization in our paper.")
 
     arg_parser.add_argument("--tree_method", type=str, choices=["random", "chain"], default="random",
-                            help="Which tree approximation to use for the MRF (see Section 2.3.2).")
+                            help="Which tree approximation to use for the MRF (see Section 2.3).")
 
     arg_parser.add_argument("--n_random_trees", type=int, default=32,
                             help="Number of random spanning-trees to average the marginal distribution.")
@@ -175,8 +175,7 @@ if __name__ == "__main__":
                             help="Mode to run this script. The parameter adds a sub-directory to the output with the "
                                  "same name, so that results can be analysed separately. 'debug' and 'development' "
                                  "are both running the (D, k) grid-search over training _and_ test set. They are "
-                                 "mainly intended for development purposes. For example, the results for the parameter "
-                                 "selection analysis in Section 4.2.2 are created using 'development'. 'application' "
+                                 "mainly intended for development purposes. 'application' "
                                  "and 'debug_application' are used to run our framework in the application scenario, "
                                  "i.e. finding the best (D, k)-tuple based on the training set and subsequently "
                                  "evaluating the score integration on the test set.")
