@@ -163,7 +163,7 @@ if __name__ == "__main__":
                                        margin_type=MARGIN_TYPE)
                 for rep in range(n_trees))
             duration_application = time.time() - start_time
-            print("\tapplication time=%.3fs" % duration_application)
+            print("\tapplication time=%.3fs" % duration_application, flush=True)
 
             # Collect statistics
             _n_cand = [_cnd["n_cand"] for _cnd in cnds_eval.values()]
