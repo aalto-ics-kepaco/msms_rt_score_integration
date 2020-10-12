@@ -86,7 +86,7 @@ if __name__ == "__main__":
                             help="Limit the maximum number of candidates per ms-feature. We use all candidates in the"
                                  "paper. This option is mainly used for development.")
 
-    arg_parser.add_argument("--max_n_ms2_grid", nargs="+",
+    arg_parser.add_argument("--max_n_ms2_grid", nargs="+", type=int,
                             help="Number of (MS2, RT)-tuples used for hyper-parameter optimization, i.e. D, and used "
                                  "in the score-integration, i.e. actual metabolite identification. Here, are grid is "
                                  "defined, as we run the runtime analysis for multiple number of (MS2, RT)-tuples.")
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     runtimes_df = []
 
-    for n_ms2_idx, max_n_ms2 in enumerate(map(int, args.max_n_ms2_grid)):
+    for n_ms2_idx, max_n_ms2 in enumerate(args.max_n_ms2_grid):
         for s, (_, eval_set) in enumerate(ShuffleSplit(n_splits=args.n_samples, test_size=max_n_ms2,
                                                        random_state=29181).split(candidates)):
             print("n_ms2_idx=%d/%d ; rep=%d/%d" % (n_ms2_idx + 1, len(args.max_n_ms2_grid), s + 1, args.n_samples))
