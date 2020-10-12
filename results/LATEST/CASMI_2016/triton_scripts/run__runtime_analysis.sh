@@ -30,11 +30,11 @@
 # -- SBATCH --nodes=1
 # -- SBATCH --cpus-per-task=12 --mem-per-cpu=5000
 
-#SBATCH --partition=batch --time=08:00:00
+#SBATCH --partition=batch --time=24:00:00
 #SBATCH --nodes=1 --constraint=hsw --exclude=c[579-698] --gres=spindle
 #SBATCH --cpus-per-task=12 --mem-per-cpu=5000
 
-#SBATCH --job-name=CA_neg_time
+#SBATCH --job-name=CA_pos_time
 
 MODE='runtime'
 # MODE='debug_runtime'

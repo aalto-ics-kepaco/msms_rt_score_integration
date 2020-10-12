@@ -34,7 +34,7 @@
 #SBATCH --nodes=1 --constraint=hsw --exclude=c[579-698] --gres=spindle
 #SBATCH --cpus-per-task=12 --mem-per-cpu=5000
 
-#SBATCH --job-name=EA_pos_time
+#SBATCH --job-name=EA_neg_time
 
 MODE='runtime'
 # MODE='debug_runtime'
@@ -69,7 +69,7 @@ source "$PROJECTDIR/venv/bin/activate"
 
 # Sleep for some time to prevent conflicts when creating
 # directories within the evaluations scripts.
-sleep $(( ( ${RANDOM} % 15 ) + 1 ))
+sleep $(( ( ${RANDOM} % 5 ) + 1 ))
 
 # Create temporary output directory for results on local disk of node
 BASE_ODIR="/tmp/$SLURM_JOB_ID"
