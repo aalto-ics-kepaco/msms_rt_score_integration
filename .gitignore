@@ -9,3 +9,4 @@ results/YOUR_RESULTS_GO_HERE
 **/slurm-*.out
 **/results_*.tar
 **/debug_*
+**/.*.swp
