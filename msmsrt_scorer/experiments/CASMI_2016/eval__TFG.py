@@ -24,8 +24,8 @@
 #
 ####
 
-# Script to run the experiments presented in Section 4.2 of the paper for the CASMI 2016 datasets.
-# The description of the experiment can be found in Section 3.5.1.
+# Script to run the experiments presented in Section 4.1 and 4.2 of the paper for the CASMI 2016 datasets.
+# The description of the experiment can be found in Section 3.6.
 
 import argparse
 import sqlite3
@@ -85,27 +85,27 @@ if __name__ == "__main__":
     arg_parser.add_argument("--param_selection_measure", type=str, default="topk_auc",
                             choices=["topk_auc", "ndcg", "p_marg", "p_max", "un_topk_auc", "un_p_marg"],
                             help="Criteria for the selection of the best (D, k)-tuple (hyper-parameters, see Section "
-                                 "3.4 and 4.2.2). In the paper 'topk_auc' (top20AUC) was used.")
+                                 "3.5 and S.2). In the paper 'topk_auc' (top20AUC) was used.")
 
     arg_parser.add_argument("--D_value_grid", nargs="+", type=float,
                             help="Grid-values for the retention order weight. (1 - D) * llh(MS) + D * llh(RT)")
 
     arg_parser.add_argument("--order_prob_k_grid", nargs="+", type=str, default="platt",
-                            help="K-parameter grid for the sigmoid used as edge potential function (see Section 2.2.3).")
+                            help="K-parameter grid for the sigmoid used as edge potential function (see Section 2.2).")
 
     arg_parser.add_argument("--margin_type", type=str, default="max", choices=["max", "sum"],
                             help="Which marginal should be used: max-marginal or sum-marginal. See Section 2.3.")
 
     arg_parser.add_argument("--make_order_prob", type=str, choices=["sigmoid", "stepfun", "hinge_sigmoid"],
                             default="sigmoid", help="Which function to use as edge potential function. (see Section "
-                                                    "2.2.3)")
+                                                    "2.2)")
 
     arg_parser.add_argument("--norm_order_scores", action="store_true",
                             help="Should the transition matrix between the candidate sets (order scores) be normalized,"
                                  "i.e. the probabilities to go from r in M(i) to any s in M(j) are summing up to one.")
 
     arg_parser.add_argument("--tree_method", type=str, choices=["random", "chain"], default="random",
-                            help="Which tree approximation to use for the MRF (see Section 2.3.2).")
+                            help="Which tree approximation to use for the MRF (see Section 2.3).")
 
     arg_parser.add_argument("--n_random_trees", type=int, default=32,
                             help="Number of random spanning-trees to average the marginal distribution.")
@@ -115,8 +115,10 @@ if __name__ == "__main__":
                                  "ensembles.")
 
     arg_parser.add_argument("--max_n_ms2", type=int, default=75,
-                            help="Limit the maximum number of candidates per ms-feature. We use all candidates in the"
-                                 "paper. This option is mainly used for development.")
+                            help="Number of MS2 spectra used for the evaluation of the score integration framework. "
+                                 "For each sub-sample (see '--n_samples') we use this parameter to define the test set "
+                                 "size. The remaining spectra are used to determine the best (D, k)-tuple. See Section "
+                                 "3.1 for details on the training and test split sizes.")
 
     # Optional parameters dataset
     arg_parser.add_argument("--ion_mode", type=str, default="positive",
@@ -145,7 +147,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("--restrict_candidates_to_correct_mf", action="store_true",
                             help="Should the candidate set be restricted to molecules with the same molecular formula "
                                  "as the correct candidate only. This option is used in the experiments presented in "
-                                 "Section 4.3.2.")
+                                 "Section 4.2.")
 
     # Optional parameters data
     arg_parser.add_argument("--database_fn", type=str, help="Path to the score SQLite DB.")

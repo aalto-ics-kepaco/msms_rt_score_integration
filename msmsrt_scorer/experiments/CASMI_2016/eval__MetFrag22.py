@@ -135,7 +135,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("--param_selection_measure", type=str, default="topk_auc",
                             choices=["topk_auc", "ndcg", "p_marg", "p_max", "un_topk_auc", "un_p_marg"],
                             help="Criteria for the selection of the best (D, k)-tuple (hyper-parameters, see Section "
-                                 "3.4 and 4.2.2). In the paper 'topk_auc' (top20AUC) was used.")
+                                 "3.5 and S.2). In the paper 'topk_auc' (top20AUC) was used.")
 
     arg_parser.add_argument("--D_value_grid", nargs="+", type=float,
                             help="Grid-values for the retention order weight. (1 - D) llh(MS) + D * llh(RT)")
