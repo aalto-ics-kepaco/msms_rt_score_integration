@@ -948,6 +948,26 @@ def figure__number_of_random_spanning_trees__WITH_CI(base_dir: str, L_range: Opt
     # g.add_legend(title="", ncol=3, loc=(0.15, -0.02), labelspacing=-0.3, frameon=True)
     sns.reset_orig()
 
+    # Check whether average accuracy curves are significantly different for Max and Sum margin
+    _tmp = results[results["Top-k"].isin(["Top-1", "Top-20"]) & (results["Method"] != "Only MS")] \
+        .groupby(["T", "Method", "Top-k"]).aggregate({"Top-k Accuracy (%)": np.mean}) \
+        .reset_index()
+
+    print(
+        "top-1",
+        wilcoxon(
+            x=_tmp[(_tmp.Method == "MS + RT (Max)") & (_tmp["Top-k"] == "Top-1")]["Top-k Accuracy (%)"].values,
+            y=_tmp[(_tmp.Method == "MS + RT (Sum)") & (_tmp["Top-k"] == "Top-1")]["Top-k Accuracy (%)"].values,
+            alternative="two-sided"
+        )[1],
+        "top-20",
+        wilcoxon(
+            x=_tmp[(_tmp.Method == "MS + RT (Max)") & (_tmp["Top-k"] == "Top-20")]["Top-k Accuracy (%)"].values,
+            y=_tmp[(_tmp.Method == "MS + RT (Sum)") & (_tmp["Top-k"] == "Top-20")]["Top-k Accuracy (%)"].values,
+            alternative="two-sided"
+        )[1],
+    )
+
     return g
 
 
