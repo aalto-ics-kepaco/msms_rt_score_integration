@@ -755,6 +755,105 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
     return fig, axrr
 
 
+def figure__runtime_analysis(base_dir: str, time_unit="min"):
+    """
+
+    :param base_dir:
+    :return:
+    """
+    # General parameters
+    # ------------------
+    param_selection_measure = "topk_auc"
+    mode = "runtime"
+    make_order_prob = "sigmoid"
+    n_random_trees = 128
+    margin_type = "max"
+    n_cores = 12
+
+    # Load the results
+    # ----------------
+    results = pd.DataFrame()
+
+    for _ionm in ["positive", "negative"]:
+        # CASMI
+        _idir = IDIR_CASMI(
+            tree_method="random", n_random_trees=n_random_trees, ion_mode=_ionm, D_value_method=None,
+            base_dir=os.path.join(base_dir, "CASMI_2016/results__TFG__platt"), mode=mode,
+            param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+            norm_order_scores=False, margin_type=margin_type, restrict_candidates_to_correct_mf=False)
+
+        try:
+            _results = pd.read_csv(os.path.join(_idir, "runtime__n_jobs=%d.csv" % n_cores)) \
+                .assign(Dataset="CASMI 2016 [%s]" % _ionm)
+            results = pd.concat([results, _results], axis=0, sort=True)
+        except FileNotFoundError:
+            print("Could not open results for CASMI (%s)." % _ionm)
+            # print(_idir)
+
+        # EA Massbank
+        _idir = IDIR_EA(
+            tree_method="random", n_random_trees=n_random_trees, ion_mode=_ionm, D_value_method=None,
+            base_dir=os.path.join(base_dir, "EA_Massbank/results__TFG__platt"), mode=mode,
+            param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+            norm_scores="none", margin_type=margin_type)
+
+        _results = pd.read_csv(os.path.join(_idir, "runtime__n_jobs=%d.csv" % n_cores)) \
+            .assign(Dataset="EA (Massbank) [%s]" % _ionm)
+        results = pd.concat([results, _results], axis=0, sort=True)
+
+    # Present measured times in minutes
+    if time_unit == "min":
+        results["scoring_time"] /= 60
+        results["training_time"] /= 60
+    elif time_unit == "sec":
+        pass
+    else:
+        raise ValueError("Invalid time-unit '%s'. Choices are 'min' and 'sec'.")
+
+    # Plot the figure
+    # ---------------
+    capsize = 0.1
+    linestyle = "--"
+    dodge = True
+
+    fig, axrr = plt.subplots(2, 2, figsize=(14, 9), sharey=False, sharex=True)
+
+    # Plot score integration time
+    sns.pointplot(data=results, x="n_ms2rt_tuples", y="scoring_time", hue="Dataset", ax=axrr[0, 0], dodge=dodge,
+                  capsize=capsize, linestyles=linestyle)
+    axrr[0, 0].set_title("Score-integration")
+    axrr[0, 0].set_xlabel("")
+    axrr[0, 0].set_ylabel("Runtime (%s)" % time_unit)
+    axrr[0, 0].grid(axis="y")
+    # axrr[0, 0].legend_ = None
+
+    sns.pointplot(data=results, x="n_ms2rt_tuples", y="training_time", hue="Dataset", ax=axrr[0, 1], dodge=dodge,
+                  capsize=capsize, linestyles=linestyle)
+    axrr[0, 1].set_title("Hyper-parameter search (D)")
+    axrr[0, 1].set_xlabel("")
+    axrr[0, 1].set_ylabel("Runtime (%s)" % time_unit)
+    axrr[0, 1].grid(axis="y")
+    axrr[0, 1].legend_ = None
+
+    sns.pointplot(data=results, x="n_ms2rt_tuples", y="n_cand_max", hue="Dataset", ax=axrr[1, 0], dodge=dodge,
+                  capsize=capsize, linestyles=linestyle)
+    axrr[1, 0].set_title("Maximum Number of Candidates across Features")
+    axrr[1, 0].set_xlabel("Number of Features ((MS, RT)-tuples)")
+    axrr[1, 0].set_ylabel("Number of Candidates")
+    axrr[1, 0].grid(axis="y")
+    axrr[1, 0].legend_ = None
+
+    sns.pointplot(data=results, x="n_ms2rt_tuples", y="n_cand_med", hue="Dataset", ax=axrr[1, 1], dodge=dodge,
+                  capsize=capsize, linestyles=linestyle)
+    axrr[1, 1].set_title("Median Number of Candidates across Features")
+    axrr[1, 1].set_xlabel("Number of Features ((MS, RT)-tuples)")
+    axrr[1, 1].set_ylabel("Number of Candidates")
+    axrr[1, 1].grid(axis="y")
+    axrr[1, 1].legend_ = None
+
+    return fig, axrr, results
+
+
 def figure__number_of_random_spanning_trees__WITH_CI(base_dir: str, L_range: Optional[List] = None, for_paper=True):
     """
     Figure 2 in the paper (for_paper=True).
