@@ -386,6 +386,7 @@ def _get_rank_and_contribution_of_correct_candidate(scores, index_of_correct_str
 
     return r, c
 
+
 def get_top20AUC(topk_output, N):
     """
     Function to calculate the top20AUC value from the output of 'get_topk_performance_from_scores'

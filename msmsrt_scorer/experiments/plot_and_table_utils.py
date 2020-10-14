@@ -44,6 +44,21 @@ def _get_sample_id_string(sample_id: Optional[int]) -> str:
     return _sample_id
 
 
+def _marg_or_cand(string, max_n_ms2: int, sample_id: Optional[int] = None) -> str:
+    assert string in ["candidates", "marginals"]
+    return "__".join([string,
+                      "max_n_ms2=%03d" % max_n_ms2,
+                      "sample_id=%s" % _get_sample_id_string(sample_id)]) + ".pkl.gz"
+
+
+def MARG(max_n_ms2: int, sample_id: Optional[int] = None) -> str:
+    return _marg_or_cand("marginals", max_n_ms2, sample_id)
+
+
+def CAND(max_n_ms2: int, sample_id: Optional[int] = None) -> str:
+    return _marg_or_cand("candidates", max_n_ms2, sample_id)
+
+
 def TOPK(order_prob_k: Optional[float], D_value: Optional[float], max_n_ms2: int, sample_id: Optional[int] = None,
          method="casmi") -> str:
     _sample_id = _get_sample_id_string(sample_id)

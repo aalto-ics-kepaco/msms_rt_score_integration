@@ -24,20 +24,26 @@
 #
 ####
 import os
-import pandas as pd
-import matplotlib.pyplot as plt
+import gzip
+import pickle
+import sqlite3
 import numpy as np
+import pandas as pd
 import seaborn as sns
 import itertools as it
+import matplotlib.pyplot as plt
 
 from scipy.stats import wilcoxon
 from typing import Optional, List
 
-from msmsrt_scorer.experiments.plot_and_table_utils import load_results, load_results_missing_ms2, _label_p
 from msmsrt_scorer.experiments.EA_Massbank.plot_and_table_utils import IDIR as IDIR_EA
-from msmsrt_scorer.experiments.EA_Massbank.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_EA
 from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR as IDIR_CASMI
+from msmsrt_scorer.experiments.EA_Massbank.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_EA
 from msmsrt_scorer.experiments.CASMI_2016.plot_and_table_utils import IDIR_METFRAG as IDIR_METFRAG_CASMI
+from msmsrt_scorer.experiments.plot_and_table_utils import load_results, load_results_missing_ms2, _label_p, MARG, CAND
+
+from msmsrt_scorer.lib.data_utils import load_dataset_CASMI, prepare_candidate_set_MetFrag, load_dataset_EA
+from msmsrt_scorer.lib.evaluation_tools import _get_rank_and_contribution_of_correct_candidate
 
 
 def table__candidate_set_comparison(base_dir: str, to_latex=False, test="wilcoxon_oneside", ms2scorer="MetFrag",
@@ -755,7 +761,83 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
     return fig, axrr
 
 
-def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15):
+def get_results_for__margin_analysis(base_dir: str, db_fn: str):
+    # General parameters
+    # ------------------
+    param_selection_measure = "topk_auc"
+    mode = "application"
+    make_order_prob = "sigmoid"
+    n_random_trees = 128
+    margin_type = "max"
+    participant = "MetFrag_2.4.5__8afe4a14"
+
+    results = []
+
+    for _ds, _ionm, _maxn, _nsamp in [("CASMI", "positive", 75, 50), ("CASMI", "negative", 50, 50),
+                                      ("EA", "positive", 100, 100), ("EA", "negative", 65, 50)]:
+        print(_ds, _ionm)
+
+        # cands_prepared = []
+        # marg = []
+        # ranks = []
+
+        # Load the candidate information
+        if _ds == "CASMI":
+            _prefmodel = "c6d6f521"
+            _idir = IDIR_CASMI(
+                tree_method="random", n_random_trees=n_random_trees, ion_mode=_ionm, D_value_method=None,
+                base_dir=os.path.join(base_dir, "CASMI_2016/results__TFG__platt"), mode=mode,
+                param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+                norm_order_scores=False, margin_type=margin_type, restrict_candidates_to_correct_mf=None,
+                participant=participant)
+        elif _ds == "EA":
+            _prefmodel = {"training_dataset": "MEOH_AND_CASMI_JOINT", "keep_test_molecules": False,
+                          "estimator": "ranksvm", "molecule_representation": "substructure_count"}
+
+            _idir = IDIR_EA(
+                tree_method="random", n_random_trees=n_random_trees, ion_mode=_ionm, D_value_method=None,
+                base_dir=os.path.join(base_dir, "EA_Massbank/results__TFG__platt"), mode=mode,
+                param_selection_measure=param_selection_measure, make_order_prob=make_order_prob,
+                norm_scores="none", margin_type=margin_type)
+        else:
+            raise ValueError("Invalid dataset '%s'." % _ds)
+
+        # Get the marginal values for the correct and incorrect top-1 structures
+        for spl in range(_nsamp):
+            if _ds == "CASMI":
+                if spl == 0:
+                    with sqlite3.connect("file:" + db_fn + "?mode=ro", uri=True) as db:
+                        challenges, candidates = load_dataset_CASMI(
+                            db=db, ion_mode=_ionm, participant=participant, prefmodel=_prefmodel,
+                            sort_candidates_by_ms2_score=False, verbose=False)
+            else:
+                with sqlite3.connect("file:" + db_fn + "?mode=ro", uri=True) as db:
+                    challenges, candidates = load_dataset_EA(
+                        db=db, ion_mode=_ionm, participant=participant, prefmodel=_prefmodel,
+                        sort_candidates_by_ms2_score=False, verbose=False, sample_idx=spl)
+
+            with gzip.open(os.path.join(_idir, "marginals", MARG(max_n_ms2=_maxn, sample_id=spl)), "rb") as marg_file:
+                marg = pickle.load(marg_file)
+
+            with gzip.open(os.path.join(_idir, "candidates", CAND(max_n_ms2=_maxn, sample_id=spl)), "rb") as cand_file:
+                cand_info_sample = pickle.load(cand_file)
+
+            cands_prepared = prepare_candidate_set_MetFrag(
+                challenges=challenges, candidates=candidates, sub_set=cand_info_sample["test_set"],
+                ms2_idc=range(len(cand_info_sample["test_set"])), verbose=False, normalize=False)
+
+            for i in cands_prepared:
+                assert len(marg[i]) == cands_prepared[i]["n_cand"]
+
+                _r = _get_rank_and_contribution_of_correct_candidate(
+                    marg[i], cands_prepared[i]["index_of_correct_structure"], method="casmi2016")[0]
+
+                results.append([np.max(marg[i]), _r == 0, _ds, _ionm])
+
+    return pd.DataFrame(results, columns=["margin_value", "rank_one_is_correct", "dataset", "ionization"])
+
+
+def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15, ci=95):
     """
 
     :param base_dir:
@@ -822,7 +904,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15):
 
     # Plot score integration time
     sns.pointplot(data=results, x="n_ms2rt_tuples", y="scoring_time", hue="Dataset", ax=axrr[0, 0], dodge=dodge,
-                  capsize=capsize, linestyles=linestyle)
+                  capsize=capsize, linestyles=linestyle, ci=ci)
     axrr[0, 0].set_title("Score-integration")
     axrr[0, 0].set_xlabel("")
     axrr[0, 0].set_ylabel("Runtime (%s)" % time_unit)
@@ -830,7 +912,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15):
     # axrr[0, 0].legend_ = None
 
     sns.pointplot(data=results, x="n_ms2rt_tuples", y="training_time", hue="Dataset", ax=axrr[0, 1], dodge=dodge,
-                  capsize=capsize, linestyles=linestyle)
+                  capsize=capsize, linestyles=linestyle, ci=ci)
     axrr[0, 1].set_title("Hyper-parameter search (D)")
     axrr[0, 1].set_xlabel("")
     axrr[0, 1].set_ylabel("Runtime (%s)" % time_unit)
@@ -838,7 +920,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15):
     axrr[0, 1].legend_ = None
 
     sns.pointplot(data=results, x="n_ms2rt_tuples", y="n_cand_max", hue="Dataset", ax=axrr[1, 0], dodge=dodge,
-                  capsize=capsize, linestyles=linestyle)
+                  capsize=capsize, linestyles=linestyle, ci=ci)
     axrr[1, 0].set_title("Maximum Number of Candidates across Features")
     axrr[1, 0].set_xlabel("Number of Features ((MS, RT)-tuples)")
     axrr[1, 0].set_ylabel("Number of Candidates")
@@ -846,7 +928,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15):
     axrr[1, 0].legend_ = None
 
     sns.pointplot(data=results, x="n_ms2rt_tuples", y="n_cand_med", hue="Dataset", ax=axrr[1, 1], dodge=dodge,
-                  capsize=capsize, linestyles=linestyle)
+                  capsize=capsize, linestyles=linestyle, ci=ci)
     axrr[1, 1].set_title("Median Number of Candidates across Features")
     axrr[1, 1].set_xlabel("Number of Features ((MS, RT)-tuples)")
     axrr[1, 1].set_ylabel("Number of Candidates")
