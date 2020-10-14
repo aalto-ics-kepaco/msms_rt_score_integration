@@ -45,7 +45,7 @@ from msmsrt_scorer.lib.evaluation_tools import get_topk_performance_from_scores,
 from msmsrt_scorer.lib.evaluation_tools import run_parameter_grid, get_top20AUC
 
 
-def load_data(args, pref_model, sample_idx):
+def load_data(args, pref_model, sample_idx, sort_candidates_by_ms2_score=None, participant=None):
     """
     Wrapper around the data loading function accessing the SQLite DB. It takes as input the script parameters,
     establishes the DB connection and loads returns the requested data.
@@ -56,10 +56,16 @@ def load_data(args, pref_model, sample_idx):
 
     :return: challenge and candidates, dictionaries
     """
+    if participant is None:
+        participant = args.participant
+
+    if sort_candidates_by_ms2_score is None:
+        sort_candidates_by_ms2_score = args.sort_candidates_by_ms2_score
+
     with sqlite3.connect("file:" + args.database_fn + "?mode=ro", uri=True) as db:
         challenges, candidates = load_dataset_EA(
-            db, participant=args.participant, prefmodel=pref_model, ion_mode=args.ion_mode,
-            max_n_cand=args.max_n_cand, sort_candidates_by_ms2_score=args.sort_candidates_by_ms2_score,
+            db, participant=participant, prefmodel=pref_model, ion_mode=args.ion_mode,
+            max_n_cand=args.max_n_cand, sort_candidates_by_ms2_score=sort_candidates_by_ms2_score,
             sample_idx=sample_idx)
 
     return challenges, candidates
@@ -69,7 +75,7 @@ def load_platt_k(args, sample_idx):
     """
     Load the sigmoid parameter k determined using Platt's method during the RankSVM model training.
 
-    See Section 4.2.2
+    See Section 3.5
 
     :param args: argparse.ArgumentParser() object, holding the script parameters
     :param sample_idx: integer, index of random data sub-sample to load
