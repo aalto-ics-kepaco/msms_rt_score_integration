@@ -755,7 +755,7 @@ def figure__parameter_selection(base_dir: str, n_random_trees=128, dataset=None,
     return fig, axrr
 
 
-def figure__runtime_analysis(base_dir: str, time_unit="min"):
+def figure__runtime_analysis(base_dir: str, time_unit="min", n_samples=15):
     """
 
     :param base_dir:
@@ -785,6 +785,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min"):
         try:
             _results = pd.read_csv(os.path.join(_idir, "runtime__n_jobs=%d.csv" % n_cores)) \
                 .assign(Dataset="CASMI 2016 [%s]" % _ionm)
+            _results = _results.loc[_results["sample"] < n_samples]
             results = pd.concat([results, _results], axis=0, sort=True)
         except FileNotFoundError:
             print("Could not open results for CASMI (%s)." % _ionm)
@@ -799,6 +800,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min"):
 
         _results = pd.read_csv(os.path.join(_idir, "runtime__n_jobs=%d.csv" % n_cores)) \
             .assign(Dataset="EA (Massbank) [%s]" % _ionm)
+        _results = _results.loc[_results["sample"] < n_samples]
         results = pd.concat([results, _results], axis=0, sort=True)
 
     # Present measured times in minutes
@@ -816,7 +818,7 @@ def figure__runtime_analysis(base_dir: str, time_unit="min"):
     linestyle = "--"
     dodge = True
 
-    fig, axrr = plt.subplots(2, 2, figsize=(14, 9), sharey=False, sharex=True)
+    fig, axrr = plt.subplots(2, 2, figsize=(14, 10), sharey=False, sharex=True)
 
     # Plot score integration time
     sns.pointplot(data=results, x="n_ms2rt_tuples", y="scoring_time", hue="Dataset", ax=axrr[0, 0], dodge=dodge,
