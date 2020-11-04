@@ -606,6 +606,18 @@ class TreeFactorGraph(FactorGraph):
 
         return Z_max, p_max
 
+    def MAP_only(self):
+        """
+        Get the Maximum a posteriori estimation (Z_max) and the corresponding lh value (p_max)
+
+        :return: tuple (
+            list, length=n_variables, selected candidate for each MS2
+            scalar, (log-)likelihood value of Z_max
+        )
+        """
+        _, _, _, self.acc_max, self.Par_max = self._forward_pass("max")
+        return self.MAP()
+
     def _marginals(self, R) -> OrderedDict:
         """
         Calculate (normalized) get_sum_marginals for all variables
