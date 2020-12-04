@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/246057597.svg)](https://zenodo.org/badge/latestdoi/246057597)
+
 # Overview
 
 Scripts used to run the experiments presented in the paper:
