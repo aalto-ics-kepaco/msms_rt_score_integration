@@ -7,7 +7,7 @@
   - added margin score plots
   - updated Figure 2 of the paper
 - added bib-tex citation
-- added [Zenodo link for the data](https://doi.org/10.5281/zenodo.4305918)
+- added [Zenodo link for the data](https://doi.org/10.5281/zenodo.4305918) used in the publication
 
 ## Version 0.2.0 (tagged)
 **Feature release**
