@@ -50,4 +50,18 @@ An example how to reproduce the results can be found [here](/msmsrt_scorer/exper
 
 # Citation
 
-To refer the original publication please use: *TODO*
+To refer the original publication please use: 
+```bibtex
+@article{10.1093/bioinformatics/btaa998,
+    author = {Bach, Eric and Rogers, Simon and Williamson, John and Rousu, Juho},
+    title = "{Probabilistic Framework for Integration of Mass Spectrum and Retention Time Information in Small Molecule Identification}",
+    journal = {Bioinformatics},
+    year = {2020},
+    month = {11},
+    issn = {1367-4803},
+    doi = {10.1093/bioinformatics/btaa998},
+    url = {https://doi.org/10.1093/bioinformatics/btaa998},
+    note = {btaa998},
+    eprint = {https://academic.oup.com/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btaa998/34557505/btaa998.pdf},
+}
+```
