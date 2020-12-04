@@ -620,9 +620,10 @@ class TreeFactorGraph(FactorGraph):
 
     def _marginals(self, R) -> OrderedDict:
         """
-        Calculate (normalized) get_sum_marginals for all variables
+        Calculate for all variables
 
-        :param normalize: boolean indicating, whether the marginal should be normalized (default=True)
+        :param R: dictionary, containing the R messages
+
         :return: dictionary, keys: variable; values: array-like, shape=(n_i,), marginal probabilities for all
             assignments
         """
