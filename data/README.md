@@ -1,7 +1,7 @@
 # (MS2, RT)-tuple Database
 
 All data used in our experiments is organized in SQLite DB. The database can be
-downloaded from [Zenodo](https://doi.org/10.5281/zenodo.4305918) (~12GB). Its layout as well as content is described here.   
+downloaded from [Zenodo](https://doi.org/10.5281/zenodo.4305918) (temporarly download from [here](https://drive.google.com/file/d/1HKooW9p6huiKFt4k9jhX80k6GsmHI9yE/view?usp=sharing)) (~12GB). Its layout as well as content is described here.   
 
 ## General Information
 
