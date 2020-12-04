@@ -1,5 +1,3 @@
-[![DOI](https://zenodo.org/badge/246057597.svg)](https://zenodo.org/badge/latestdoi/246057597)
-
 # Overview
 
 Scripts used to run the experiments presented in the paper:
@@ -51,6 +49,8 @@ Run the setup. All required packages will be fetched as well:
 An example how to reproduce the results can be found [here](/msmsrt_scorer/experiments). 
 
 # Citation
+
+Software citation: [![DOI](https://zenodo.org/badge/246057597.svg)](https://zenodo.org/badge/latestdoi/246057597)
 
 To refer the original publication please use: 
 ```bibtex
