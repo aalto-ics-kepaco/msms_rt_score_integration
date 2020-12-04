@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.2.1 (tagged, version associated with the [Bioinformatics publication](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btaa998/6007259))
+**Feature release**
+- Addressed comments of the reviewers
+  - added run-time analysis
+  - added margin score plots
+  - updated Figure 2 of the paper
+- added bib-tex citation
+- added Zenodo link for the data
+
 ## Version 0.2.0 (tagged)
 **Feature release**
 - adressed [#4](https://github.com/aalto-ics-kepaco/msms_rt_score_integration/issues/4): Encapsulate the figure and table generation into 
