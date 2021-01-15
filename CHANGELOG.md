@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.2
+**Feature release**
+- Allow to remove the weight of the retention order and mass spectra information by setting the 
+  retention order weight (```D = None```)
+
 ## Version 0.2.1 (tagged, version associated with the [Bioinformatics publication](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btaa998/6007259))
 **Feature release**
 - Addressed comments of the reviewers
