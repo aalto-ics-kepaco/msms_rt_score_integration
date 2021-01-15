@@ -77,7 +77,8 @@ class FactorGraph(object):
             the edge potential value are logarithmised. Max-product --> Max-sum algorithm. This implementation currently
             only supports the implementation in the log-space.
 
-        :param D: scalar, weight of the retention order information (see Section 2.2.4).
+        :param D: scalar or None, weight of the retention order information (see Section 2.2.4). If None, both retention
+            order and mass spectrum scores are having weight 1.0.
 
         :param norm_order_scores: boolean, indicating whether the the edge potential matrices should be normalized, such
             that the rows sum up to one. (default = False)
@@ -87,9 +88,16 @@ class FactorGraph(object):
         self.make_order_probs = make_order_probs
         self.norm_order_scores = norm_order_scores
 
-        if D < 0.0 or D > 1.0:
-            raise Exception("D must be from [0, 1].")
-        self.D = D
+        if D is None:
+            self.D_ms = 1.0
+            self.D_rt = 1.0
+        elif np.isscalar(D):
+            if D < 0.0 or D > 1.0:
+                raise ValueError("D must be from [0, 1].")
+            self.D_ms = 1.0 - D
+            self.D_rt = D
+        else:
+            raise ValueError("D must either be a scalar or None.")
 
         # Get variables and factors for the MS2 scores
         self.var = list(candidates.keys())  # i = 1, 2, 3, ..., N
@@ -147,7 +155,7 @@ class FactorGraph(object):
         for i, j in self.fac_rt:
             llh_rt += self.order_probs[i][j]["log_score"][Z[i]][Z[j]]
 
-        return (1 - self.D) * llh_ms + self.D * llh_rt
+        return self.D_ms * llh_ms + self.D_rt * llh_rt
 
     def likelihood(self, Z, log=False) -> float:
         """
@@ -455,7 +463,7 @@ class TreeFactorGraph(FactorGraph):
             LOGGER.debug("\tsrc=%s, trg=%s" % (str(j_src), str(j_trg)))
 
             # Initialize the MS-factor node (R-message)
-            R[(i, i)] = {i: (1.0 - self.D) * self.candidates[i]["log_score"]}
+            R[(i, i)] = {i: self.D_ms * self.candidates[i]["log_score"]}
             LOGGER.debug("\tMS-score: min=%.3f, max=%.3f, mean=%.3f, med=%.3f" % (
                 np.min(R[(i, i)][i]), np.max(R[(i, i)][i]), np.mean(R[(i, i)][i]).item(),
                 np.median(R[(i, i)][i]).item()))
@@ -477,7 +485,7 @@ class TreeFactorGraph(FactorGraph):
                 Q[i] = {(i, j_trg): q_i__ij}
 
                 # gamma_rs's, probabilities of the candidates based on the retention order
-                _rt_scores = self.D * self.order_probs[i][j_trg]["log_score"]
+                _rt_scores = self.D_rt * self.order_probs[i][j_trg]["log_score"]
 
                 LOGGER.debug("\tRT-score: min=%.3f, max=%.3f, mean=%.3f, med=%.3f" % (
                     np.min(_rt_scores), np.max(_rt_scores), np.mean(_rt_scores).item(), np.median(_rt_scores).item()))
@@ -541,7 +549,7 @@ class TreeFactorGraph(FactorGraph):
 
             # gamma_rs's, probabilities of the candidates based on the retention order
             for _j_trg in j_trg:
-                _tmp, _ = agg_fun(self.D * self.order_probs[_j_trg][i]["log_score"] + Q[i][(i, _j_trg)])
+                _tmp, _ = agg_fun(self.D_rt * self.order_probs[_j_trg][i]["log_score"] + Q[i][(i, _j_trg)])
                 if (_j_trg, i) not in R:
                     R[(_j_trg, i)] = {_j_trg: _tmp}
                 else:
@@ -916,9 +924,9 @@ class ChainFactorGraph(FactorGraph):
         for i in range(N):  # O(N)
             # theta_ir's, probabilities of the candidates based on MS2
             if self.use_log_space:
-                R[(i, i)][i] = (1.0 - self.D) * self.candidates[i]["log_score"]  # log(r^T)
+                R[(i, i)][i] = self.D_ms * self.candidates[i]["log_score"]  # log(r^T)
             else:
-                R[(i, i)][i] = self.candidates[i]["score"] ** (1.0 - self.D)  # r^T
+                R[(i, i)][i] = self.candidates[i]["score"] ** self.D_ms  # r^T
 
         for i in range(N - 1):  # O(N * M_max + N * M_max^2)
             if i == 0:
@@ -932,9 +940,9 @@ class ChainFactorGraph(FactorGraph):
             # gamma_rs's, probabilities of the candidates based on the retention order
             if self.use_log_space:
                 R[(i, i + 1)][i + 1] = logsumexp(
-                    (self.D * self.order_probs[i][i + 1]["log_score"].T) + Q[i][(i, i + 1)], axis=1)
+                    (self.D_rt * self.order_probs[i][i + 1]["log_score"].T) + Q[i][(i, i + 1)], axis=1)
             else:
-                R[(i, i + 1)][i + 1] = (self.order_probs[i][i + 1]["score"].T ** self.D) @ Q[i][(i, i + 1)]
+                R[(i, i + 1)][i + 1] = (self.order_probs[i][i + 1]["score"].T ** self.D_rt) @ Q[i][(i, i + 1)]
 
             assert (Q[i][(i, i + 1)].shape == (self.candidates[i]["n_cand"],))
             assert (R[(i, i + 1)][i + 1].shape == (self.candidates[i + 1]["n_cand"],))
@@ -955,9 +963,9 @@ class ChainFactorGraph(FactorGraph):
             # gamma_rs's, probabilities of the candidates based on the retention order
             if self.use_log_space:
                 R[(i - 1, i)][i - 1] = logsumexp(
-                    (self.D * self.order_probs[i - 1][i]["log_score"]) + Q[i][(i - 1, i)], axis=1)
+                    (self.D_rt * self.order_probs[i - 1][i]["log_score"]) + Q[i][(i - 1, i)], axis=1)
             else:
-                R[(i - 1, i)][i - 1] = (self.order_probs[i - 1][i]["score"] ** self.D) @ Q[i][(i - 1, i)]
+                R[(i - 1, i)][i - 1] = (self.order_probs[i - 1][i]["score"] ** self.D_rt) @ Q[i][(i - 1, i)]
 
             assert (Q[i][(i, i)].shape == (self.candidates[i]["n_cand"],))
             assert (Q[i][(i - 1, i)].shape == (self.candidates[i]["n_cand"],))
@@ -995,9 +1003,9 @@ class ChainFactorGraph(FactorGraph):
         for i in range(N):  # O(N)
             # theta_ir's, probabilities of the candidates based on MS2
             if self.use_log_space:
-                R[(i, i)][i] = (1.0 - self.D) * self.candidates[i]["log_score"]  # log(r^T)
+                R[(i, i)][i] = self.D_ms * self.candidates[i]["log_score"]  # log(r^T)
             else:
-                R[(i, i)][i] = self.candidates[i]["score"] ** (1.0 - self.D)  # r^T
+                R[(i, i)][i] = self.candidates[i]["score"] ** self.D_ms  # r^T
 
         for i in range(N - 1):  # O(N * M_max + N * M_max^2)
             if i == 0:
@@ -1012,9 +1020,9 @@ class ChainFactorGraph(FactorGraph):
 
             # gamma_rs's, probabilities of the candidates based on the retention order
             if self.use_log_space:
-                _tmp = (self.D * self.order_probs[i][i + 1]["log_score"].T) + q_i__iipp
+                _tmp = (self.D_rt * self.order_probs[i][i + 1]["log_score"].T) + q_i__iipp
             else:
-                _tmp = (self.order_probs[i][i + 1]["score"].T ** self.D) * q_i__iipp
+                _tmp = (self.order_probs[i][i + 1]["score"].T ** self.D_rt) * q_i__iipp
 
             # Find parent nodes of for layer (i + 1) from layer i using argmax
             Par[i + 1] = np.argmax(_tmp, axis=1)

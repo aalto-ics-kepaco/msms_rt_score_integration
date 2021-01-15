@@ -161,7 +161,7 @@ class TestChainFactorGraph(unittest.TestCase):
         R, Q = CFG.R_sum, CFG.Q_sum
 
         # == FORWARD ==
-        D = CFG.D
+        D = CFG.D_rt
         # R-Messages passed from the leaf nodes
         np.testing.assert_equal(R[(0, 0)][0], candidates[0]["score"] ** (1.0 - D))
         np.testing.assert_equal(R[(1, 1)][1], candidates[1]["score"] ** (1.0 - D))
