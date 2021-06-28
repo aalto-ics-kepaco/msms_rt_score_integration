@@ -626,6 +626,32 @@ class TreeFactorGraph(FactorGraph):
         _, _, _, self.acc_max, self.Par_max = self._forward_pass("max")
         return self.MAP()
 
+    def MAP_only__brute_force(self):
+        """
+        Get the Maximum a posteriori estimation (Z_max) and the corresponding lh value (p_max) using brute force. That
+        means, we find the MAP estimate simply by enumerating all possible assignments to the discrete random variable.
+
+        :return: tuple (
+            list, length=n_variables, selected candidate for each MS2
+            scalar, (log-)likelihood value of Z_max
+        )
+        """
+        max_llh = -np.inf
+        z_max = None
+
+        for z in it.product(*[range(cands["n_cand"]) for cands in self.candidates.values()]):
+            llh = self.likelihood(z, log=True)
+            if llh > max_llh:
+                max_llh = llh
+                z_max = z
+
+        if self.use_log_space:
+            p_max = max_llh
+        else:
+            p_max = np.exp(max_llh)
+
+        return list(z_max), p_max
+
     def _marginals(self, R) -> OrderedDict:
         """
         Calculate for all variables

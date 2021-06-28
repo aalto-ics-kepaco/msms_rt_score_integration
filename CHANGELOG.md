@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.3
+**Feature release**
+- Add brute force MAP estimator (simply enumerates all possible random variable assignments)
+- Added a few more tests for the MAP estimator
+
 ## Version 0.2.2
 **Feature release**
 - Allow to remove the weight of the retention order and mass spectra information by setting the 
