@@ -636,12 +636,10 @@ class TreeFactorGraph(FactorGraph):
             scalar, (log-)likelihood value of Z_max
         )
         """
-        Z_space = [range(self.candidates[v]["n_cand"]) for v in self.var]
-
         max_llh = -np.inf
         z_max = None
 
-        for z in it.product(*Z_space):
+        for z in it.product(*[range(cands["n_cand"]) for cands in self.candidates.values()]):
             llh = self.likelihood(z, log=True)
             if llh > max_llh:
                 max_llh = llh
@@ -652,7 +650,7 @@ class TreeFactorGraph(FactorGraph):
         else:
             p_max = np.exp(max_llh)
 
-        return z_max, p_max
+        return list(z_max), p_max
 
     def _marginals(self, R) -> OrderedDict:
         """

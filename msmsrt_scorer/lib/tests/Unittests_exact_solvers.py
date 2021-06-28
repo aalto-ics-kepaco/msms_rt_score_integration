@@ -540,7 +540,7 @@ class TestRandomTreeFactorGraph(unittest.TestCase):
             Z_max_dp, p_max_dp = TFG.MAP_only()
             Z_max_bf, p_max_bf = TFG.MAP_only__brute_force()
 
-            self.assertEqual(Z_max_bf, tuple(Z_max_dp))
+            self.assertEqual(tuple(Z_max_bf), tuple(Z_max_dp))
             np.testing.assert_allclose(p_max_bf, p_max_dp)
 
     def test_only_rt_different_from_only_ms(self):
