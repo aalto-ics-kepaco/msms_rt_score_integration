@@ -50,11 +50,11 @@ def generate_random_example(random_seed=None, n_spec=None):
     candidates = OrderedDict()
     for i in range(n_spec):
         candidates[i] = {}
-        candidates[i]["n_cand"] = rs.randint(1, 6)
+        candidates[i]["n_cand"] = rs.randint(3, 6)
 
         # candidate MS2-scores
-        candidates[i]["score"] = np.sort(rs.rand(candidates[i]["n_cand"]))[::-1]
-        candidates[i]["score"] /= np.sum(candidates[i]["score"])
+        candidates[i]["score"] = rs.rand(candidates[i]["n_cand"])
+        candidates[i]["score"] /= np.max(candidates[i]["score"])
         candidates[i]["log_score"] = np.log(candidates[i]["score"])
 
     # Retention times
@@ -169,9 +169,9 @@ class TestChainFactorGraph(unittest.TestCase):
 
         # R-Messages
         for s in range(candidates[1]["n_cand"]):
-            np.testing.assert_equal(R[(0, 1)][1][s], (CFG.order_probs[0][1]["score"][:, s] ** D) @ Q[0][(0, 1)])
+            np.testing.assert_allclose(R[(0, 1)][1][s], (CFG.order_probs[0][1]["score"][:, s] ** D) @ Q[0][(0, 1)])
         for s in range(candidates[2]["n_cand"]):
-            np.testing.assert_equal(R[(1, 2)][2][s], (CFG.order_probs[1][2]["score"][:, s] ** D) @ Q[1][(1, 2)])
+            np.testing.assert_allclose(R[(1, 2)][2][s], (CFG.order_probs[1][2]["score"][:, s] ** D) @ Q[1][(1, 2)])
 
         # Q-Messages
         np.testing.assert_equal(Q[0][(0, 1)], R[(0, 0)][0])
@@ -528,6 +528,52 @@ class TestRandomTreeFactorGraph(unittest.TestCase):
             for i in candidates:
                 np.testing.assert_allclose(marg_norm[i], max_marginal(P, i, normalize=True))
                 np.testing.assert_allclose(marg_unrm[i], max_marginal(P, i, normalize=False))
+
+    def test_MAP(self):
+        for rep in range(25):
+            candidates = generate_random_example(rep)
+
+            TFG = RandomTreeFactorGraph(
+                candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=rep, use_log_space=True
+            )
+
+            Z_max_dp, p_max_dp = TFG.MAP_only()
+            Z_max_bf, p_max_bf = TFG.MAP_only__brute_force()
+
+            self.assertEqual(Z_max_bf, tuple(Z_max_dp))
+            np.testing.assert_allclose(p_max_bf, p_max_dp)
+
+    def test_only_rt_different_from_only_ms(self):
+        for rep in range(25):
+            candidates = generate_random_example(rep + 1)
+
+            TFG_rt = RandomTreeFactorGraph(
+                candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=rep + 1, use_log_space=True, D=1
+            )
+
+            TFG_ms = RandomTreeFactorGraph(
+                candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=rep + 1, use_log_space=True, D=0
+            )
+
+            Z_max_rt, p_max_rt = TFG_rt.MAP_only()
+            Z_max_ms, p_max_ms = TFG_ms.MAP_only()
+
+            self.assertNotEqual(tuple(Z_max_ms), tuple(Z_max_rt))
+            self.assertNotEqual(p_max_ms, p_max_rt)
+
+    def test_only_ms_inference(self):
+        for rep in range(25):
+            candidates = generate_random_example(rep + 2)
+
+            TFG_ms = RandomTreeFactorGraph(
+                candidates, make_order_probs=lambda _x, loc: sigmoid(_x), random_state=rep + 2, use_log_space=True, D=0
+            )
+
+            Z_max_ms, _ = TFG_ms.MAP_only()
+
+            for i in candidates:
+                z_i_max = np.argmax(candidates[i]["score"])
+                self.assertEqual(z_i_max, Z_max_ms[i])
 
 
 if __name__ == '__main__':
