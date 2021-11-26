@@ -53,6 +53,9 @@ An example how to reproduce the results can be found [here](/msmsrt_scorer/exper
 Software citation: [![DOI](https://zenodo.org/badge/246057597.svg)](https://zenodo.org/badge/latestdoi/246057597)
 
 To refer the original publication please use: 
+
+- For the general approach of combining prediction retention order with (tandem) mass spectrometry data for structure annotation
+
 ```bibtex
 @article{10.1093/bioinformatics/btaa998,
     author = {Bach, Eric and Rogers, Simon and Williamson, John and Rousu, Juho},
@@ -65,5 +68,18 @@ To refer the original publication please use:
     url = {https://doi.org/10.1093/bioinformatics/btaa998},
     note = {btaa998},
     eprint = {https://academic.oup.com/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btaa998/34557505/btaa998.pdf},
+}
+```
+
+- For the actual msmsrt_scorer implementation
+
+```bibtex
+@software{Bach_msmsrt_scorer_Probabilistic_framework_2021,
+    author = {Bach, Eric},
+    month = {11},
+    title = {{msmsrt_scorer: Probabilistic framework for integration of mass spectrum and retention order information}},
+    url = {https://github.com/aalto-ics-kepaco/msms_rt_score_integration},
+    version = {0.2.3},
+    year = {2021}
 }
 ```
