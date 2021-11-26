@@ -77,7 +77,7 @@ To refer the original publication please use:
 @software{Bach_msmsrt_scorer_Probabilistic_framework_2021,
     author = {Bach, Eric},
     month = {11},
-    title = {{msmsrt_scorer: Probabilistic framework for integration of mass spectrum and retention order information}},
+    title = {{msmsrt\_scorer: Probabilistic framework for integration of mass spectrum and retention order information}},
     url = {https://github.com/aalto-ics-kepaco/msms_rt_score_integration},
     version = {0.2.3},
     year = {2021}
