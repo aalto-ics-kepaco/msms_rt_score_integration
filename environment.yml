@@ -2,7 +2,7 @@ name: msms_rt_score_integration
 channels:
   - conda-forge
 dependencies:
-  - conda-forge::python>=3.8
+  - conda-forge::python>=3.6
   - conda-forge::numpy
   - conda-forge::scipy
   - conda-forge::scikit-learn<1
