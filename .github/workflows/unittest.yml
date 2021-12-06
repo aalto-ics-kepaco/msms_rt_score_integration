@@ -53,7 +53,7 @@ jobs:
       # Run the unittests
       - name: Run all unittests
         run: |
-          msmsrt_scorer/lib/tests
+          cd msmsrt_scorer/lib/tests
           python -m unittest -v Unittests_evaluation_tools.py
           python -m unittest -v Unittests_exact_solvers.py
       # -----------------
