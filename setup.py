@@ -1,8 +1,14 @@
 from setuptools import setup, find_packages
+from distutils.util import convert_path
+
+main_ns = {}
+ver_path = convert_path('msmsrt_scorer/version.py')
+with open(ver_path) as ver_file:
+    exec(ver_file.read(), main_ns)
 
 setup(
     name="msmsrt_scorer",
-    version="0.2.3",
+    version=main_ns["__version__"],
     license="MIT",
     packages=find_packages(exclude=["results*", "tests", "examples", "*.ipynb"]),
 
