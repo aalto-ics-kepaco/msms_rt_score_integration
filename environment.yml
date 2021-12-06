@@ -5,10 +5,10 @@ dependencies:
   - conda-forge::python>=3.8
   - conda-forge::numpy
   - conda-forge::scipy
-  - conda-forge::scikit-learn
+  - conda-forge::scikit-learn<1
   - conda-forge::joblib
   - conda-forge::pandas
   - conda-forge::matplotlib
   - conda-forge::seaborn
-  - conda-forge::networkx>=2.4
+  - conda-forge::networkx>=2.4|<3
   - conda-forge::rdkit==2021.03.1
