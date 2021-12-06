@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Bach"
+  given-names: "Eric"
+  email: eric.bach@aalto.fi
+  affiliation: Aalto University, Espoo, Finland 
+title: "msmsrt_scorer: Probabilistic framework for integration of mass spectrum and retention order information"
+version: 0.2.3
+date-released: 2021-11-26
+url: "https://github.com/aalto-ics-kepaco/msms_rt_score_integration"
